@@ -6,12 +6,13 @@ import { useDispatch } from 'react-redux';
 
 export default function HomeScreen({navigation}) {
 
+
 const handleSubmitSignUp = () => {
-    navigation.navigate('TabNavigator', { screen: 'SignUpScreen' })
+    navigation.navigate('SignUp', { screen: 'SignUpScreen' })
 }
 
 const handleSubmitSignIn = () => {
-    navigation.navigate('TabNavigator', { screen: 'SignInScreen' })
+    navigation.navigate('SignIn', { screen: 'SignInScreen' })
 }
 
     return (
