@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ImageBackground, Text, TouchableOpacity, TextInput, StyleSheet, KeyboardAvoidingView, Platform, Image  } from 'react-native'
+import { View, Text, TouchableOpacity, TextInput, StyleSheet, KeyboardAvoidingView, Platform, Image  } from 'react-native'
 
 import { useDispatch } from 'react-redux';
 

@@ -9,6 +9,7 @@ import StoriesScreen from './screens/StoriesScreen';
 import FavoritesScreen from './screens/FavoritesScreen'
 import SignUpScreen from './screens/SignUpScreen'
 import SignInScreen from './screens/SignInScreen'
+import DashboardScreen from './screens/DashboardScreen'
 
 import user from './reducers/user'
 import { Provider } from 'react-redux';
@@ -23,19 +24,21 @@ const store = configureStore({
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
+
+
 function TabNavigator() {
   return (
     <Tab.Navigator screenOptions={({ route }) => ({
       tabBarIcon: ({ color, size }) => {
         let iconName = '';
 
-        if (route.name === 'Evènement') {
+        if (route.name === 'Evenement') {
           iconName = 'location-arrow';
         } else if (route.name === 'Histoire') {
           iconName = 'map-pin';
         } else if (route.name === 'Favoris') {
           iconName = 'map-pin'
-        } else if (route.name === 'Home') {
+        } else if (route.name === 'Dashboard') {
           iconName = 'map-pin'
         }
 
@@ -45,8 +48,8 @@ function TabNavigator() {
       tabBarInactiveTintColor: '#335561',
       headerShown: false,
     })}>
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Evènement" component={EventsScreen} />
+      <Tab.Screen name="Dashboard" component={DashboardScreen} />
+      <Tab.Screen name="Evenement" component={EventsScreen} />
       <Tab.Screen name="Histoire" component={StoriesScreen} />
       <Tab.Screen name="Favoris" component={FavoritesScreen} />
     </Tab.Navigator>
