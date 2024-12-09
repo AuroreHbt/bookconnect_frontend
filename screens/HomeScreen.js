@@ -22,7 +22,7 @@ const handleSubmitSignIn = () => {
             Share, discover, write
         </Text>
         <View style={styles.inputContainer}>
-        <TouchableOpacity onPress={handleSubmitSignUp} style={styles.buttonsignUp}>
+        <TouchableOpacity onPress={handleSubmitSignUp} style={styles.buttonsignUp}> 
         <Text style={styles.textButton}>S'inscrire</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={handleSubmitSignIn} style={styles.buttonsignIn}>
