@@ -33,13 +33,13 @@ function TabNavigator() {
         let iconName = '';
 
         if (route.name === 'Evenement') {
-          iconName = 'location-arrow';
+          iconName = 'calendar-week';
         } else if (route.name === 'Histoire') {
-          iconName = 'map-pin';
+          iconName = 'book';
         } else if (route.name === 'Favoris') {
-          iconName = 'map-pin'
+          iconName = 'heart'
         } else if (route.name === 'Dashboard') {
-          iconName = 'map-pin'
+          iconName = 'user-circle-o'
         }
 
         return <FontAwesome name={iconName} size={size} color={color} />;
