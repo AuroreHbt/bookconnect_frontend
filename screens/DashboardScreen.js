@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {
     SafeAreaView,
@@ -10,9 +9,10 @@ import {
     TextInput,
     TouchableOpacity,
     View,
-    Modal
+    Modal, 
+    Image,
   } from 'react-native';
-
+                                                                                                   
 
 
 export default function DashboardScreen() {
@@ -26,57 +26,59 @@ export default function DashboardScreen() {
   };
 
     return (
-        <SafeAreaProvider>
-            <SafeAreaView style={styles.container} >
+          <SafeAreaView style={styles.container} >
             <View style={styles.header}>
 
                 {/* Logo et Nom de l'app */}
               <View style={styles.identityApp}>
-                <Text style={styles.logo}>Logo</Text>
+                <Image 
+                source={require('../assets/LogoBc.png')} 
+                style={styles.logo} 
+                />
                 <Text style={styles.title}>BookConnect</Text>
 
                 {/* Icône Paramètre */}
               </View>
-                <TouchableOpacity onPress={toggleModal} style={styles.ParameterButton}>
+                <TouchableOpacity onPress={toggleParameter} style={styles.ParameterButton}>
                 <FontAwesome name="gear" size={50} color="#a2845e" />
                 </TouchableOpacity>
             </View>
 
             {/* Modal */}
             <Modal
-                animationType="slide"
-                transparent={true}
-                visible={isParameterVisible}
-                onRequestClose={toggleParameter}
+              animationType="slide"
+              transparent={true}
+              visible={isParameterVisible}
+              onRequestClose={toggleParameter}
       >
-                 <View style={styles.ParameterOverlay}>
-                    <View style={styles.ParameterContent}>
-                    <Text style={styles.ParameterTitle}>Paramètres</Text>
+                <View style={styles.ParameterOverlay}>
+                  <View style={styles.ParameterContent}>
+                  <Text style={styles.ParameterTitle}>Paramètres</Text>
 
-            {/* Options de paramètres */}
-            <TouchableOpacity style={styles.optionButton}>
-            <TouchableOpacity style={styles.optionButton}>
-              <Text style={styles.optionText}>Modifier ma photo de profil</Text>
-            </TouchableOpacity>
-              <Text style={styles.optionText}>Modifier mon username</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.optionButton}>
-              <Text style={styles.optionText}>Modifier mon email</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.optionButton}>
-              <Text style={styles.optionText}>Modifier mon mot de passe</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.optionButton}>
-              <Text style={styles.optionText}>Déconnexion</Text>
-            </TouchableOpacity>
+                      {/* Options de paramètres */}
+                      <TouchableOpacity style={styles.optionButton}>
+                        <Text style={styles.optionText}>Modifier ma photo de profil</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity>
+                        <Text style={styles.optionText}>Modifier mon username</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.optionButton}>
+                        <Text style={styles.optionText}>Modifier mon email</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.optionButton}>
+                        <Text style={styles.optionText}>Modifier mon mot de passe</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.optionButton}>
+                        <Text style={styles.optionText}>Déconnexion</Text>
+                      </TouchableOpacity>
 
-            {/* Bouton Fermer */}
-            <TouchableOpacity onPress={toggleParameter} style={styles.closeButton}>
-              <FontAwesome name="cross" size={30} color="#a2845e" />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+                      {/* Bouton Fermer */}
+                      <TouchableOpacity onPress={toggleParameter} style={styles.closeButton}>
+                        <FontAwesome name="close" size={30} color="#a2845e" />
+                      </TouchableOpacity>
+                  </View>
+                </View>
+              </Modal>
 
               {/* Photo de profil et Message de bienvenue */}
               <View style={styles.identityUser}>
@@ -104,8 +106,7 @@ export default function DashboardScreen() {
               </View>
                 <Text style={styles.calendrier}>Calendrier</Text>
             </View>
-            </SafeAreaView>
-        </SafeAreaProvider>
+          </SafeAreaView>
     )
 };
 
