@@ -12,12 +12,30 @@ import {
   View,
   Modal,
   SafeAreaProvider,
-  Image
+  Image,
+  GreySeparator,
+  FlatList,
+  Dimensions,
 } from 'react-native';
 
 
-
 export default function DashboardScreen() {
+
+  const data = [
+    { id: '1', image: require('../assets/avatar.png') },
+    { id: '2', image: require('../assets/avatar.png') },
+    { id: '3', image: require('../assets/avatar.png') },
+  ];
+  
+  const Carousel = () => {
+    const [currentIndex, setCurrentIndex] = useState(0);
+  
+    const onScroll = (event) => {
+      const contentOffsetX = event.nativeEvent.contentOffset.x;
+      const index = Math.round(contentOffsetX / Dimensions.get('window').width);
+      setCurrentIndex(index);
+    };
+  }
   // const dispatch = useDispatch()
   const user = useSelector((state) => state.user.value);
 
@@ -34,7 +52,10 @@ export default function DashboardScreen() {
 
           {/* Logo et Nom de l'app */}
           <View style={styles.identityApp}>
-            <Text style={styles.logo}>Logo</Text>
+          <Image
+            source={require('../assets/LogoBc.png')}
+            style={styles.logo}
+          />
             <Text style={styles.title}>BookConnect</Text>
 
             {/* Icône Paramètre */}
@@ -90,19 +111,50 @@ export default function DashboardScreen() {
         </View>
 
         {/* Section carrousel mes lectures en cours */}
-        <View style={styles.reading}>
-          <View style={styles.titleReading}>
+        <View style={styles.sectionContainer}>
+          <View style={styles.section}>
             <Text style={styles.textSection}>Mes lectures en cours</Text>
-            <FontAwesome name="arrow-right" size={50} color="#a2845e" />
+            <FontAwesome name="arrow-right" size={20} color="#a2845e" />
           </View>
-          <Text style={styles.carrousel}>Carrousel</Text>
-        </View>
+
+			
+    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+				<View>
+        <Text style={styles.carrousel}>Book1</Text>
+        <Image
+            source={require('../assets/avatar.png')}
+            style={styles.avatar}
+          />
+				</View>
+        <View>
+        <Text style={styles.carrousel}>Book2</Text>
+        <Image
+            source={require('../assets/avatar.png')}
+            style={styles.avatar}
+          />
+				</View>
+        <View>
+        <Text style={styles.carrousel}>Book3</Text>
+        <Image
+            source={require('../assets/avatar.png')}
+            style={styles.avatar}
+          />
+				</View>
+        <View>
+        <Text style={styles.carrousel}>Book4</Text>
+        <Image
+            source={require('../assets/avatar.png')}
+            style={styles.avatar}
+          />
+				</View>
+			</ScrollView>
+      </View>
 
         {/* Section carrousel mes évenements plannifiés*/}
-        <View style={styles.event}>
-          <View style={styles.titleEvent}>
+        <View style={styles.sectionContainer}>
+          <View style={styles.section}>
             <Text style={styles.textSection}>Mes évènements</Text>
-            <FontAwesome name="arrow-right" size={50} color="black" />
+            <FontAwesome name="arrow-right" size={20} color="black" />
           </View>
           <Text style={styles.calendrier}>Calendrier</Text>
         </View>
@@ -120,98 +172,76 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-/*
-  header: {
 
+  header: {
+    position: 'absolute', // Colle le header en haut
+    top: 40, // Définit le haut
+    width: '100%', // Prend toute la largeur
+    flexDirection: "row", // En ligne
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20, // Espacement horizontal
+    paddingVertical: 10, // Espacement vertical
+    zIndex: 1, // Place au-dessus du contenu
   },
 
   identityApp: {
-
+    flexDirection: "row",
+    alignItems: 'center',
   },
 
   logo: {
-
+    height: 90,
+    width: 90,
   },
 
   title: {
-    fontSize: 24,
+    fontSize: 18,
+    fontWeight: '600',
+    color: 'black',
   },
 
   ParameterButton: {
-    padding: 10,
+    padding: 10, // Zone cliquable plus grande
   },
 
   identityUser: {
-
+    marginTop: 10, // Décale le contenu pour éviter le header
+    alignItems: "center",
+    marginVertical: 20,
   },
 
   avatar: {
-
+    width: 150,
+    height: 150,
+    borderRadius: 50,
+    marginBottom: 10,
+    backgroundColor: '#f2f2f2',
   },
 
   welcome: {
-
+    fontSize: 24,
+    color: '#333',
   },
 
-  reading: {
-
+  sectionContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    marginBottom: 20,
   },
 
-  titleReading: {
-
+  section: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
   },
 
   textSection: {
-
-  },
-
-  event: {
-
-  },
-
-  titleEvent: {
-
-  },
-*/
-  ParameterOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  ParameterContent: {
-    width: '80%',
-    padding: 20,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    alignItems: 'center',
-    elevation: 10,
-  },
-  ParameterTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  optionButton: {
-    padding: 10,
-    marginVertical: 5,
-    width: '100%',
-    backgroundColor: '#f2f2f2',
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  optionText: {
     fontSize: 16,
-    color: 'black',
+    color: '#555',
+    marginRight: 10,
   },
-  closeButton: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: '#007bff',
-    borderRadius: 5,
-  },
-  closeButtonText: {
-    color: 'black',
-    fontSize: 16,
-  },
+
 });
