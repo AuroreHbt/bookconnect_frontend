@@ -32,13 +32,13 @@ function TabNavigator() {
       tabBarIcon: ({ color, size }) => {
         let iconName = '';
 
-        if (route.name === 'Evènement') {
+        if (route.name === 'Evenement') {
           iconName = 'location-arrow';
         } else if (route.name === 'Histoire') {
           iconName = 'map-pin';
         } else if (route.name === 'Favoris') {
           iconName = 'map-pin'
-        } else if (route.name === 'Home') {
+        } else if (route.name === 'Dashboard') {
           iconName = 'map-pin'
         }
 
@@ -48,8 +48,8 @@ function TabNavigator() {
       tabBarInactiveTintColor: '#335561',
       headerShown: false,
     })}>
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Evènement" component={EventsScreen} />
+      <Tab.Screen name="Dashboard" component={DashboardScreen} />
+      <Tab.Screen name="Evenement" component={EventsScreen} />
       <Tab.Screen name="Histoire" component={StoriesScreen} />
       <Tab.Screen name="Favoris" component={FavoritesScreen} />
     </Tab.Navigator>
@@ -62,7 +62,7 @@ export default function App() {
     <Provider store ={store}>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Dashboard" component={DashboardScreen} />
+          <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
           <Stack.Screen name="SignIn" component={SignInScreen} />
           <Stack.Screen name="TabNavigator" component={TabNavigator} />

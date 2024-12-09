@@ -26,7 +26,7 @@ export default function SignUpScreen({navigation}) {
         dispatch(login(username))
         
    
-        navigation.navigate('TabNavigator', {screen: "Home"} )
+        navigation.navigate('TabNavigator', {screen: "Dashboard"} )
     }
 
 return (
@@ -34,8 +34,8 @@ return (
       <Image style={styles.logo} source={require('../assets/LogoBc.png')} />
       <Text style={styles.title}>BookConnect</Text>
 
-      <TextInput placeholder="Nom d'utilisateur" onChangeText={(value) => setUsername(value)} value={username} style={styles.input} />
-      <TextInput placeholder="E-mail" onChangeText={(value) => setEmail(value)} value={email} style={styles.input} />
+      <TextInput placeholder="Nom d'utilisateur"  onChangeText={(value) => setUsername(value)} value={username} style={styles.input} />
+      <TextInput placeholder="E-mail" autoCapitalize="none" keyboardType="email-address" autoComplete="email" textContentType="emailAddress" onChangeText={(value) => setEmail(value)} value={email} style={styles.input} />
       <TextInput placeholder="Mot de passe" onChangeText={(value) => setPassword(value)} value={password} style={styles.input} />
       <TouchableOpacity onPress={() => handleSubmitSignUp()} style={styles.button} activeOpacity={0.8}>
         <Text style={styles.textButton}>S'inscrire</Text>
