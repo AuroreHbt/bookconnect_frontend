@@ -29,14 +29,56 @@ export default function DashboardScreen() {
         <SafeAreaProvider>
             <SafeAreaView style={styles.container} >
             <View style={styles.header}>
+
+                {/* Logo et Nom de l'app */}
               <View style={styles.identityApp}>
                 <Text style={styles.logo}>Logo</Text>
                 <Text style={styles.title}>BookConnect</Text>
+
+                {/* Icône Paramètre */}
               </View>
-                <TouchableOpacity onPress={toggleModal} style={styles.iconButton}>
+                <TouchableOpacity onPress={toggleModal} style={styles.ParameterButton}>
                 <FontAwesome name="gear" size={50} color="#a2845e" />
                 </TouchableOpacity>
             </View>
+
+            {/* Modal */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={isParameterVisible}
+                onRequestClose={toggleParameter}
+      >
+                 <View style={styles.ParameterOverlay}>
+                    <View style={styles.ParameterContent}>
+                    <Text style={styles.ParameterTitle}>Paramètres</Text>
+
+            {/* Options de paramètres */}
+            <TouchableOpacity style={styles.optionButton}>
+            <TouchableOpacity style={styles.optionButton}>
+              <Text style={styles.optionText}>Modifier ma photo de profil</Text>
+            </TouchableOpacity>
+              <Text style={styles.optionText}>Modifier mon username</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.optionButton}>
+              <Text style={styles.optionText}>Modifier mon email</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.optionButton}>
+              <Text style={styles.optionText}>Modifier mon mot de passe</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.optionButton}>
+              <Text style={styles.optionText}>Déconnexion</Text>
+            </TouchableOpacity>
+
+            {/* Bouton Fermer */}
+            <TouchableOpacity onPress={toggleParameter} style={styles.closeButton}>
+              <FontAwesome name="cross" size={30} color="#a2845e" />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+              {/* Photo de profil et Message de bienvenue */}
               <View style={styles.identityUser}>
                 <Image 
                 source={require('../assets/avatar.png')} 
@@ -44,6 +86,8 @@ export default function DashboardScreen() {
                 />
               <Text style={styles.welcome}>Hello {user.username}</Text>
             </View>
+
+            {/* Section carrousel mes lectures en cours */}
             <View style={styles.reading}>
               <View style={styles.titleReading}>
                 <Text style={styles.textSection}>Mes lectures en cours</Text>
@@ -51,6 +95,8 @@ export default function DashboardScreen() {
               </View>
                 <Text style={styles.carrousel}>Carrousel</Text>
             </View>
+
+            {/* Section carrousel mes évenements plannifiés*/}
             <View style={styles.event}>
               <View style={styles.titleEvent}>
                 <Text style={styles.textSection}>Mes évènements</Text>
@@ -89,6 +135,10 @@ const styles = StyleSheet.create({
         fontSize: 24,
     },
 
+    ParameterButton: {
+        padding: 10,
+      },
+
     identityUser: {
 
     },
@@ -105,5 +155,61 @@ const styles = StyleSheet.create({
 
     },
 
+    titleReading: {
 
+    },
+
+    textSection: {
+
+    },
+
+    event: {
+
+    },
+
+    titleEvent: {
+
+    },
+
+    ParameterOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      ParameterContent: {
+        width: '80%',
+        padding: 20,
+        backgroundColor: 'white',
+        borderRadius: 10,
+        alignItems: 'center',
+        elevation: 10,
+      },
+      ParameterTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 20,
+      },
+      optionButton: {
+        padding: 10,
+        marginVertical: 5,
+        width: '100%',
+        backgroundColor: '#f2f2f2',
+        borderRadius: 5,
+        alignItems: 'center',
+      },
+      optionText: {
+        fontSize: 16,
+        color: 'black',
+      },
+      closeButton: {
+        marginTop: 20,
+        padding: 10,
+        backgroundColor: '#007bff',
+        borderRadius: 5,
+      },
+      closeButtonText: {
+        color: 'black',
+        fontSize: 16,
+      },
 });
