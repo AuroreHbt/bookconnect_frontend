@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {
-<<<<<<< HEAD
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -17,19 +16,6 @@ import {
   FlatList,
   Dimensions,
 } from 'react-native';
-=======
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-    Modal, 
-    Image,
-  } from 'react-native';
-                                                                                                   
->>>>>>> marie
 
 
 export default function DashboardScreen() {
@@ -58,7 +44,6 @@ export default function DashboardScreen() {
     setIsParameterVisible(!isParameterVisible);
   };
 
-<<<<<<< HEAD
   return (
     
       <SafeAreaView style={styles.container} >
@@ -78,62 +63,6 @@ export default function DashboardScreen() {
             <FontAwesome name="gear" size={50} color="#a2845e" />
           </TouchableOpacity>
         </View>
-=======
-    return (
-          <SafeAreaView style={styles.container} >
-            <View style={styles.header}>
-
-                {/* Logo et Nom de l'app */}
-              <View style={styles.identityApp}>
-                <Image 
-                source={require('../assets/LogoBc.png')} 
-                style={styles.logo} 
-                />
-                <Text style={styles.title}>BookConnect</Text>
-
-                {/* Icône Paramètre */}
-              </View>
-                <TouchableOpacity onPress={toggleParameter} style={styles.ParameterButton}>
-                <FontAwesome name="gear" size={50} color="#a2845e" />
-                </TouchableOpacity>
-            </View>
-
-            {/* Modal */}
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={isParameterVisible}
-              onRequestClose={toggleParameter}
-      >
-                <View style={styles.ParameterOverlay}>
-                  <View style={styles.ParameterContent}>
-                  <Text style={styles.ParameterTitle}>Paramètres</Text>
-
-                      {/* Options de paramètres */}
-                      <TouchableOpacity style={styles.optionButton}>
-                        <Text style={styles.optionText}>Modifier ma photo de profil</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity>
-                        <Text style={styles.optionText}>Modifier mon username</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity style={styles.optionButton}>
-                        <Text style={styles.optionText}>Modifier mon email</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity style={styles.optionButton}>
-                        <Text style={styles.optionText}>Modifier mon mot de passe</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity style={styles.optionButton}>
-                        <Text style={styles.optionText}>Déconnexion</Text>
-                      </TouchableOpacity>
-
-                      {/* Bouton Fermer */}
-                      <TouchableOpacity onPress={toggleParameter} style={styles.closeButton}>
-                        <FontAwesome name="close" size={30} color="#a2845e" />
-                      </TouchableOpacity>
-                  </View>
-                </View>
-              </Modal>
->>>>>>> marie
 
         {/* Modal */}
         <Modal
@@ -168,7 +97,6 @@ export default function DashboardScreen() {
                 <FontAwesome name="close" size={30} color="#a2845e" />
               </TouchableOpacity>
             </View>
-<<<<<<< HEAD
           </View>
         </Modal>
 
@@ -232,10 +160,6 @@ export default function DashboardScreen() {
       </SafeAreaView>
     
   )
-=======
-          </SafeAreaView>
-    )
->>>>>>> marie
 };
 
 

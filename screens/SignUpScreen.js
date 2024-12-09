@@ -12,7 +12,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { login } from '../reducers/user'
 
-  
+
 
 export default function SignUpScreen({navigation}) {
 
@@ -22,13 +22,38 @@ export default function SignUpScreen({navigation}) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSubmitSignUp = () => {
-        dispatch(login(username))
-        
    
-        navigation.navigate('TabNavigator', {screen: "Dashboard"} )
-    }
+    const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS
 
+    const handleSubmitSignUp = () => {
+      console.log(BACKEND_ADDRESS);
+      
+        fetch(`${BACKEND_ADDRESS}/users/signup`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, username, password }),
+        })
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            console.log('Données retournées par le backend:', data);
+      
+            if (data.result) {
+              dispatch(
+                login({
+                  token: data.token,
+                  username: data.username,
+                  email: data.email,
+                })
+              );
+              console.log('Inscription réussie');
+              navigation.navigate('Home', { screen: 'Dashboard' });
+            } else {
+              console.log('Erreur lors de l"inscription:', data.error);
+            }
+          });
+      };
 return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <Image style={styles.logo} source={require('../assets/LogoBc.png')} />
