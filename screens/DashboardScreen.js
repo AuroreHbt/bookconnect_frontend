@@ -25,16 +25,17 @@ export default function DashboardScreen() {
     { id: '2', image: require('../assets/avatar.png') },
     { id: '3', image: require('../assets/avatar.png') },
   ];
-  
+
   const Carousel = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
-  
+
     const onScroll = (event) => {
       const contentOffsetX = event.nativeEvent.contentOffset.x;
       const index = Math.round(contentOffsetX / Dimensions.get('window').width);
       setCurrentIndex(index);
     };
-  }
+  };
+
   // const dispatch = useDispatch()
   const user = useSelector((state) => state.user.value);
 
@@ -45,126 +46,124 @@ export default function DashboardScreen() {
   };
 
   return (
-    
-      <SafeAreaView style={styles.container} >
-        <View style={styles.header}>
 
-          {/* Logo et Nom de l'app */}
-          <View style={styles.identityApp}>
+    <SafeAreaView style={styles.container} >
+      <View style={styles.header}>
+
+        {/* Logo et Nom de l'app */}
+        <View style={styles.identityApp}>
           <Image
             source={require('../assets/LogoBc.png')}
             style={styles.logo}
           />
-            <Text style={styles.title}>BookConnect</Text>
+          <Text style={styles.title}>BookConnect</Text>
 
-            {/* Icône Paramètre */}
-          </View>
-          <TouchableOpacity onPress={toggleParameter} style={styles.ParameterButton}>
-            <FontAwesome name="gear" size={50} color="#a2845e" />
-          </TouchableOpacity>
+          {/* Icône Paramètre */}
         </View>
-
-        {/* Modal */}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={isParameterVisible}
-          onRequestClose={toggleParameter}
-        >
-          <View style={styles.ParameterOverlay}>
-            <View style={styles.ParameterContent}>
-              <Text style={styles.ParameterTitle}>Paramètres</Text>
-
-              {/* Options de paramètres */}
-              <TouchableOpacity style={styles.optionButton}>
-                <Text style={styles.optionText}>Modifier ma photo de profil</Text>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Text style={styles.optionText}>Modifier mon username</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.optionButton}>
-                <Text style={styles.optionText}>Modifier mon email</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.optionButton}>
-                <Text style={styles.optionText}>Modifier mon mot de passe</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.optionButton}>
-                <Text style={styles.optionText}>Déconnexion</Text>
-              </TouchableOpacity>
-
-              {/* Bouton Fermer */}
-              <TouchableOpacity onPress={toggleParameter} style={styles.closeButton}>
-                <FontAwesome name="close" size={30} color="#a2845e" />
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-
-        {/* Photo de profil et Message de bienvenue */}
-        <View style={styles.identityUser}>
-          <Image
-            source={require('../assets/avatar.png')}
-            style={styles.avatar}
-          />
-          <Text style={styles.welcome}>Hello {user?.username || 'Utilisateur'}</Text>
-        </View>
-
-        {/* Section carrousel mes lectures en cours */}
-        <View style={styles.sectionContainer}>
-          <View style={styles.section}>
-            <Text style={styles.textSection}>Mes lectures en cours</Text>
-            <FontAwesome name="arrow-right" size={20} color="#a2845e" />
-          </View>
-
-			
-    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-				<View>
-        <Text style={styles.carrousel}>Book1</Text>
-        <Image
-            source={require('../assets/avatar.png')}
-            style={styles.avatar}
-          />
-				</View>
-        <View>
-        <Text style={styles.carrousel}>Book2</Text>
-        <Image
-            source={require('../assets/avatar.png')}
-            style={styles.avatar}
-          />
-				</View>
-        <View>
-        <Text style={styles.carrousel}>Book3</Text>
-        <Image
-            source={require('../assets/avatar.png')}
-            style={styles.avatar}
-          />
-				</View>
-        <View>
-        <Text style={styles.carrousel}>Book4</Text>
-        <Image
-            source={require('../assets/avatar.png')}
-            style={styles.avatar}
-          />
-				</View>
-			</ScrollView>
+        <TouchableOpacity onPress={toggleParameter} style={styles.ParameterButton}>
+          <FontAwesome name="gear" size={50} color="#a2845e" />
+        </TouchableOpacity>
       </View>
 
-        {/* Section carrousel mes évenements plannifiés*/}
-        <View style={styles.sectionContainer}>
-          <View style={styles.section}>
-            <Text style={styles.textSection}>Mes évènements</Text>
-            <FontAwesome name="arrow-right" size={20} color="black" />
+      {/* Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isParameterVisible}
+        onRequestClose={toggleParameter}
+      >
+        <View style={styles.ParameterOverlay}>
+          <View style={styles.ParameterContent}>
+            <Text style={styles.ParameterTitle}>Paramètres</Text>
+
+            {/* Options de paramètres */}
+            <TouchableOpacity style={styles.optionButton}>
+              <Text style={styles.optionText}>Modifier ma photo de profil</Text>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Text style={styles.optionText}>Modifier mon username</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.optionButton}>
+              <Text style={styles.optionText}>Modifier mon email</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.optionButton}>
+              <Text style={styles.optionText}>Modifier mon mot de passe</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.optionButton}>
+              <Text style={styles.optionText}>Déconnexion</Text>
+            </TouchableOpacity>
+
+            {/* Bouton Fermer */}
+            <TouchableOpacity onPress={toggleParameter} style={styles.closeButton}>
+              <FontAwesome name="close" size={30} color="#a2845e" />
+            </TouchableOpacity>
           </View>
-          <Text style={styles.calendrier}>Calendrier</Text>
         </View>
-      </SafeAreaView>
-    
-  )
+      </Modal>
+
+      {/* Photo de profil et Message de bienvenue */}
+      <View style={styles.identityUser}>
+        <Image
+          source={require('../assets/avatar.png')}
+          style={styles.avatar}
+        />
+        <Text style={styles.welcome}>Hello {user?.username || 'Utilisateur'}</Text>
+      </View>
+
+      {/* Section carrousel mes lectures en cours */}
+      <View style={styles.sectionContainer}>
+        <View style={styles.section}>
+          <Text style={styles.textSection}>Mes lectures en cours</Text>
+          <FontAwesome name="arrow-right" size={20} color="#a2845e" />
+        </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <View>
+            <Text style={styles.carrousel}>Book1</Text>
+            <Image
+              source={require('../assets/avatar.png')}
+              style={styles.avatar}
+            />
+          </View>
+          <View>
+            <Text style={styles.carrousel}>Book2</Text>
+            <Image
+              source={require('../assets/avatar.png')}
+              style={styles.avatar}
+            />
+          </View>
+          <View>
+            <Text style={styles.carrousel}>Book3</Text>
+            <Image
+              source={require('../assets/avatar.png')}
+              style={styles.avatar}
+            />
+          </View>
+          <View>
+            <Text style={styles.carrousel}>Book4</Text>
+            <Image
+              source={require('../assets/avatar.png')}
+              style={styles.avatar}
+            />
+          </View>
+        </ScrollView>
+      </View>
+
+      {/* Section carrousel mes évenements plannifiés*/}
+      <View style={styles.sectionContainer}>
+        <View style={styles.section}>
+          <Text style={styles.textSection}>Mes évènements</Text>
+          <FontAwesome name="arrow-right" size={20} color="black" />
+        </View>
+        <Text style={styles.calendrier}>Calendrier</Text>
+      </View>
+    </SafeAreaView>
+  );
 };
 
 
 // attention : le StyleSheet doit bien être en dehors de la fonction!
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
     backgroundColor: 'white',
