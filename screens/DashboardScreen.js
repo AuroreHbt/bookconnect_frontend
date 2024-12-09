@@ -10,7 +10,8 @@ import {
     TextInput,
     TouchableOpacity,
     View,
-    Modal
+    Modal,
+    SafeAreaProvider
   } from 'react-native';
 
 

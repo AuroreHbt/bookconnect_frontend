@@ -9,6 +9,7 @@ import StoriesScreen from './screens/StoriesScreen';
 import FavoritesScreen from './screens/FavoritesScreen'
 import SignUpScreen from './screens/SignUpScreen'
 import SignInScreen from './screens/SignInScreen'
+import DashboardScreen from './screens/DashboardScreen'
 
 import user from './reducers/user'
 import { Provider } from 'react-redux';
@@ -22,6 +23,8 @@ const store = configureStore({
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+
+
 
 function TabNavigator() {
   return (
@@ -59,7 +62,7 @@ export default function App() {
     <Provider store ={store}>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Dashboard" component={DashboardScreen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
           <Stack.Screen name="SignIn" component={SignInScreen} />
           <Stack.Screen name="TabNavigator" component={TabNavigator} />

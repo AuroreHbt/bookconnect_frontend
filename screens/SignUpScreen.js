@@ -25,8 +25,8 @@ export default function SignUpScreen({navigation}) {
     const handleSubmitSignUp = () => {
         dispatch(login(username))
         
-    navigation.navigate('TabNavigator');
-        navigation.navigate('TabNavigator', { screen: 'Home' })
+   
+        navigation.navigate('TabNavigator', {screen: "Home"} )
     }
 
 return (
