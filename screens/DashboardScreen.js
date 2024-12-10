@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {
-  SafeAreaView,                                                                                                                                                                                                                                                              feAreaView,
+  SafeAreaView, feAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -66,24 +66,24 @@ export default function DashboardScreen() {
 
       {/* Modal */}
       <Modal
-  animationType="fade"
-  transparent={true}
-  visible={isParameterVisible}
-  onRequestClose={toggleParameter}
->
-  <View style={styles.ParameterContent}>
+        animationType="fade"
+        transparent={true}
+        visible={isParameterVisible}
+        onRequestClose={toggleParameter}
+      >
+        <View style={styles.ParameterContent}>
 
-    {/* Options de paramètres */}
-    <TouchableOpacity style={styles.optionButton}>
-      <Text style={styles.optionText}>Déconnexion</Text>
-    </TouchableOpacity>
+          {/* Options de paramètres */}
+          <TouchableOpacity style={styles.optionButton}>
+            <Text style={styles.optionText}>Déconnexion</Text>
+          </TouchableOpacity>
 
-    {/* Bouton Fermer */}
-    <TouchableOpacity onPress={toggleParameter} style={styles.closeButton}>
-      <FontAwesome name="close" size={30} color="white" />
-    </TouchableOpacity>
-  </View>
-</Modal>
+          {/* Bouton Fermer */}
+          <TouchableOpacity onPress={toggleParameter} style={styles.closeButton}>
+            <FontAwesome name="close" size={30} color="white" />
+          </TouchableOpacity>
+        </View>
+      </Modal>
 
       {/* Photo de profil et Message de bienvenue */}
       <View style={styles.identityUser}>
