@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {
-  SafeAreaView,
+  SafeAreaView,                                                                                                                                                                                                                                                              feAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -56,50 +56,34 @@ export default function DashboardScreen() {
             source={require('../assets/LogoBc.png')}
             style={styles.logo}
           />
-          <Text style={styles.title}>BookConnect</Text>
 
           {/* Icône Paramètre */}
         </View>
         <TouchableOpacity onPress={toggleParameter} style={styles.ParameterButton}>
-          <FontAwesome name="gear" size={50} color="#a2845e" />
+          <FontAwesome name="gear" size={40} color="#a2845e" />
         </TouchableOpacity>
       </View>
 
       {/* Modal */}
       <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isParameterVisible}
-        onRequestClose={toggleParameter}
-      >
-        <View style={styles.ParameterOverlay}>
-          <View style={styles.ParameterContent}>
-            <Text style={styles.ParameterTitle}>Paramètres</Text>
+  animationType="fade"
+  transparent={true}
+  visible={isParameterVisible}
+  onRequestClose={toggleParameter}
+>
+  <View style={styles.ParameterContent}>
 
-            {/* Options de paramètres */}
-            <TouchableOpacity style={styles.optionButton}>
-              <Text style={styles.optionText}>Modifier ma photo de profil</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text style={styles.optionText}>Modifier mon username</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.optionButton}>
-              <Text style={styles.optionText}>Modifier mon email</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.optionButton}>
-              <Text style={styles.optionText}>Modifier mon mot de passe</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.optionButton}>
-              <Text style={styles.optionText}>Déconnexion</Text>
-            </TouchableOpacity>
+    {/* Options de paramètres */}
+    <TouchableOpacity style={styles.optionButton}>
+      <Text style={styles.optionText}>Déconnexion</Text>
+    </TouchableOpacity>
 
-            {/* Bouton Fermer */}
-            <TouchableOpacity onPress={toggleParameter} style={styles.closeButton}>
-              <FontAwesome name="close" size={30} color="#a2845e" />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+    {/* Bouton Fermer */}
+    <TouchableOpacity onPress={toggleParameter} style={styles.closeButton}>
+      <FontAwesome name="close" size={30} color="white" />
+    </TouchableOpacity>
+  </View>
+</Modal>
 
       {/* Photo de profil et Message de bienvenue */}
       <View style={styles.identityUser}>
@@ -240,6 +224,38 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#555',
     marginRight: 10,
+  },
+  ParameterContent: {
+    position: 'absolute',
+    top: 60, // Ajuste pour correspondre à la position de ton icône
+    right: 20, // Ajuste selon l'alignement de l'icône
+    backgroundColor: '#a2845e',
+    borderRadius: 10,
+    padding: 10,
+    width: 150, // Ajuste la largeur du menu
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5, // Pour ombre sur Android
+    zIndex: 100, // Assure-toi qu'elle est au premier plan
+  },
+  ParameterTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  optionButton: {
+    paddingVertical: 10,
+  },
+  optionText: {
+    fontSize: 16,
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  closeButton: {
+    alignSelf: 'flex-end',
+    marginTop: 10,
   },
 
 });
