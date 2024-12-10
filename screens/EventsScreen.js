@@ -1,7 +1,12 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, KeyboardAvoidingView, Platform, Text, View } from 'react-native';
 
 export default function EventsScreen() {
 
+    return (
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+            <Text>Events Screen</Text>
+        </KeyboardAvoidingView>
+    );
 };
 
 
@@ -10,9 +15,8 @@ const styles = StyleSheet.create({
 
     container: {
         flex: 1,
-        backgroundColor: '#ffffff',
+        backgroundColor: 'powderblue',
         alignItems: 'center',
         justifyContent: 'center',
     },
-
 });

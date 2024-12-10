@@ -1,3 +1,6 @@
+import { StyleSheet, View } from 'react-native';
+// import { BlurView } from 'expo-blur'; revoir ce module
+
 // Imports pour la nested navigation (stack + tab)
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -33,6 +36,7 @@ const Tab = createBottomTabNavigator();
 function TabNavigator() {
   return (
     <Tab.Navigator screenOptions={({ route }) => ({
+
       tabBarIcon: ({ color, size }) => {
         let iconName = '';
 
@@ -48,10 +52,20 @@ function TabNavigator() {
 
         return <FontAwesome name={iconName} size={size} color={color} />;
       },
-      tabBarActiveTintColor: '#ec6e5b',
-      tabBarInactiveTintColor: '#335561',
+
       headerShown: false,
-    })}>
+      tabBarActiveTintColor: '#CE5705',
+      tabBarInactiveTintColor: '#6C4300',
+      tabBarStyle: { position: 'absolute' },
+
+      // à retravailler => cf Doc : creuser BlurView
+      tabBarBackground: () => (
+        <View tint="yellow" intensity={100} style={StyleSheet.absoluteFill} />
+      ),
+
+    })}
+
+    >
       <Tab.Screen name="Dashboard" component={DashboardScreen} />
       <Tab.Screen name="Evenement" component={EventsScreen} />
       <Tab.Screen name="Histoire" component={StoriesScreen} />
@@ -74,3 +88,13 @@ export default function App() {
     </Provider>
   );
 };
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'yellow',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

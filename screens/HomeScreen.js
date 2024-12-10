@@ -1,7 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, TextInput, StyleSheet, KeyboardAvoidingView, Platform, Image } from 'react-native'
-
-import { useDispatch } from 'react-redux';
+import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Image } from 'react-native'
 
 
 export default function HomeScreen({ navigation }) {
@@ -16,10 +14,18 @@ export default function HomeScreen({ navigation }) {
 
     return (
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+
             <Image source={require('../assets/LogoBc.png')} style={styles.logo} />
-            <Text style={styles.title}>BookConnect</Text>
-            <Text style={styles.text}>Share, discover, write</Text>
-            <View style={styles.inputContainer}>
+
+            <View>
+                <Text style={styles.title}>BookConnect</Text>
+            </View>
+
+            <View>
+                <Text style={styles.text}>Share, discover, write</Text>
+            </View>
+
+            <View style={styles.buttonContainer}>
                 <TouchableOpacity onPress={handleSubmitSignUp} style={styles.button}>
                     <Text style={styles.textButton}>S'inscrire</Text>
                 </TouchableOpacity>
@@ -43,28 +49,40 @@ const styles = StyleSheet.create({
     },
 
     logo: {
+        flex: 0.25,
         width: '100%',
         height: '50%',
     },
 
-    // title: {
+    title: {
+        fontSize: 42,
+        fontWeight: 'bold',
+        fontFamily: 'sans-serif',
+        marginBottom: 10,
+    },
 
-    // },
+    text: {
+        fontSize: 22,
+        fontFamily: 'sans-serif',
+        marginBottom: 25,
+    },
 
-    // text: {
+    buttonContainer: {
+        marginBottom: 50,
+    },
 
-    // },
+    button: {
+        backgroundColor: '#CE5705',
+        borderRadius: 10,
+        paddingVertical: 15,
+        paddingHorizontal: 35,
+        margin: 15,
+    },
 
-    // inputContainer: {
-
-    // },
-
-    // button: {
-
-    // },
-
-    // textButton: {
-
-    // },
-
+    textButton: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        fontSize: 18,
+    },
 });
