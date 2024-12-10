@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 import {
   SafeAreaView,
   ScrollView,
@@ -15,99 +15,63 @@ import {
   GreySeparator,
   FlatList,
   Dimensions,
-} from 'react-native';
-
+} from "react-native";
+import Popover from "react-native-popover-view";
+import Tooltip from 'rn-tooltip';
 
 export default function DashboardScreen() {
-
-  const data = [
-    { id: '1', image: require('../assets/avatar.png') },
-    { id: '2', image: require('../assets/avatar.png') },
-    { id: '3', image: require('../assets/avatar.png') },
-  ];
-
-  const Carousel = () => {
-    const [currentIndex, setCurrentIndex] = useState(0);
-
-    const onScroll = (event) => {
-      const contentOffsetX = event.nativeEvent.contentOffset.x;
-      const index = Math.round(contentOffsetX / Dimensions.get('window').width);
-      setCurrentIndex(index);
-    };
-  };
+ //faire une const databook avec un .map pour rapeller les livres en lecture 
 
   // const dispatch = useDispatch()
   const user = useSelector((state) => state.user.value);
 
   const [isParameterVisible, setIsParameterVisible] = useState(false);
 
-  const toggleParameter = () => {
-    setIsParameterVisible(!isParameterVisible);
-  };
 
   return (
-
-    <SafeAreaView style={styles.container} >
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-
         {/* Logo et Nom de l'app */}
         <View style={styles.identityApp}>
-          <Image
-            source={require('../assets/LogoBc.png')}
-            style={styles.logo}
-          />
+          <Image source={require("../assets/LogoBc.png")} style={styles.logo} />
           <Text style={styles.title}>BookConnect</Text>
-
-          {/* Icône Paramètre */}
         </View>
-        <TouchableOpacity onPress={toggleParameter} style={styles.ParameterButton}>
-          <FontAwesome name="gear" size={50} color="#a2845e" />
-        </TouchableOpacity>
-      </View>
 
-      {/* Modal */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isParameterVisible}
-        onRequestClose={toggleParameter}
+        {/* Options de paramètres */}
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <TouchableOpacity
+            title="Afficher le Popover"
+            onPress={() => setIsParameterVisible(true)}
+          >
+            <FontAwesome name="gear" size={50} color="#a2845e" />
+          </TouchableOpacity>
+         
+      {/* Tooltip */}
+      <Tooltip
+        isVisible={isParameterVisible}
+        content={
+          <TouchableOpacity onPress={() => setIsParameterVisible(false)}>
+            <Text style={styles.optionText}>Déconnexion</Text>
+          </TouchableOpacity>
+        }
+        placement="bottom" // Placement du tooltip par rapport à l'icône
+        onClose={() => setIsParameterVisible(false)}
+        backgroundStyle={styles.tooltipBackground} // Style pour l'arrière-plan (facultatif)
       >
-        <View style={styles.ParameterOverlay}>
-          <View style={styles.ParameterContent}>
-            <Text style={styles.ParameterTitle}>Paramètres</Text>
+        {/* L'élément cible du tooltip */}
+        <View />
+      </Tooltip>
 
-            {/* Options de paramètres */}
-            <TouchableOpacity style={styles.optionButton}>
-              <Text style={styles.optionText}>Modifier ma photo de profil</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text style={styles.optionText}>Modifier mon username</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.optionButton}>
-              <Text style={styles.optionText}>Modifier mon email</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.optionButton}>
-              <Text style={styles.optionText}>Modifier mon mot de passe</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.optionButton}>
-              <Text style={styles.optionText}>Déconnexion</Text>
-            </TouchableOpacity>
-
-            {/* Bouton Fermer */}
-            <TouchableOpacity onPress={toggleParameter} style={styles.closeButton}>
-              <FontAwesome name="close" size={30} color="#a2845e" />
-            </TouchableOpacity>
-          </View>
+            
         </View>
-      </Modal>
+      </View>
 
       {/* Photo de profil et Message de bienvenue */}
       <View style={styles.identityUser}>
-        <Image
-          source={require('../assets/avatar.png')}
-          style={styles.avatar}
-        />
-        <Text style={styles.welcome}>Hello {user?.username || 'Utilisateur'}</Text>
+        <Image source={require("../assets/avatar.png")} style={styles.avatar} />
+        <Text style={styles.welcome}>Hello {user.username}</Text>
       </View>
 
       {/* Section carrousel mes lectures en cours */}
@@ -120,28 +84,28 @@ export default function DashboardScreen() {
           <View>
             <Text style={styles.carrousel}>Book1</Text>
             <Image
-              source={require('../assets/avatar.png')}
+              source={require("../assets/avatar.png")}
               style={styles.avatar}
             />
           </View>
           <View>
             <Text style={styles.carrousel}>Book2</Text>
             <Image
-              source={require('../assets/avatar.png')}
+              source={require("../assets/avatar.png")}
               style={styles.avatar}
             />
           </View>
           <View>
             <Text style={styles.carrousel}>Book3</Text>
             <Image
-              source={require('../assets/avatar.png')}
+              source={require("../assets/avatar.png")}
               style={styles.avatar}
             />
           </View>
           <View>
             <Text style={styles.carrousel}>Book4</Text>
             <Image
-              source={require('../assets/avatar.png')}
+              source={require("../assets/avatar.png")}
               style={styles.avatar}
             />
           </View>
@@ -158,23 +122,21 @@ export default function DashboardScreen() {
       </View>
     </SafeAreaView>
   );
-};
-
+}
 
 // attention : le StyleSheet doit bien être en dehors de la fonction!
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "white",
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   header: {
-    position: 'absolute', // Colle le header en haut
+    position: "absolute", // Colle le header en haut
     top: 40, // Définit le haut
-    width: '100%', // Prend toute la largeur
+    width: "100%", // Prend toute la largeur
     flexDirection: "row", // En ligne
     justifyContent: "space-between",
     alignItems: "center",
@@ -185,7 +147,7 @@ const styles = StyleSheet.create({
 
   identityApp: {
     flexDirection: "row",
-    alignItems: 'center',
+    alignItems: "center",
   },
 
   logo: {
@@ -195,8 +157,8 @@ const styles = StyleSheet.create({
 
   title: {
     fontSize: 18,
-    fontWeight: '600',
-    color: 'black',
+    fontWeight: "600",
+    color: "black",
   },
 
   ParameterButton: {
@@ -214,18 +176,18 @@ const styles = StyleSheet.create({
     height: 150,
     borderRadius: 50,
     marginBottom: 10,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: "#f2f2f2",
   },
 
   welcome: {
     fontSize: 24,
-    color: '#333',
+    color: "#333",
   },
 
   sectionContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: 'center',
+    alignItems: "center",
     paddingHorizontal: 20,
     marginBottom: 20,
   },
@@ -238,8 +200,20 @@ const styles = StyleSheet.create({
 
   textSection: {
     fontSize: 16,
-    color: '#555',
+    color: "#555",
     marginRight: 10,
   },
 
+  popover : {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: 30,
+    width: 100,
+    backgroundColor: "transparent",
+    color:"white",
+    borderRadius: 4,
+    transitionDuration: 0.5,
+    cursor: "pointer",
+  }
 });
