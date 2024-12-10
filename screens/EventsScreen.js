@@ -1,10 +1,30 @@
 import { StyleSheet, KeyboardAvoidingView, Platform, Text, View } from 'react-native';
 
 export default function EventsScreen() {
+    
+    const handleSubmitSignUp = () => {
+        navigation.navigate('SignUp', { screen: 'MapScreen' })
+    }
+
+    const handleSubmitSignIn = () => {
+        navigation.navigate('SignIn', { screen: 'DashboardScreen' })
+    }
 
     return (
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-            <Text>Events Screen</Text>
+          
+          <View>
+                <Text style={styles.text}>Share, discover, write</Text>
+            </View>
+
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity onPress={handleSubmitSignUp} style={styles.button}>
+                    <Text style={styles.textButton}>S'inscrire</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleSubmitSignIn} style={styles.button}>
+                    <Text style={styles.textButton}>Se connecter</Text>
+                </TouchableOpacity>
+            </View>
         </KeyboardAvoidingView>
     );
 };
@@ -15,8 +35,46 @@ const styles = StyleSheet.create({
 
     container: {
         flex: 1,
-        backgroundColor: 'powderblue',
+        backgroundColor: '#ffffff',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+
+    logo: {
+        flex: 0.5,
+        width: '75%',
+        height: '50%',
+    },
+
+    title: {
+        fontSize: 36,
+        fontWeight: 'bold',
+        fontFamily: 'sans-serif',
+        marginBottom: 10,
+    },
+
+    text: {
+        fontSize: 22,
+        fontFamily: 'sans-serif',
+        marginBottom: 50,
+    },
+
+    buttonContainer: {
+        marginBottom: 25,
+    },
+
+    button: {
+        backgroundColor: '#CE5705',
+        borderRadius: 10,
+        paddingVertical: 15,
+        paddingHorizontal: 35,
+        margin: 15,
+    },
+
+    textButton: {
+        color: 'white',
+        fontSize: 18,
+        fontWeight: 'bold',
+        textAlign: 'center',
     },
 });
