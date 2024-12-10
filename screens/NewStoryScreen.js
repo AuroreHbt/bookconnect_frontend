@@ -20,7 +20,7 @@ const [title, setTitle] = useState('')
 const [cover, setCover] = useState('')
 
 const handlePostStory = () => {
-    navigation.navigate('Histoire', { screen: 'MyPublishedStoriesScreen' })
+    navigation.navigate('StoriesScreen', { screen: 'MyPublishedStoriesScreen' })
   }
 
 
