@@ -49,13 +49,13 @@ const styles = StyleSheet.create({
     },
 
     logo: {
-        flex: 0.25,
-        width: '100%',
+        flex: 0.5,
+        width: '75%',
         height: '50%',
     },
 
     title: {
-        fontSize: 42,
+        fontSize: 36,
         fontWeight: 'bold',
         fontFamily: 'sans-serif',
         marginBottom: 10,
@@ -64,11 +64,11 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 22,
         fontFamily: 'sans-serif',
-        marginBottom: 25,
+        marginBottom: 50,
     },
 
     buttonContainer: {
-        marginBottom: 50,
+        marginBottom: 25,
     },
 
     button: {
@@ -81,8 +81,8 @@ const styles = StyleSheet.create({
 
     textButton: {
         color: 'white',
+        fontSize: 18,
         fontWeight: 'bold',
         textAlign: 'center',
-        fontSize: 18,
     },
 });
