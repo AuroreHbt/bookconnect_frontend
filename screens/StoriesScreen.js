@@ -1,6 +1,24 @@
-import { StyleSheet, KeyboardAvoidingView, Platform, Text, View } from 'react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Image } from 'react-native'
 
-export default function StoriesScreen() {
+export default function StoriesScreen({ navigation }) {
+
+    const handleNewStory = () => {
+        navigation.navigate('Histoire', { screen: 'NewStoryScreen' })
+    }
+
+    const handleMyPublishedStories = () => {
+        navigation.navigate('Histoire', { screen: 'MyPublishedStoriesScreen' })
+    }
+
+    const handleMyCurrentReadings = () => {
+        navigation.navigate('Histoire', { screen: 'MyCurrentReadingsScreen' })
+    }
+
+    const handleFindStories = () => {
+        navigation.navigate('Histoire', { screen: 'FindStoriesScreen' })
+    }
+
 
     return (
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
@@ -12,11 +30,11 @@ export default function StoriesScreen() {
 
             <View style={styles.buttonContainer}>
 
-                <TouchableOpacity onPress={handleSubmitSignUp} style={styles.button}>
+                <TouchableOpacity onPress={handleNewStory} style={styles.button}>
                     <Text style={styles.textButton}>Ajouter une nouvelle histoire</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={handleSubmitSignIn} style={styles.button}>
+                <TouchableOpacity onPress={handleMyPublishedStories} style={styles.button}>
                     <Text style={styles.textButton}>Mes histoires postées</Text>
                 </TouchableOpacity>
 
@@ -29,12 +47,12 @@ export default function StoriesScreen() {
 
             <View>
 
-                <TouchableOpacity onPress={handleSubmitSignUp} style={styles.button}>
+                <TouchableOpacity onPress={handleMyCurrentReadings} style={styles.button}>
                     <Text style={styles.textButton}>Mes lectures en cours</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={handleSubmitSignUp} style={styles.button}>
-                    <Text style={styles.textButton}>Trouver un</Text>
+                <TouchableOpacity onPress={handleFindStories} style={styles.button}>
+                    <Text style={styles.textButton}>Trouver une histoire</Text>
                 </TouchableOpacity>
 
             </View>
@@ -48,7 +66,7 @@ const styles = StyleSheet.create({
 
     container: {
         flex: 1,
-        backgroundColor: 'beige',
+        backgroundColor: 'FFFFFF',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -57,19 +75,15 @@ const styles = StyleSheet.create({
         flex: 0.5,
         width: '75%',
         height: '50%',
+        marginBottom: 25,
     },
 
     title: {
-        fontSize: 36,
+        fontSize: 28,
         fontWeight: 'bold',
         fontFamily: 'sans-serif',
         marginBottom: 10,
-    },
-
-    text: {
-        fontSize: 22,
-        fontFamily: 'Poppins',
-        marginBottom: 50,
+        color: '#371B0C',
     },
 
     buttonContainer: {
@@ -80,13 +94,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#D84815',
         borderRadius: 10,
         paddingVertical: 15,
-        paddingHorizontal: 35,
         margin: 15,
+        width: '60%',
     },
 
     textButton: {
         color: 'white',
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: 'bold',
         textAlign: 'center',
     },

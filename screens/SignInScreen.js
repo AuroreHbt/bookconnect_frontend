@@ -75,7 +75,7 @@ export default function SignInScreen({ navigation }) {
     fetch(`${BACKEND_ADDRESS}/users/signin`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, username }),
     })
       .then((response) => {
 
@@ -90,6 +90,7 @@ export default function SignInScreen({ navigation }) {
             data&&login({
               token: data.token,
               email: data.email,
+              username: data.username,
             })
           );
           console.log('Connexion réussie');

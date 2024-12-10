@@ -57,7 +57,6 @@ function TabNavigator() {
       tabBarInactiveTintColor: '#6C4300',
       tabBarStyle: { position: 'absolute' },
 
-      // à retravailler => cf Doc : creuser BlurView
       tabBarBackground: () => (
         <View style={styles.container} />
       ),
