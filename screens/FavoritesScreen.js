@@ -1,7 +1,12 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, KeyboardAvoidingView, Platform, Text, View } from 'react-native';
 
-export default function FavoritesScrren() {
+export default function FavoritesScreen() {
 
+    return (
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+            <Text>Favorites Screen</Text>
+        </KeyboardAvoidingView>
+    );
 };
 
 
@@ -10,7 +15,7 @@ const styles = StyleSheet.create({
 
     container: {
         flex: 1,
-        backgroundColor: '#ffffff',
+        backgroundColor: 'pink',
         alignItems: 'center',
         justifyContent: 'center',
     },
