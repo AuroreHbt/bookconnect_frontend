@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Image,
   KeyboardAvoidingView,
@@ -7,129 +7,227 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-} from 'react-native';
+  View,
+} from "react-native";
 
-import { useDispatch } from 'react-redux';
-import { login } from '../reducers/user'
+import { useDispatch } from "react-redux";
+import { login } from "../reducers/user";
 
 // Regex pour valider les emails et mots de passe
-const EMAIL_REGEX  = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/; // Rentrer au moins une lettre, un chiffre et un caractère spécial et 8 caractères mini.
+const EMAIL_REGEX =
+  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const passwordRegex =
+  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/; // Rentrer au moins une lettre, un chiffre et un caractère spécial et 8 caractères mini.
 
 // Adresse du backend via la variable d'environnement
-const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS
+const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
 
 export default function SignInScreen({ navigation }) {
-  
-
   const dispatch = useDispatch();
 
-  // Etat pour stocker les valeurs des champs de saisie 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  // Etat pour stocker les valeurs des champs de saisie
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const [username, setUsername] = useState('')
+  const [username, setUsername] = useState("");
 
   // Etat pour la gestion des erreurs de validation
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
-// Etat pour afficher ou masquer le mot de passe
+  // Etat pour afficher ou masquer le mot de passe
   const [showPassword, setShowPassword] = useState(false);
 
   const validateFields = () => {
     let isValid = true;
-  
+
     // Validation de l'email
     if (!EMAIL_REGEX.test(email)) {
-      setEmailError('Veuillez entrer un email valide.');
+      setEmailError("Veuillez entrer un email valide.");
       isValid = false;
     } else {
-      setEmailError('');
+      setEmailError("");
     }
-  
+
     // Validation du mot de passe
     if (!passwordRegex.test(password)) {
-      setPasswordError('Le mot de passe doit contenir au moins 8 caractères, une lettre, un chiffre et un caractère spécial.');
+      setPasswordError(
+        "Le mot de passe doit contenir au moins 8 caractères, une lettre, un chiffre et un caractère spécial."
+      );
       isValid = false;
     } else {
-      setPasswordError('');
+      setPasswordError("");
     }
-  
+
     return isValid;
   };
 
   // Fonction pour afficher ou non le mot de passe
   const toggleShowPassword = () => {
-    setShowPassword(!showPassword); 
+    setShowPassword(!showPassword);
+  };
 
+  const handleBack = () => {
+    navigation.navigate('Home', { screen: 'HomeScreen' })
   }
 
+  
   const handleSubmitSignIn = () => {
- // Early return si les champs, email et mot de passes ne sont pas remplies correctement
-    if(!validateFields()) {
-      console.log('Validation échouée');
-      return
+    // Early return si les champs, email et mot de passes ne sont pas remplies correctement
+    if (!validateFields()) {
+      console.log("Validation échouée");
+      return;
     }
-// Fetch de la route post du backend pour la connexion 
+    // Fetch de la route post du backend pour la connexion
     fetch(`${BACKEND_ADDRESS}/users/signin`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password, username }),
     })
       .then((response) => {
-
         return response.json();
       })
       .then((data) => {
-        console.log('Données retournées par le backend:', data);
+        console.log("Données retournées par le backend:", data);
 
         if (data) {
-  // Si connexion réussie, redirige vers le dashboard
+          console.log(data);
+          
+          // Si connexion réussie, redirige vers le dashboard
           dispatch(
-            data&&login({
-              token: data.token,
-              email: data.email,
-            })
+            data &&
+              login({
+                token: data.token,
+                email: data.email,
+                username: data.username
+              })
           );
-          console.log('Connexion réussie');
-          navigation.navigate('TabNavigator', { screen: 'Dashboard' });
+          console.log("Connexion réussie");
+          navigation.navigate("TabNavigator", { screen: "Dashboard" });
         } else {
-          console.log('Erreur lors de la connexion:', data.error);
-        };
+          console.log("Erreur lors de la connexion:", data.error);
+        }
       });
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <Image style={styles.logo} source={require('../assets/LogoBc.png')} />
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <Image style={styles.logo} source={require("../assets/LogoBc.png")} />
+      <View>
       <Text style={styles.title}>BookConnect</Text>
-      
-      <TextInput placeholder="E-mail" autoCapitalize="none" keyboardType="email-address" autoComplete="email" textContentType="emailAddress" onChangeText={(value) => setEmail(value)} value={email} style={styles.input} />
-      {emailError? <Text style={styles.errorText}>{emailError}</Text> : null }
-      <TextInput placeholder="Mot de passe" secureTextEntry={!showPassword} onChangeText={(value) => setPassword(value)} value={password} style={styles.input} />
-      {passwordError? <Text style={styles.errorText}>{passwordError}</Text> : null }
-      <TouchableOpacity onPress={() => handleSubmitSignIn()} style={styles.button} activeOpacity={0.8}>
+      </View>
+      <View style={styles.separator} />
+      <View style={styles.inputContainer}>
+      <TextInput
+        placeholder="E-mail"
+        autoCapitalize="none"
+        keyboardType="email-address"
+        autoComplete="email"
+        textContentType="emailAddress"
+        onChangeText={(value) => setEmail(value)}
+        value={email}
+        style={styles.input}
+      />
+      {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+      <TextInput
+        placeholder="Mot de passe"
+        secureTextEntry={!showPassword}
+        onChangeText={(value) => setPassword(value)}
+        value={password}
+        style={styles.input}
+      />
+      {passwordError ? (
+        <Text style={styles.errorText}>{passwordError}</Text>
+      ) : null}
+      <TouchableOpacity
+        onPress={() => handleSubmitSignIn()}
+        style={styles.button}
+        activeOpacity={0.8}
+      >
         <Text style={styles.textButton}>Se connecter</Text>
       </TouchableOpacity>
+      <View style={styles.returnContainer}>
+          <TouchableOpacity
+          onPress={() => handleBack()}
+          style={styles.returnButton}
+          activeOpacity={0.8}
+          >
+            <Text stye={styles.textReturn}>J'ai déjà un compte</Text>
+          </TouchableOpacity>
+          </View>
+      </View>
     </KeyboardAvoidingView>
   );
-};
-
+}
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#ffffff",
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   logo: {
-    width: '80%',
-    height: '50%',
+    flex: 0.3,
+    width: "50%",
+    height: "50%",
   },
 
+  title: {
+    
+    fontSize: 30,
+    marginBottom: 150,
+    fontWeight: 'bold'
+    
+  },
+
+  separator: {
+width: '25%',
+height: 3,
+backgroundColor: '#C64518',
+position: 'absolute',
+top: 380
+  },
+
+
+  inputContainer: {
+    justifyContent: "center",
+    alignItems: 'center',
+    width : '50%'
+  },
+
+  input: {
+    
+    backgroundColor: "#EEECE8",
+    paddingVertical : 15,
+    borderRadius: 1,
+    width: "100%",
+    margin: 10,
+    justifyContent: "center",
+    borderRadius : 5,
+    paddingLeft: 10
+    
+    
+  },
+
+  button: {
+    backgroundColor: "#CE5705",
+    margin: 40,
+    borderRadius: 10,
+    padding: 10,
+    paddingLeft: 40,
+    paddingRight: 40,
+    justifyContent: 'center',
+    width : '80%',
+  },
+
+  textButton: {
+    color: "white",
+    fontWeight: 'bold'
+  },
 });
 

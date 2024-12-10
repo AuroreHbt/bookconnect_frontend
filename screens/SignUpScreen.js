@@ -77,6 +77,10 @@ export default function SignUpScreen({ navigation }) {
     setShowPassword(!showPassword); //  Fonction pour afficher ou non le mot de passe
   };
 
+  const handleBack = () => {
+    navigation.navigate('Home', { screen: 'HomeScreen' })
+  }
+
   const handleSubmitSignUp = () => {
     // Early return si les champs, username, email mot de passes ne sont pas remplies correctement
     if (!validateFields()) {
@@ -121,6 +125,7 @@ export default function SignUpScreen({ navigation }) {
       <View>
         <Text style={styles.title}>BookConnect</Text>
       </View>
+      <View style={styles.separator} />
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="Nom d'utilisateur"
@@ -158,7 +163,17 @@ export default function SignUpScreen({ navigation }) {
           activeOpacity={0.8}
         >
           <Text style={styles.textButton}>S'inscrire</Text>
+       
         </TouchableOpacity>
+        <View style={styles.returnContainer}>
+          <TouchableOpacity
+          onPress={() => handleBack()}
+          style={styles.returnButton}
+          activeOpacity={0.8}
+          >
+            <Text stye={styles.textReturn}>J'ai déjà un compte</Text>
+          </TouchableOpacity>
+          </View>
       </View>
     </KeyboardAvoidingView>
   );
@@ -181,13 +196,22 @@ const styles = StyleSheet.create({
   title: {
     
     fontSize: 30,
-    marginBottom: 40,
-    marginTop: 80
+    marginBottom: 150,
+    
   },
 
+  separator: {
+width: '25%',
+height: 3,
+backgroundColor: '#C64518',
+position: 'absolute',
+top: 380
+  },
+
+
   inputContainer: {
-    
     justifyContent: "center",
+    alignItems: 'center',
     width : '50%'
   },
 
@@ -199,6 +223,10 @@ const styles = StyleSheet.create({
     width: "100%",
     margin: 10,
     justifyContent: "center",
+    borderRadius : 5,
+    paddingLeft: 10
+    
+    
   },
 
   button: {
@@ -213,5 +241,6 @@ const styles = StyleSheet.create({
 
   textButton: {
     color: "white",
+    fontWeight: 'bold'
   },
 });
