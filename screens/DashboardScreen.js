@@ -1,22 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-    Modal
-  } from 'react-native';
-
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  Modal,
+  SafeAreaProvider,
+  Image,
+  GreySeparator,
+  FlatList,
+  Dimensions,
+} from 'react-native';
 
 
 export default function DashboardScreen() {
-  const dispatch = useDispatch();
+
+  const data = [
+    { id: '1', image: require('../assets/avatar.png') },
+    { id: '2', image: require('../assets/avatar.png') },
+    { id: '3', image: require('../assets/avatar.png') },
+  ];
+
+  const Carousel = () => {
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    const onScroll = (event) => {
+      const contentOffsetX = event.nativeEvent.contentOffset.x;
+      const index = Math.round(contentOffsetX / Dimensions.get('window').width);
+      setCurrentIndex(index);
+    };
+  };
+
+  // const dispatch = useDispatch()
   const user = useSelector((state) => state.user.value);
 
   const [isParameterVisible, setIsParameterVisible] = useState(false);
@@ -25,39 +45,42 @@ export default function DashboardScreen() {
     setIsParameterVisible(!isParameterVisible);
   };
 
-    return (
-        <SafeAreaProvider>
-            <SafeAreaView style={styles.container} >
-            <View style={styles.header}>
+  return (
 
-                {/* Logo et Nom de l'app */}
-              <View style={styles.identityApp}>
-                <Text style={styles.logo}>Logo</Text>
-                <Text style={styles.title}>BookConnect</Text>
+    <SafeAreaView style={styles.container} >
+      <View style={styles.header}>
 
-                {/* Icône Paramètre */}
-              </View>
-                <TouchableOpacity onPress={toggleModal} style={styles.ParameterButton}>
-                <FontAwesome name="gear" size={50} color="#a2845e" />
-                </TouchableOpacity>
-            </View>
+        {/* Logo et Nom de l'app */}
+        <View style={styles.identityApp}>
+          <Image
+            source={require('../assets/LogoBc.png')}
+            style={styles.logo}
+          />
+          <Text style={styles.title}>BookConnect</Text>
 
-            {/* Modal */}
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={isParameterVisible}
-                onRequestClose={toggleParameter}
+          {/* Icône Paramètre */}
+        </View>
+        <TouchableOpacity onPress={toggleParameter} style={styles.ParameterButton}>
+          <FontAwesome name="gear" size={50} color="#a2845e" />
+        </TouchableOpacity>
+      </View>
+
+      {/* Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isParameterVisible}
+        onRequestClose={toggleParameter}
       >
-                 <View style={styles.ParameterOverlay}>
-                    <View style={styles.ParameterContent}>
-                    <Text style={styles.ParameterTitle}>Paramètres</Text>
+        <View style={styles.ParameterOverlay}>
+          <View style={styles.ParameterContent}>
+            <Text style={styles.ParameterTitle}>Paramètres</Text>
 
             {/* Options de paramètres */}
             <TouchableOpacity style={styles.optionButton}>
-            <TouchableOpacity style={styles.optionButton}>
               <Text style={styles.optionText}>Modifier ma photo de profil</Text>
             </TouchableOpacity>
+            <TouchableOpacity>
               <Text style={styles.optionText}>Modifier mon username</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.optionButton}>
@@ -72,144 +95,151 @@ export default function DashboardScreen() {
 
             {/* Bouton Fermer */}
             <TouchableOpacity onPress={toggleParameter} style={styles.closeButton}>
-              <FontAwesome name="cross" size={30} color="#a2845e" />
+              <FontAwesome name="close" size={30} color="#a2845e" />
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
-              {/* Photo de profil et Message de bienvenue */}
-              <View style={styles.identityUser}>
-                <Image 
-                source={require('../assets/avatar.png')} 
-                style={styles.avatar} 
-                />
-              <Text style={styles.welcome}>Hello {user.username}</Text>
-            </View>
+      {/* Photo de profil et Message de bienvenue */}
+      <View style={styles.identityUser}>
+        <Image
+          source={require('../assets/avatar.png')}
+          style={styles.avatar}
+        />
+        <Text style={styles.welcome}>Hello {user?.username || 'Utilisateur'}</Text>
+      </View>
 
-            {/* Section carrousel mes lectures en cours */}
-            <View style={styles.reading}>
-              <View style={styles.titleReading}>
-                <Text style={styles.textSection}>Mes lectures en cours</Text>
-                <FontAwesome name="arrow-right" size={50} color="#a2845e" />
-              </View>
-                <Text style={styles.carrousel}>Carrousel</Text>
-            </View>
+      {/* Section carrousel mes lectures en cours */}
+      <View style={styles.sectionContainer}>
+        <View style={styles.section}>
+          <Text style={styles.textSection}>Mes lectures en cours</Text>
+          <FontAwesome name="arrow-right" size={20} color="#a2845e" />
+        </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <View>
+            <Text style={styles.carrousel}>Book1</Text>
+            <Image
+              source={require('../assets/avatar.png')}
+              style={styles.avatar}
+            />
+          </View>
+          <View>
+            <Text style={styles.carrousel}>Book2</Text>
+            <Image
+              source={require('../assets/avatar.png')}
+              style={styles.avatar}
+            />
+          </View>
+          <View>
+            <Text style={styles.carrousel}>Book3</Text>
+            <Image
+              source={require('../assets/avatar.png')}
+              style={styles.avatar}
+            />
+          </View>
+          <View>
+            <Text style={styles.carrousel}>Book4</Text>
+            <Image
+              source={require('../assets/avatar.png')}
+              style={styles.avatar}
+            />
+          </View>
+        </ScrollView>
+      </View>
 
-            {/* Section carrousel mes évenements plannifiés*/}
-            <View style={styles.event}>
-              <View style={styles.titleEvent}>
-                <Text style={styles.textSection}>Mes évènements</Text>
-                <FontAwesome name="arrow-right" size={50} color="black" />
-              </View>
-                <Text style={styles.calendrier}>Calendrier</Text>
-            </View>
-            </SafeAreaView>
-        </SafeAreaProvider>
-    )
+      {/* Section carrousel mes évenements plannifiés*/}
+      <View style={styles.sectionContainer}>
+        <View style={styles.section}>
+          <Text style={styles.textSection}>Mes évènements</Text>
+          <FontAwesome name="arrow-right" size={20} color="black" />
+        </View>
+        <Text style={styles.calendrier}>Calendrier</Text>
+      </View>
+    </SafeAreaView>
+  );
 };
 
 
 // attention : le StyleSheet doit bien être en dehors de la fonction!
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
 
-    header: {
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 
-    },
+  header: {
+    position: 'absolute', // Colle le header en haut
+    top: 40, // Définit le haut
+    width: '100%', // Prend toute la largeur
+    flexDirection: "row", // En ligne
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20, // Espacement horizontal
+    paddingVertical: 10, // Espacement vertical
+    zIndex: 1, // Place au-dessus du contenu
+  },
 
-    identityApp: {
+  identityApp: {
+    flexDirection: "row",
+    alignItems: 'center',
+  },
 
-    },
+  logo: {
+    height: 90,
+    width: 90,
+  },
 
-    logo: {
+  title: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: 'black',
+  },
 
-    },
+  ParameterButton: {
+    padding: 10, // Zone cliquable plus grande
+  },
 
-    title: {
-        fontSize: 24,
-    },
+  identityUser: {
+    marginTop: 10, // Décale le contenu pour éviter le header
+    alignItems: "center",
+    marginVertical: 20,
+  },
 
-    ParameterButton: {
-        padding: 10,
-      },
+  avatar: {
+    width: 150,
+    height: 150,
+    borderRadius: 50,
+    marginBottom: 10,
+    backgroundColor: '#f2f2f2',
+  },
 
-    identityUser: {
+  welcome: {
+    fontSize: 24,
+    color: '#333',
+  },
 
-    },
+  sectionContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
 
-    avatar: {
+  section: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+  },
 
-    },
+  textSection: {
+    fontSize: 16,
+    color: '#555',
+    marginRight: 10,
+  },
 
-    welcome: {
-
-    },
-
-    reading: {
-
-    },
-
-    titleReading: {
-
-    },
-
-    textSection: {
-
-    },
-
-    event: {
-
-    },
-
-    titleEvent: {
-
-    },
-
-    ParameterOverlay: {
-        flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        justifyContent: 'center',
-        alignItems: 'center',
-      },
-      ParameterContent: {
-        width: '80%',
-        padding: 20,
-        backgroundColor: 'white',
-        borderRadius: 10,
-        alignItems: 'center',
-        elevation: 10,
-      },
-      ParameterTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 20,
-      },
-      optionButton: {
-        padding: 10,
-        marginVertical: 5,
-        width: '100%',
-        backgroundColor: '#f2f2f2',
-        borderRadius: 5,
-        alignItems: 'center',
-      },
-      optionText: {
-        fontSize: 16,
-        color: 'black',
-      },
-      closeButton: {
-        marginTop: 20,
-        padding: 10,
-        backgroundColor: '#007bff',
-        borderRadius: 5,
-      },
-      closeButtonText: {
-        color: 'black',
-        fontSize: 16,
-      },
 });
