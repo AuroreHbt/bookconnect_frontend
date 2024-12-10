@@ -71,7 +71,7 @@ export default function SignInScreen({ navigation }) {
     navigation.navigate('Home', { screen: 'HomeScreen' })
   }
 
-  
+
   const handleSubmitSignIn = () => {
     // Early return si les champs, email et mot de passes ne sont pas remplies correctement
     if (!validateFields()) {
@@ -91,16 +91,14 @@ export default function SignInScreen({ navigation }) {
         console.log("Données retournées par le backend:", data);
 
         if (data) {
-          console.log(data);
-          
           // Si connexion réussie, redirige vers le dashboard
           dispatch(
             data &&
-              login({
-                token: data.token,
-                email: data.email,
-                username: data.username
-              })
+            login({
+              username: data.username,
+              email: data.email,
+              token: data.token,
+            })
           );
           console.log("Connexion réussie");
           navigation.navigate("TabNavigator", { screen: "Dashboard" });
@@ -117,47 +115,49 @@ export default function SignInScreen({ navigation }) {
     >
       <Image style={styles.logo} source={require("../assets/LogoBc.png")} />
       <View>
-      <Text style={styles.title}>BookConnect</Text>
+        <Text style={styles.title}>BookConnect</Text>
       </View>
       <View style={styles.separator} />
       <View style={styles.inputContainer}>
-      <TextInput
-        placeholder="E-mail"
-        autoCapitalize="none"
-        keyboardType="email-address"
-        autoComplete="email"
-        textContentType="emailAddress"
-        onChangeText={(value) => setEmail(value)}
-        value={email}
-        style={styles.input}
-      />
-      {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
-      <TextInput
-        placeholder="Mot de passe"
-        secureTextEntry={!showPassword}
-        onChangeText={(value) => setPassword(value)}
-        value={password}
-        style={styles.input}
-      />
-      {passwordError ? (
-        <Text style={styles.errorText}>{passwordError}</Text>
-      ) : null}
-      <TouchableOpacity
-        onPress={() => handleSubmitSignIn()}
-        style={styles.button}
-        activeOpacity={0.8}
-      >
-        <Text style={styles.textButton}>Se connecter</Text>
-      </TouchableOpacity>
-      <View style={styles.returnContainer}>
-          <TouchableOpacity
-          onPress={() => handleBack()}
-          style={styles.returnButton}
+        <TextInput
+          placeholder="E-mail"
+          autoCapitalize="none"
+          keyboardType="email-address"
+          autoComplete="email"
+          textContentType="emailAddress"
+          onChangeText={(value) => setEmail(value)}
+          value={email}
+          style={styles.input}
+        />
+        {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+        <TextInput
+          placeholder="Mot de passe"
+          secureTextEntry={!showPassword}
+          onChangeText={(value) => setPassword(value)}
+          value={password}
+          style={styles.input}
+        />
+        {passwordError ? (
+          <Text style={styles.errorText}>{passwordError}</Text>
+        ) : null}
+
+        <TouchableOpacity
+          onPress={() => handleSubmitSignIn()}
+          style={styles.button}
           activeOpacity={0.8}
+        >
+          <Text style={styles.textButton}>Se connecter</Text>
+        </TouchableOpacity>
+
+        <View style={styles.returnContainer}>
+          <TouchableOpacity
+            onPress={() => handleBack()}
+            style={styles.returnButton}
+            activeOpacity={0.8}
           >
-            <Text stye={styles.textReturn}>J'ai déjà un compte</Text>
+            <Text stye={styles.textReturn}>Je n'ai pas encore de compte</Text>
           </TouchableOpacity>
-          </View>
+        </View>
       </View>
     </KeyboardAvoidingView>
   );
@@ -178,56 +178,52 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    
     fontSize: 30,
     marginBottom: 150,
-    fontWeight: 'bold'
-    
+    fontWeight: 'bold',
+    color: '#371B0C',
   },
 
   separator: {
-width: '25%',
-height: 3,
-backgroundColor: '#C64518',
-position: 'absolute',
-top: 380
+    width: '25%',
+    height: 3,
+    backgroundColor: '#371B0C',
+    position: 'absolute',
+    top: 350
   },
 
 
   inputContainer: {
     justifyContent: "center",
     alignItems: 'center',
-    width : '50%'
+    width: '50%'
   },
 
   input: {
-    
     backgroundColor: "#EEECE8",
-    paddingVertical : 15,
+    paddingVertical: 15,
     borderRadius: 1,
     width: "100%",
     margin: 10,
     justifyContent: "center",
-    borderRadius : 5,
+    borderRadius: 5,
     paddingLeft: 10
-    
-    
   },
 
   button: {
-    backgroundColor: "#CE5705",
+    backgroundColor: "#D84815",
     margin: 40,
     borderRadius: 10,
-    padding: 10,
+    paddingVertical: 10,
     paddingLeft: 40,
     paddingRight: 40,
     justifyContent: 'center',
-    width : '80%',
+    width: '80%',
   },
 
   textButton: {
     color: "white",
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
 });
 

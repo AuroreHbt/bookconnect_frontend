@@ -157,23 +157,24 @@ export default function SignUpScreen({ navigation }) {
         {passwordError ? (
           <Text style={styles.errorText}>{passwordError}</Text>
         ) : null}
+
         <TouchableOpacity
           onPress={() => handleSubmitSignUp()}
           style={styles.button}
           activeOpacity={0.8}
         >
           <Text style={styles.textButton}>S'inscrire</Text>
-       
         </TouchableOpacity>
+
         <View style={styles.returnContainer}>
           <TouchableOpacity
-          onPress={() => handleBack()}
-          style={styles.returnButton}
-          activeOpacity={0.8}
+            onPress={() => handleBack()}
+            style={styles.returnButton}
+            activeOpacity={0.8}
           >
             <Text stye={styles.textReturn}>J'ai déjà un compte</Text>
           </TouchableOpacity>
-          </View>
+        </View>
       </View>
     </KeyboardAvoidingView>
   );
@@ -194,53 +195,51 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    
     fontSize: 30,
     marginBottom: 150,
-    
+    fontWeight: 'bold',
+    color: '#371B0C',
   },
 
   separator: {
-width: '25%',
-height: 3,
-backgroundColor: '#C64518',
-position: 'absolute',
-top: 380
+    width: '25%',
+    height: 3,
+    backgroundColor: '#371B0C',
+    position: 'absolute',
+    top: 350
   },
 
 
   inputContainer: {
     justifyContent: "center",
     alignItems: 'center',
-    width : '50%'
+    width: '50%'
   },
 
   input: {
-    
     backgroundColor: "#EEECE8",
-    paddingVertical : 15,
+    paddingVertical: 15,
     borderRadius: 1,
     width: "100%",
     margin: 10,
     justifyContent: "center",
-    borderRadius : 5,
+    borderRadius: 5,
     paddingLeft: 10
-    
-    
   },
 
   button: {
-    backgroundColor: "#CE5705",
-    margin: 20,
+    backgroundColor: "#D84815",
+    margin: 40,
     borderRadius: 10,
-    padding: 15,
+    padding: 10,
     paddingLeft: 50,
     paddingRight: 50,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    width: '80%',
   },
 
   textButton: {
     color: "white",
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
 });
