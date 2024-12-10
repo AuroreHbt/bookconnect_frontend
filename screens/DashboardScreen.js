@@ -1,8 +1,8 @@
-
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {
-  SafeAreaView,                                                                                                                                                                                                                                                              feAreaView,
+  SafeAreaView, feAreaView,
   ScrollView,
   StyleSheet,
   Text,
@@ -16,75 +16,75 @@ import {
   FlatList,
   Dimensions,
 } from 'react-native';
- 
- 
+
+
 export default function DashboardScreen() {
- 
+
   const data = [
     { id: '1', image: require('../assets/avatar.png') },
     { id: '2', image: require('../assets/avatar.png') },
     { id: '3', image: require('../assets/avatar.png') },
   ];
- 
+
   const Carousel = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
- 
+
     const onScroll = (event) => {
       const contentOffsetX = event.nativeEvent.contentOffset.x;
       const index = Math.round(contentOffsetX / Dimensions.get('window').width);
       setCurrentIndex(index);
     };
   };
- 
+
   // const dispatch = useDispatch()
   const user = useSelector((state) => state.user.value);
- 
+
   const [isParameterVisible, setIsParameterVisible] = useState(false);
- 
+
   const toggleParameter = () => {
     setIsParameterVisible(!isParameterVisible);
   };
- 
+
   return (
- 
+
     <SafeAreaView style={styles.container} >
       <View style={styles.header}>
- 
+
         {/* Logo et Nom de l'app */}
         <View style={styles.identityApp}>
           <Image
             source={require('../assets/LogoBc.png')}
             style={styles.logo}
           />
- 
+
           {/* Icône Paramètre */}
         </View>
         <TouchableOpacity onPress={toggleParameter} style={styles.ParameterButton}>
           <FontAwesome name="gear" size={40} color="#a2845e" />
         </TouchableOpacity>
       </View>
- 
+
       {/* Modal */}
       <Modal
-  animationType="fade"
-  transparent={true}
-  visible={isParameterVisible}
-  onRequestClose={toggleParameter}
->
-  <View style={styles.ParameterContent}>
- 
-    {/* Options de paramètres */}
-    <TouchableOpacity style={styles.optionButton}>
-      <Text style={styles.optionText}>Déconnexion</Text>
-    </TouchableOpacity>
- 
-    {/* Bouton Fermer */}
-    <TouchableOpacity onPress={toggleParameter} style={styles.closeButton}>
-      <FontAwesome name="close" size={30} color="white" />
-    </TouchableOpacity>
-  </View>
-</Modal>
- 
+        animationType="fade"
+        transparent={true}
+        visible={isParameterVisible}
+        onRequestClose={toggleParameter}
+      >
+        <View style={styles.ParameterContent}>
+
+          {/* Options de paramètres */}
+          <TouchableOpacity style={styles.optionButton}>
+            <Text style={styles.optionText}>Déconnexion</Text>
+          </TouchableOpacity>
+
+          {/* Bouton Fermer */}
+          <TouchableOpacity onPress={toggleParameter} style={styles.closeButton}>
+            <FontAwesome name="close" size={30} color="white" />
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
       {/* Photo de profil et Message de bienvenue */}
       <View style={styles.identityUser}>
         <Image
@@ -93,7 +93,7 @@ export default function DashboardScreen() {
         />
         <Text style={styles.welcome}>Hello {user?.username || 'Utilisateur'}</Text>
       </View>
- 
+
       {/* Section carrousel mes lectures en cours */}
       <View style={styles.sectionContainer}>
         <View style={styles.section}>
@@ -131,7 +131,7 @@ export default function DashboardScreen() {
           </View>
         </ScrollView>
       </View>
- 
+
       {/* Section carrousel mes évenements plannifiés*/}
       <View style={styles.sectionContainer}>
         <View style={styles.section}>
@@ -143,18 +143,18 @@ export default function DashboardScreen() {
     </SafeAreaView>
   );
 };
- 
- 
+
+
 // attention : le StyleSheet doit bien être en dehors de la fonction!
 const styles = StyleSheet.create({
- 
+
   container: {
     flex: 1,
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
   },
- 
+
   header: {
     position: 'absolute', // Colle le header en haut
     top: 40, // Définit le haut
@@ -166,33 +166,33 @@ const styles = StyleSheet.create({
     paddingVertical: 10, // Espacement vertical
     zIndex: 1, // Place au-dessus du contenu
   },
- 
+
   identityApp: {
     flexDirection: "row",
     alignItems: 'center',
   },
- 
+
   logo: {
     height: 90,
     width: 90,
   },
- 
+
   title: {
     fontSize: 18,
     fontWeight: '600',
     color: 'black',
   },
- 
+
   ParameterButton: {
     padding: 10, // Zone cliquable plus grande
   },
- 
+
   identityUser: {
     marginTop: 10, // Décale le contenu pour éviter le header
     alignItems: "center",
     marginVertical: 20,
   },
- 
+
   avatar: {
     width: 150,
     height: 150,
@@ -200,12 +200,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: '#f2f2f2',
   },
- 
+
   welcome: {
     fontSize: 24,
     color: '#333',
   },
- 
+
   sectionContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -213,13 +213,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginBottom: 20,
   },
- 
+
   section: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
   },
- 
+
   textSection: {
     fontSize: 16,
     color: '#555',
@@ -257,5 +257,5 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     marginTop: 10,
   },
- 
+
 });

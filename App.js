@@ -1,5 +1,4 @@
 import { StyleSheet, View } from 'react-native';
-// import { BlurView } from 'expo-blur'; revoir ce module
 
 // Imports pour la nested navigation (stack + tab)
 import { NavigationContainer } from '@react-navigation/native';
@@ -60,7 +59,7 @@ function TabNavigator() {
 
       // à retravailler => cf Doc : creuser BlurView
       tabBarBackground: () => (
-        <View tint="yellow" intensity={100} style={StyleSheet.absoluteFill} />
+        <View style={styles.container} />
       ),
 
     })}
@@ -93,7 +92,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'yellow',
+    backgroundColor: '#EEECE8',
     alignItems: 'center',
     justifyContent: 'center',
   },
