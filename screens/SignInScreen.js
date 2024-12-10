@@ -37,10 +37,10 @@ export default function SignInScreen({ navigation }) {
       .then((data) => {
         console.log('Données retournées par le backend:', data);
 
-        if (data.result) {
+        if (data) {
 
           dispatch(
-            login({
+            data&&login({
               token: data.token,
               email: data.email,
             })
