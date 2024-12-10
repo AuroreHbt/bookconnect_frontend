@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
 
     text: {
         fontSize: 22,
-        fontFamily: 'sans-serif',
+        fontFamily: 'Poppins',
         marginBottom: 50,
     },
 
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     },
 
     button: {
-        backgroundColor: '#CE5705',
+        backgroundColor: '#D84815',
         borderRadius: 10,
         paddingVertical: 15,
         paddingHorizontal: 35,
