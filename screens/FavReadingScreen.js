@@ -1,10 +1,10 @@
 import { StyleSheet, KeyboardAvoidingView, Platform, Text, View } from 'react-native';
 
-export default function ReadStoryScreen() {
+export default function FavReadingScreen() {
 
     return (
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-            <Text>Read Story Screen</Text>
+            <Text>Favorites Readings Screen</Text>
         </KeyboardAvoidingView>
     );
 };
@@ -19,6 +19,5 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-
 
 });
