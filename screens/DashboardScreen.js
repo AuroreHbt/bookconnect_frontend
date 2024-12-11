@@ -12,18 +12,20 @@ import {
   Modal,
   Image,
 } from 'react-native';
+import { useDispatch } from "react-redux";
+import { logout } from "../reducers/user";
 
 
-export default function DashboardScreen() {
+export default function DashboardScreen({ navigation }) {
 
-  const data = [
+ /*  const data = [
     { id: '1', image: require('../assets/avatar.png') },
     { id: '2', image: require('../assets/avatar.png') },
     { id: '3', image: require('../assets/avatar.png') },
-  ];
+  ]; */
 
 
-  // const dispatch = useDispatch()
+  const dispatch = useDispatch()
   const user = useSelector((state) => state.user.value);
 
   const [isParameterVisible, setIsParameterVisible] = useState(false);
@@ -31,6 +33,12 @@ export default function DashboardScreen() {
   const toggleParameter = () => {
     setIsParameterVisible(!isParameterVisible);
   };
+
+  // Déconnexion
+  const handleLogout = () => {
+		dispatch(logout());
+    navigation.navigate('Home', { screen: 'HomeScreen' })
+	};
 
   return (
 
@@ -64,14 +72,15 @@ export default function DashboardScreen() {
       >
         <View style={styles.ParameterContent}>
 
-          {/* Options de paramètres */}
-          <TouchableOpacity style={styles.optionButton}>
-            <Text style={styles.optionText}>Déconnexion</Text>
-          </TouchableOpacity>
-
           {/* Bouton Fermer */}
           <TouchableOpacity onPress={toggleParameter} style={styles.closeButton}>
-            <FontAwesome name="close" size={30} color="white" />
+            <FontAwesome name="close" size={20} color="black" />
+          </TouchableOpacity>
+
+          {/* Options de paramètres */}
+          <TouchableOpacity style={styles.optionButton}>
+            <Text style={styles.optionText} onPress={() => handleLogout()}>Déconnexion</Text>
+            <FontAwesome name='sign-out' size={20} color='black' style={styles.logoutIcon} />
           </TouchableOpacity>
         </View>
       </Modal>
@@ -307,14 +316,14 @@ const styles = StyleSheet.create({
 
   ParameterContent: {
     position: 'absolute',
-    top: 60, // Ajuste pour correspondre à la position de ton icône
-    right: 20, // Ajuste selon l'alignement de l'icône
-    backgroundColor: '#a2845e',
+    top: 50, // Ajuste pour correspondre à la position de ton icône
+    right: 80, // Ajuste selon l'alignement de l'icône
+    backgroundColor: '#EEECE8',
     borderRadius: 10,
     padding: 10,
     width: 150, // Ajuste la largeur du menu
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
+    shadowColor: '#000', // couleur de l'ombre
+    shadowOffset: { width: 0, height: 4 }, // direction de l'ombre
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 5, // Pour ombre sur Android
@@ -326,16 +335,21 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   optionButton: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingVertical: 10,
   },
   optionText: {
     fontSize: 16,
-    color: 'white',
+    color: 'black',
     fontWeight: 'bold',
+    textAlign: 'left',
+    fontFamily: 'Poppins',
   },
   closeButton: {
     alignSelf: 'flex-end',
-    marginTop: 10,
+    marginTop: 10, // espace entre la croix et le contenu Déconnexion
   },
 
 });
