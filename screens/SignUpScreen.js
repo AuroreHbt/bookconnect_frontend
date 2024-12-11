@@ -1,4 +1,8 @@
 import React, { useState } from "react";
+
+// import de la bibliothèque d'icône Fontawsome via react-native-vector-icons
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 import {
   Image,
   KeyboardAvoidingView,
@@ -13,12 +17,14 @@ import {
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 
-/* // Regex pour valider les emails et mots de passe
-const EMAIL_REGEX =
-  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-const usernameRegex = /^[a-zA-Z0-9]{3,}$/; // Uniquement des carctères alphanumériques et long d'au moins 3 carctères
-const passwordRegex =
-  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/; // Rentrer au moins une lettre, un chiffre et un caractère spécial et 8 caractères mini. */
+// Regex pour valider les emails et mots de passe
+const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+const usernameRegex = /^[a-zA-Z0-9]{3,}$/;
+// Uniquement des carctères alphanumériques et long d'au moins 3 carctères
+
+const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+// Rentrer au moins une lettre, un chiffre et un caractère spécial et 8 caractères mini.
 
 // Adresse du backend via la variable d'environnement
 const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
@@ -39,7 +45,7 @@ export default function SignUpScreen({ navigation }) {
   // Etat pour afficher ou masquer le mot de passe
   const [showPassword, setShowPassword] = useState(false);
 
-  /* const validateFields = () => {
+  const validateFields = () => {
     let isValid = true;
 
     // Validation de l'email
@@ -71,22 +77,23 @@ export default function SignUpScreen({ navigation }) {
     }
 
     return isValid;
-  }; */
-
-  const toggleShowPassword = () => {
-    setShowPassword(!showPassword); //  Fonction pour afficher ou non le mot de passe
   };
 
-  const handleBack = () => {
-    navigation.navigate('Home', { screen: 'HomeScreen' })
-  }
+  // Fonction pour afficher ou non le mot de passe
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  // https://reactnavigation.org/docs/navigation-object/#goback
+  const goBack = () => navigation.goBack();
 
   const handleSubmitSignUp = () => {
-   /*  // Early return si les champs, username, email mot de passes ne sont pas remplies correctement
+    // Early return si les champs, username, email mot de passes ne sont pas remplies correctement
     if (!validateFields()) {
       console.log("Validation échouée");
       return;
-    } */
+    }
+
     // Fetch de la route post du backend pour l'inscription
     fetch(`${BACKEND_ADDRESS}/users/signup`, {
       method: "POST",
@@ -147,13 +154,27 @@ export default function SignUpScreen({ navigation }) {
           style={styles.input}
         />
         {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
-        <TextInput
-          placeholder="Mot de passe"
-          secureTextEntry={!showPassword}
-          onChangeText={(value) => setPassword(value)}
-          value={password}
-          style={styles.input}
-        />
+
+        <View style={styles.inputPwd}>
+          <TextInput
+            placeholder="Mot de passe"
+            secureTextEntry={!showPassword}
+            onChangeText={(value) => setPassword(value)}
+            value={password}
+            style={styles.input}
+          />
+          <TouchableOpacity
+            style={styles.iconContainer}
+            onPress={toggleShowPassword}
+          >
+            <Icon
+              name={showPassword ? 'eye' : 'eye-slash'}
+              size={24}
+              color={showPassword ? '#D84815' : '#D3D3D3'}
+            />
+          </TouchableOpacity>
+        </View>
+
         {passwordError ? (
           <Text style={styles.errorText}>{passwordError}</Text>
         ) : null}
@@ -168,7 +189,7 @@ export default function SignUpScreen({ navigation }) {
 
         <View style={styles.returnContainer}>
           <TouchableOpacity
-            onPress={() => handleBack()}
+            onPress={goBack}
             style={styles.returnButton}
             activeOpacity={0.8}
           >
@@ -209,6 +230,20 @@ const styles = StyleSheet.create({
     top: 350
   },
 
+  inputPwd: {
+    flexDirection: 'row',
+    justifyContent: "center",
+    alignItems: 'center',
+    width: '100%' // 100% de la largeur de inputContainer
+  },
+
+  iconContainer: {
+    position: 'absolute', // position absolue pour superposer l'icone sur l'input
+    right: 10,
+    top: 0,
+    bottom: 0,
+    justifyContent: 'center',
+  },
 
   inputContainer: {
     justifyContent: "center",
@@ -232,8 +267,6 @@ const styles = StyleSheet.create({
     margin: 40,
     borderRadius: 10,
     padding: 10,
-    paddingLeft: 50,
-    paddingRight: 50,
     justifyContent: 'center',
     width: '80%',
   },
@@ -241,5 +274,6 @@ const styles = StyleSheet.create({
   textButton: {
     color: "white",
     fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
