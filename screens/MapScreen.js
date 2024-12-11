@@ -4,12 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
-export default function MapScreen() {
+export default function MapScreen(city) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
 
   const [currentPosition, setCurrentPosition] = useState(null);
-
+  const [latitude, longitude] = city.param
 
   useEffect(() => {
     (async () => {
@@ -28,11 +28,9 @@ export default function MapScreen() {
 
 
   return (
-    <View style={styles.container}>
-      <MapView onLongPress={(e) => handleLongPress(e)} mapType="hybrid" style={styles.map}>
-        {currentPosition && <Marker coordinate={currentPosition} title="My position" pinColor="#fecb2d" />}
-      </MapView>
-    </View>
+    <MapView onLongPress={(e) => handleLongPress(e)} mapType="standard" style={styles.map}>
+    {currentPosition && <Marker coordinate={currentPosition} title="My position" pinColor="#fecb2d" />}
+  </MapView>
   );
 }
 

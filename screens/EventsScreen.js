@@ -19,15 +19,45 @@ import {
   FlatList,
   Dimensions,
   Icon,
+  Alert
 } from "react-native";
+
+import { SearchBar } from "react-native-screens";
 
 
 
 export default function EventsScreen({navigation}) {
+  const [searchText, setSearchText] = useState("");
 
 
-  const handleGoToMap = () => {
-    navigation.navigate("MapScreen");
+  const handleSearchPlace = async () => { 
+    if (!searchText) {
+      Alert.alert('Erreur', 'Veuillez entrer une localisation');
+      return;
+    }
+  
+    try {
+      // Requête à l'API Nominatim
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?q=${searchText}&format=json`
+      );
+      const data = await response.json();
+  
+      if (data.length === 0) {
+        Alert.alert('Erreur', 'Localisation introuvable');
+        return;
+      }
+  
+      // Extraire les coordonnées du premier résultat
+      const { lat, lon } = data[0];
+      navigation.navigate("MapScreen", {
+        latitude: parseFloat(lat),
+        longitude: parseFloat(lon),
+      });
+    } catch (error) {
+      Alert.alert('Erreur', 'Une erreur est survenue lors de la recherche.');
+      console.error(error);
+    }
   };
 
   const handleGoToFavorite = () => {
@@ -42,11 +72,11 @@ export default function EventsScreen({navigation}) {
       <View style={styles.inputContainer}>
         <View style={styles.input}>
         <FontAwesome name="map-marker" size={30} color="#D84815" />
-          <TextInput
+          <View
             placeholder="Ville ..."
-            //   onChangeText={(value) => setUsername(value)}
-            //   value={username}
-            //   style={styles.input}
+            onChangeText={(value) => setSearchText(value)}
+            value={searchText}
+            style={styles.input}
           />
         </View>
         <View style={styles.input}>
@@ -60,7 +90,7 @@ export default function EventsScreen({navigation}) {
         </View>
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={handleGoToMap} style={styles.button}>
+        <TouchableOpacity onPress={handleSearchPlace} style={styles.button}>
           <Text style={styles.textButton}>Rechercher</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={handleGoToFavorite} style={styles.button}>
@@ -94,20 +124,18 @@ const styles = StyleSheet.create({
   },
 
   inputContainer: {
-    
     justifyContent: "center",
     width : '50%'
   },
 
   input: {
-    flexDirection : "raw",
-    alignContent: "center",
-    backgroundColor: "#EEECE8",
-    paddingVertical : 15,
-    borderRadius: 1,
-    width: "100%",
-    margin: 10,
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    backgroundColor: '#EEECE8',
+    padding: 10,
+    marginTop: 20,
+    borderRadius: 10,
   },
 
   text: {
