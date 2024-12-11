@@ -123,7 +123,7 @@ const handlePostStory = async () => {
     })
   }
 
-  fetch(`${BACKEND_ADDRESS}/users/stories`, {
+  fetch(`${BACKEND_ADDRESS}/stories/addstory`, {
     method: "POST",
     body: formData,
   }).then((response) => response.json())
