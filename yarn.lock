@@ -1135,6 +1135,11 @@
     find-up "^5.0.0"
     js-yaml "^4.1.0"
 
+"@freakycoder/react-native-bounceable@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@freakycoder/react-native-bounceable/-/react-native-bounceable-1.0.3.tgz#79de6fa99fb8357a5e52cc095ecdb1786f4b1514"
+  integrity sha512-+iMq2tnqxCwFjitbPUz9nZ+VfJ8OU9waIlDJAAsoq1229QEwCmERCNy5zVtDsz75q3i4FLXX/n7fimdMzmP21A==
+
 "@isaacs/cliui@^8.0.2":
   version "8.0.2"
   resolved "https://registry.yarnpkg.com/@isaacs/cliui/-/cliui-8.0.2.tgz#b37667b7bc181c168782259bab42474fbf52b550"
@@ -2694,6 +2699,11 @@ expo-asset@~11.0.1:
     expo-constants "~17.0.0"
     invariant "^2.2.4"
     md5-file "^3.2.3"
+
+expo-checkbox@~4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/expo-checkbox/-/expo-checkbox-4.0.0.tgz#beceea701896d67e68b8383b3d54135b1a89e074"
+  integrity sha512-kgmdau1cmlztRVEdjAQkdBCBSvI3W1Z6B+gTTr5ickbItxz07qt3j6dQEB3VDL69/bnIN/h9/iwNLVxuSn/C2Q==
 
 expo-constants@~17.0.0, expo-constants@~17.0.3:
   version "17.0.3"
@@ -4640,6 +4650,13 @@ react-is@^18.0.0:
   version "18.3.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.3.1.tgz#e83557dc12eae63a99e003a46388b1dcbb44db7e"
   integrity sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==
+
+react-native-bouncy-checkbox@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/react-native-bouncy-checkbox/-/react-native-bouncy-checkbox-4.1.2.tgz#c4bb6f5bd6eca45e07a450f74b791734dcf542ea"
+  integrity sha512-hB7YwCGTNoMpTPOPiP+RWyQH35S6vxUbc7IGEW/Rqyp7GonEyhtqtthmxiphneRXnywMh8CZwND7OnvppJZscg==
+  dependencies:
+    "@freakycoder/react-native-bounceable" "^1.0.3"
 
 react-native-linear-gradient@^2.8.3:
   version "2.8.3"
