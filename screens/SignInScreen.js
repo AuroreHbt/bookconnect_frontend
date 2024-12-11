@@ -247,9 +247,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#D84815",
     margin: 40,
     borderRadius: 10,
-    paddingVertical: 10,
-    paddingLeft: 40,
-    paddingRight: 40,
+    padding: 10,
     justifyContent: 'center',
     width: '80%',
   },
@@ -257,6 +255,7 @@ const styles = StyleSheet.create({
   textButton: {
     color: "white",
     fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 

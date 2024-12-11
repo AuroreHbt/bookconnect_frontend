@@ -267,8 +267,6 @@ const styles = StyleSheet.create({
     margin: 40,
     borderRadius: 10,
     padding: 10,
-    paddingLeft: 50,
-    paddingRight: 50,
     justifyContent: 'center',
     width: '80%',
   },
@@ -276,5 +274,6 @@ const styles = StyleSheet.create({
   textButton: {
     color: "white",
     fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
