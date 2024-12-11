@@ -101,6 +101,8 @@ export default function SignInScreen({ navigation }) {
             })
           );
           console.log("Connexion réussie");
+          setPassword("");
+          setUsername("");
           navigation.navigate("TabNavigator", { screen: "Dashboard" });
         } else {
           console.log("Erreur lors de la connexion:", data.error);

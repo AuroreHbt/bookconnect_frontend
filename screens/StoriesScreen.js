@@ -4,19 +4,19 @@ import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platfor
 export default function StoriesScreen({ navigation }) {
 
     const handleNewStory = () => {
-        navigation.navigate('Histoire', { screen: 'NewStoryScreen' })
+        navigation.navigate('NewStory')
     }
 
     const handleMyPublishedStories = () => {
-        navigation.navigate('Histoire', { screen: 'MyPublishedStoriesScreen' })
+        navigation.navigate('MyPublishedStories')
     }
 
     const handleMyCurrentReadings = () => {
-        navigation.navigate('Histoire', { screen: 'MyCurrentReadingsScreen' })
+        navigation.navigate('MyCurrentReadings')
     }
 
     const handleFindStories = () => {
-        navigation.navigate('Histoire', { screen: 'FindStoriesScreen' })
+        navigation.navigate('FindStories')
     }
 
 

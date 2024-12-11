@@ -17,6 +17,12 @@ import SignUpScreen from './screens/SignUpScreen';
 import SignInScreen from './screens/SignInScreen';
 import DashboardScreen from './screens/DashboardScreen';
 import MapScreen from './screens/MapScreen';
+import FindStoriesScreen from './screens/FindStoriesScreen';
+import MyCurrentReadingsScreen from './screens/MyCurrentReadingsScreen';
+import MyPublishedStoriesScreen from './screens/MyPublishedStoriesScreen';
+import NewStoryScreen from './screens/NewStoryScreen';
+import ReadStoryScreen from './screens/ReadStoryScreen';
+import ResultResearchStoriesScreen from './screens/ResultResearchStoriesScreen';
 
 // Imports pour configurer le store redux
 import user from './reducers/user';
@@ -82,6 +88,12 @@ export default function App() {
           <Stack.Screen name="SignUp" component={SignUpScreen} />
           <Stack.Screen name="SignIn" component={SignInScreen} />
           <Stack.Screen name="MapScreen" component={MapScreen} />
+          <Stack.Screen name="FindStories" component={FindStoriesScreen} />
+          <Stack.Screen name="MyCurrentReadings" component={MyCurrentReadingsScreen} />
+          <Stack.Screen name="MyPublishedStories" component={MyPublishedStoriesScreen} />
+          <Stack.Screen name="NewStory" component={NewStoryScreen} />
+          <Stack.Screen name="ReadStory" component={ReadStoryScreen} />
+          <Stack.Screen name="ResultResearchStories" component={ResultResearchStoriesScreen} />
           <Stack.Screen name="TabNavigator" component={TabNavigator} />
         </Stack.Navigator>
       </NavigationContainer>
