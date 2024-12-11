@@ -1,20 +1,15 @@
 import { useEffect, useState } from 'react';
 import { Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { addPlace, importPlaces } from '../reducers/user';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
-
-const BACKEND_ADDRESS = 'http://BACKEND_IP:3000';
 
 export default function MapScreen() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
 
   const [currentPosition, setCurrentPosition] = useState(null);
-  const [tempCoordinates, setTempCoordinates] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [newPlace, setNewPlace] = useState('');
+
 
   useEffect(() => {
     (async () => {
@@ -28,64 +23,14 @@ export default function MapScreen() {
           });
       }
     })();
-
-    fetch(`${BACKEND_ADDRESS}/places/${user.nickname}`)
-      .then((response) => response.json())
-      .then((data) => {
-        data.result && dispatch(importPlaces(data.places));
-      });
   }, []);
 
-  const handleLongPress = (e) => {
-    setTempCoordinates(e.nativeEvent.coordinate);
-    setModalVisible(true);
-  };
 
-  const handleNewPlace = () => {
-    // Send new place to backend to register it in database
-    fetch(`${BACKEND_ADDRESS}/places`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nickname: user.nickname, name: newPlace, latitude: tempCoordinates.latitude, longitude: tempCoordinates.longitude }),
-    }).then((response) => response.json())
-      .then((data) => {
-        // Dispatch in Redux store if the new place have been registered in database
-        if (data.result) {
-          dispatch(addPlace({ name: newPlace, latitude: tempCoordinates.latitude, longitude: tempCoordinates.longitude }));
-          setModalVisible(false);
-          setNewPlace('');
-        }
-      });
-  };
-
-  const handleClose = () => {
-    setModalVisible(false);
-    setNewPlace('');
-  };
-
-  const markers = user.places.map((data, i) => {
-    return <Marker key={i} coordinate={{ latitude: data.latitude, longitude: data.longitude }} title={data.name} />;
-  });
 
   return (
     <View style={styles.container}>
-      <Modal visible={modalVisible} animationType="fade" transparent>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <TextInput placeholder="New place" onChangeText={(value) => {console.log(value);setNewPlace(value)}} value={newPlace} style={styles.input} />
-            <TouchableOpacity onPress={() => handleNewPlace()} style={styles.button} activeOpacity={0.8}>
-              <Text style={styles.textButton}>Add</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleClose()} style={styles.button} activeOpacity={0.8}>
-              <Text style={styles.textButton}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-
       <MapView onLongPress={(e) => handleLongPress(e)} mapType="hybrid" style={styles.map}>
         {currentPosition && <Marker coordinate={currentPosition} title="My position" pinColor="#fecb2d" />}
-        {markers}
       </MapView>
     </View>
   );

@@ -12,13 +12,14 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import HomeScreen from './screens/HomeScreen';
 import EventsScreen from './screens/EventsScreen';
 import StoriesScreen from './screens/StoriesScreen';
-import FavoritesScreen from './screens/FavoritesScreen'
-import SignUpScreen from './screens/SignUpScreen'
-import SignInScreen from './screens/SignInScreen'
-import DashboardScreen from './screens/DashboardScreen'
+import FavoritesScreen from './screens/FavoritesScreen';
+import SignUpScreen from './screens/SignUpScreen';
+import SignInScreen from './screens/SignInScreen';
+import DashboardScreen from './screens/DashboardScreen';
+import MapScreen from './screens/MapScreen';
 
 // Imports pour configurer le store redux
-import user from './reducers/user'
+import user from './reducers/user';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit'
 
@@ -81,6 +82,7 @@ export default function App() {
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
           <Stack.Screen name="SignIn" component={SignInScreen} />
+          <Stack.Screen name="MapScreen" component={MapScreen} />
           <Stack.Screen name="TabNavigator" component={TabNavigator} />
         </Stack.Navigator>
       </NavigationContainer>

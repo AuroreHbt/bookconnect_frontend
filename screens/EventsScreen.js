@@ -1,80 +1,138 @@
-import { StyleSheet, KeyboardAvoidingView, Platform, Text, View } from 'react-native';
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import {
+  SafeAreaView,
+  feAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  KeyboardAvoidingView,
+  TextInput,
+  TouchableOpacity,
+  View,
+  Platform,
+  Modal,
+  SafeAreaProvider,
+  Image,
+  GreySeparator,
+  FlatList,
+  Dimensions,
+  Icon,
+} from "react-native";
 
-export default function EventsScreen() {
-    
-    const handleSubmitSignUp = () => {
-        navigation.navigate('SignUp', { screen: 'MapScreen' })
-    }
 
-    const handleSubmitSignIn = () => {
-        navigation.navigate('SignIn', { screen: 'DashboardScreen' })
-    }
 
-    return (
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-          
-          <View>
-                <Text style={styles.text}>Share, discover, write</Text>
-            </View>
+export default function EventsScreen({navigation}) {
 
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity onPress={handleSubmitSignUp} style={styles.button}>
-                    <Text style={styles.textButton}>S'inscrire</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleSubmitSignIn} style={styles.button}>
-                    <Text style={styles.textButton}>Se connecter</Text>
-                </TouchableOpacity>
-            </View>
-        </KeyboardAvoidingView>
-    );
-};
 
+  const handleGoToMap = () => {
+    navigation.navigate("MapScreen");
+  };
+
+  const handleGoToFavorite = () => {
+    navigation.navigate("TabNavigator", { screen: "Favoris" });
+  };
+
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+      <View style={styles.inputContainer}>
+        <View style={styles.input}>
+        <FontAwesome name="map-marker" size={30} color="#D84815" />
+          <TextInput
+            placeholder="Ville ..."
+            //   onChangeText={(value) => setUsername(value)}
+            //   value={username}
+            //   style={styles.input}
+          />
+        </View>
+        <View style={styles.input}>
+        <FontAwesome name="search" size={30} color="#D84815" />
+          <TextInput
+            placeholder="Type d'évenement ..."
+            //   onChangeText={(value) => setUsername(value)}
+            //   value={username}
+            //   style={styles.input}
+          />
+        </View>
+      </View>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={handleGoToMap} style={styles.button}>
+          <Text style={styles.textButton}>Rechercher</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleGoToFavorite} style={styles.button}>
+          <Text style={styles.textButton}>Mes événements</Text>
+        </TouchableOpacity>
+      </View>
+    </KeyboardAvoidingView>
+  );
+}
 
 // attention : le StyleSheet doit bien être en dehors de la fonction!
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
 
-    container: {
-        flex: 1,
-        backgroundColor: '#ffffff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
+  logo: {
+    flex: 0.5,
+    width: "75%",
+    height: "50%",
+  },
 
-    logo: {
-        flex: 0.5,
-        width: '75%',
-        height: '50%',
-    },
+  title: {
+    fontSize: 36,
+    fontWeight: "bold",
+    fontFamily: "sans-serif",
+    marginBottom: 10,
+  },
 
-    title: {
-        fontSize: 36,
-        fontWeight: 'bold',
-        fontFamily: 'sans-serif',
-        marginBottom: 10,
-    },
+  inputContainer: {
+    
+    justifyContent: "center",
+    width : '50%'
+  },
 
-    text: {
-        fontSize: 22,
-        fontFamily: 'sans-serif',
-        marginBottom: 50,
-    },
+  input: {
+    flexDirection : "raw",
+    alignContent: "center",
+    backgroundColor: "#EEECE8",
+    paddingVertical : 15,
+    borderRadius: 1,
+    width: "100%",
+    margin: 10,
+    justifyContent: "center",
+  },
 
-    buttonContainer: {
-        marginBottom: 25,
-    },
+  text: {
+    fontSize: 22,
+    fontFamily: "sans-serif",
+    marginBottom: 50,
+  },
 
-    button: {
-        backgroundColor: '#CE5705',
-        borderRadius: 10,
-        paddingVertical: 15,
-        paddingHorizontal: 35,
-        margin: 15,
-    },
+  buttonContainer: {
+    marginBottom: 25,
+  },
 
-    textButton: {
-        color: 'white',
-        fontSize: 18,
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
+  button: {
+    backgroundColor: "#D84815",
+    borderRadius: 10,
+    paddingVertical: 15,
+    paddingHorizontal: 35,
+    margin: 15,
+  },
+
+  textButton: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  
 });
