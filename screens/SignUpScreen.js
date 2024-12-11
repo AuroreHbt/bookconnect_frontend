@@ -170,7 +170,7 @@ export default function SignUpScreen({ navigation }) {
             <Icon
               name={showPassword ? 'eye' : 'eye-slash'}
               size={24}
-              color={showPassword ? '#D84815' : '#000000'}
+              color={showPassword ? '#D84815' : '#D3D3D3'}
             />
           </TouchableOpacity>
         </View>
