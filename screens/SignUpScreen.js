@@ -13,12 +13,12 @@ import {
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 
-// Regex pour valider les emails et mots de passe
+/* // Regex pour valider les emails et mots de passe
 const EMAIL_REGEX =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const usernameRegex = /^[a-zA-Z0-9]{3,}$/; // Uniquement des carctères alphanumériques et long d'au moins 3 carctères
 const passwordRegex =
-  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/; // Rentrer au moins une lettre, un chiffre et un caractère spécial et 8 caractères mini.
+  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/; // Rentrer au moins une lettre, un chiffre et un caractère spécial et 8 caractères mini. */
 
 // Adresse du backend via la variable d'environnement
 const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
@@ -39,7 +39,7 @@ export default function SignUpScreen({ navigation }) {
   // Etat pour afficher ou masquer le mot de passe
   const [showPassword, setShowPassword] = useState(false);
 
-  const validateFields = () => {
+  /* const validateFields = () => {
     let isValid = true;
 
     // Validation de l'email
@@ -71,18 +71,18 @@ export default function SignUpScreen({ navigation }) {
     }
 
     return isValid;
-  };
+  }; */
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword); //  Fonction pour afficher ou non le mot de passe
   };
 
   const handleSubmitSignUp = () => {
-    // Early return si les champs, username, email mot de passes ne sont pas remplies correctement
+   /*  // Early return si les champs, username, email mot de passes ne sont pas remplies correctement
     if (!validateFields()) {
       console.log("Validation échouée");
       return;
-    }
+    } */
     // Fetch de la route post du backend pour l'inscription
     fetch(`${BACKEND_ADDRESS}/users/signup`, {
       method: "POST",
