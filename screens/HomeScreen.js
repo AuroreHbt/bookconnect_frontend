@@ -59,12 +59,14 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontFamily: 'sans-serif',
         marginBottom: 10,
+        color: '#371B0C',
     },
 
     text: {
         fontSize: 22,
-        fontFamily: 'sans-serif',
+        fontFamily: 'Poppins',
         marginBottom: 50,
+        color: '#371B0C',
     },
 
     buttonContainer: {
@@ -72,7 +74,7 @@ const styles = StyleSheet.create({
     },
 
     button: {
-        backgroundColor: '#CE5705',
+        backgroundColor: '#D84815',
         borderRadius: 10,
         paddingVertical: 15,
         paddingHorizontal: 35,

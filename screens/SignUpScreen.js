@@ -77,6 +77,10 @@ export default function SignUpScreen({ navigation }) {
     setShowPassword(!showPassword); //  Fonction pour afficher ou non le mot de passe
   };
 
+  const handleBack = () => {
+    navigation.navigate('Home', { screen: 'HomeScreen' })
+  }
+
   const handleSubmitSignUp = () => {
    /*  // Early return si les champs, username, email mot de passes ne sont pas remplies correctement
     if (!validateFields()) {
@@ -121,6 +125,7 @@ export default function SignUpScreen({ navigation }) {
       <View>
         <Text style={styles.title}>BookConnect</Text>
       </View>
+      <View style={styles.separator} />
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="Nom d'utilisateur"
@@ -152,6 +157,7 @@ export default function SignUpScreen({ navigation }) {
         {passwordError ? (
           <Text style={styles.errorText}>{passwordError}</Text>
         ) : null}
+
         <TouchableOpacity
           onPress={() => handleSubmitSignUp()}
           style={styles.button}
@@ -159,6 +165,16 @@ export default function SignUpScreen({ navigation }) {
         >
           <Text style={styles.textButton}>S'inscrire</Text>
         </TouchableOpacity>
+
+        <View style={styles.returnContainer}>
+          <TouchableOpacity
+            onPress={() => handleBack()}
+            style={styles.returnButton}
+            activeOpacity={0.8}
+          >
+            <Text stye={styles.textReturn}>J'ai déjà un compte</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </KeyboardAvoidingView>
   );
@@ -179,39 +195,51 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    
     fontSize: 30,
-    marginBottom: 40,
-    marginTop: 80
+    marginBottom: 150,
+    fontWeight: 'bold',
+    color: '#371B0C',
   },
 
+  separator: {
+    width: '25%',
+    height: 3,
+    backgroundColor: '#371B0C',
+    position: 'absolute',
+    top: 350
+  },
+
+
   inputContainer: {
-    
     justifyContent: "center",
-    width : '50%'
+    alignItems: 'center',
+    width: '50%'
   },
 
   input: {
-    
     backgroundColor: "#EEECE8",
-    paddingVertical : 15,
+    paddingVertical: 15,
     borderRadius: 1,
     width: "100%",
     margin: 10,
     justifyContent: "center",
+    borderRadius: 5,
+    paddingLeft: 10
   },
 
   button: {
-    backgroundColor: "#CE5705",
-    margin: 20,
+    backgroundColor: "#D84815",
+    margin: 40,
     borderRadius: 10,
-    padding: 15,
+    padding: 10,
     paddingLeft: 50,
     paddingRight: 50,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    width: '80%',
   },
 
   textButton: {
     color: "white",
+    fontWeight: 'bold',
   },
 });
