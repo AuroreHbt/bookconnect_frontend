@@ -1,4 +1,8 @@
 import React, { useState } from "react";
+
+// import de la bibliothèque d'icône Fontawsome via react-native-vector-icons
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 import {
   Image,
   KeyboardAvoidingView,
@@ -14,10 +18,10 @@ import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 
 // Regex pour valider les emails et mots de passe
-const EMAIL_REGEX =
-  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-const passwordRegex =
-  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/; // Rentrer au moins une lettre, un chiffre et un caractère spécial et 8 caractères mini.
+const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+// Rentrer au moins une lettre, un chiffre et un caractère spécial et 8 caractères mini.
 
 // Adresse du backend via la variable d'environnement
 const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
@@ -76,6 +80,7 @@ export default function SignInScreen({ navigation }) {
       console.log("Validation échouée");
       return;
     }
+
     // Fetch de la route post du backend pour la connexion
     fetch(`${BACKEND_ADDRESS}/users/signin`, {
       method: "POST",
@@ -130,13 +135,27 @@ export default function SignInScreen({ navigation }) {
           style={styles.input}
         />
         {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
-        <TextInput
-          placeholder="Mot de passe"
-          secureTextEntry={!showPassword}
-          onChangeText={(value) => setPassword(value)}
-          value={password}
-          style={styles.input}
-        />
+
+        <View style={styles.inputPwd}>
+          <TextInput
+            placeholder="Mot de passe"
+            secureTextEntry={!showPassword}
+            onChangeText={(value) => setPassword(value)}
+            value={password}
+            style={styles.input}
+          />
+          <TouchableOpacity
+            style={styles.iconContainer}
+            onPress={toggleShowPassword}
+          >
+            <Icon
+              name={showPassword ? 'eye' : 'eye-slash'}
+              size={24}
+              color={showPassword ? '#D84815' : '#000000'}
+            />
+          </TouchableOpacity>
+        </View>
+
         {passwordError ? (
           <Text style={styles.errorText}>{passwordError}</Text>
         ) : null}
@@ -192,6 +211,20 @@ const styles = StyleSheet.create({
     top: 350
   },
 
+  inputPwd: {
+    flexDirection: 'row',
+    justifyContent: "center",
+    alignItems: 'center',
+    width: '100%' // 100% de la largeur de inputContainer
+  },
+
+  iconContainer: {
+    position: 'absolute', // position absolue pour superposer l'icone sur l'input
+    right: 10,
+    top: 0,
+    bottom: 0,
+    justifyContent: 'center',
+  },
 
   inputContainer: {
     justifyContent: "center",
