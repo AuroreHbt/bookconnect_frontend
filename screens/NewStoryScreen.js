@@ -12,21 +12,20 @@ import {
 
 import { useDispatch } from "react-redux";
 
-export default function newStoriesScreen({navigation}) {
-const dispatch = useDispatch();
 
-const [story, setStory] = useState('');
-const [title, setTitle] = useState('')
-const [cover, setCover] = useState('')
+export default function NewStoryScreen({ navigation }) {
+  const dispatch = useDispatch();
+
+  const [story, setStory] = useState('');
+  const [title, setTitle] = useState('')
+  const [cover, setCover] = useState('')
 
 const handlePostStory = () => {
-    navigation.navigate('StoriesScreen', { screen: 'MyPublishedStoriesScreen' })
+    navigation.navigate('Histoire', { screen: 'MyPublishedStoriesScreen' })
   }
 
 
-
-
-return (
+  return (
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -70,4 +69,14 @@ return (
 }
 
 
-const styles = StyleSheet.create({})
+
+// attention : le StyleSheet doit bien être en dehors de la fonction!
+const styles = StyleSheet.create({
+
+  container: {
+    flex: 1,
+    backgroundColor: 'pink',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
