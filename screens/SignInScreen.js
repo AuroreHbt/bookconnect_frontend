@@ -67,10 +67,8 @@ export default function SignInScreen({ navigation }) {
     setShowPassword(!showPassword);
   };
 
-  const handleBack = () => {
-    navigation.navigate('Home', { screen: 'HomeScreen' })
-  }
-
+  // https://reactnavigation.org/docs/navigation-object/#goback
+  const goBack = () => navigation.goBack();
 
   const handleSubmitSignIn = () => {
     // Early return si les champs, email et mot de passes ne sont pas remplies correctement
@@ -153,7 +151,7 @@ export default function SignInScreen({ navigation }) {
 
         <View style={styles.returnContainer}>
           <TouchableOpacity
-            onPress={() => handleBack()}
+            onPress={goBack}
             style={styles.returnButton}
             activeOpacity={0.8}
           >

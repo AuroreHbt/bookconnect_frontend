@@ -77,16 +77,15 @@ export default function SignUpScreen({ navigation }) {
     setShowPassword(!showPassword); //  Fonction pour afficher ou non le mot de passe
   };
 
-  const handleBack = () => {
-    navigation.navigate('Home', { screen: 'HomeScreen' })
-  }
+  // https://reactnavigation.org/docs/navigation-object/#goback
+  const goBack = () => navigation.goBack();
 
   const handleSubmitSignUp = () => {
-   /*  // Early return si les champs, username, email mot de passes ne sont pas remplies correctement
-    if (!validateFields()) {
-      console.log("Validation échouée");
-      return;
-    } */
+    /*  // Early return si les champs, username, email mot de passes ne sont pas remplies correctement
+     if (!validateFields()) {
+       console.log("Validation échouée");
+       return;
+     } */
     // Fetch de la route post du backend pour l'inscription
     fetch(`${BACKEND_ADDRESS}/users/signup`, {
       method: "POST",
@@ -168,7 +167,7 @@ export default function SignUpScreen({ navigation }) {
 
         <View style={styles.returnContainer}>
           <TouchableOpacity
-            onPress={() => handleBack()}
+            onPress={goBack}
             style={styles.returnButton}
             activeOpacity={0.8}
           >
