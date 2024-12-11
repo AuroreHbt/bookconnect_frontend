@@ -11,6 +11,7 @@ import {
   View,
   Modal,
   Image,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { useDispatch } from "react-redux";
 import { logout } from "../reducers/user";
@@ -44,10 +45,13 @@ export default function DashboardScreen({ navigation }) {
 
     <SafeAreaView style={styles.container} >
       <ScrollView contentContainerStyle={styles.scrollContent}>
+
         {/* Dégradé en haut */}
       <View style={styles.gradientContainer}>
         <LinearGradient
           colors={['#FFA500', '#FF4500']}
+          start={{ x: 0, y: 0 }} // Début du gradient (coin haut gauche)
+          end={{ x: 1, y: 1 }}   // Fin du gradient (coin bas droit)
           style={styles.gradient}
         />
       </View>
@@ -59,7 +63,7 @@ export default function DashboardScreen({ navigation }) {
           {/* Icône Paramètre */}
         </View>
         <TouchableOpacity onPress={toggleParameter} style={styles.ParameterButton}>
-          <FontAwesome name="gear" size={40} color="white" />
+          <FontAwesome name="gear" size={30} color="white" />
         </TouchableOpacity>
       </View>
 
@@ -70,19 +74,19 @@ export default function DashboardScreen({ navigation }) {
         visible={isParameterVisible}
         onRequestClose={toggleParameter}
       >
+        {/* TouchableWithoutFeedback pour fermer la modal quand on touche n'importe où sur l'écran */}
+        <TouchableWithoutFeedback onPress={toggleParameter}>
+        <View style={styles.overlay}>
         <View style={styles.ParameterContent}>
-
-          {/* Bouton Fermer */}
-          <TouchableOpacity onPress={toggleParameter} style={styles.closeButton}>
-            <FontAwesome name="close" size={20} color="black" />
-          </TouchableOpacity>
 
           {/* Options de paramètres */}
           <TouchableOpacity style={styles.optionButton}>
             <Text style={styles.optionText} onPress={() => handleLogout()}>Déconnexion</Text>
             <FontAwesome name='sign-out' size={20} color='black' style={styles.logoutIcon} />
           </TouchableOpacity>
+          </View>
         </View>
+        </TouchableWithoutFeedback>
       </Modal>
 
       {/* Photo de profil et Message de bienvenue */}
@@ -188,9 +192,9 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     width: '100%',
-    height: 200, // Hauteur du gradient
-    borderBottomLeftRadius: 50, // Arrondi en bas à gauche
-    borderBottomRightRadius: 50, // Arrondi en bas à droite
+    height: 150, // Hauteur du gradient
+    borderBottomLeftRadius: 150, // Arrondi en bas à gauche
+    borderBottomRightRadius: 150, // Arrondi en bas à droite
     overflow: 'hidden', // Nécessaire pour l'arrondi
   },
   gradient: {
@@ -203,7 +207,7 @@ const styles = StyleSheet.create({
 
   header: {
     position: 'absolute', // Colle le header en haut
-    top: 30, // Définit le haut
+    top: 10, // Définit le haut
     width: '100%', // Prend toute la largeur
     flexDirection: "row", // En ligne
     justifyContent: "space-between",
@@ -223,7 +227,7 @@ const styles = StyleSheet.create({
   },
 
   identityUser: {
-    marginTop: 100, // Décale le contenu pour éviter le header
+    marginTop: 60, // Décale le contenu pour éviter le header
     alignItems: "center",
     marginVertical: 50,
   },
@@ -233,12 +237,11 @@ const styles = StyleSheet.create({
     height: 150,
     borderRadius: 100,
     marginBottom: 10,
-    backgroundColor: '#f2f2f2',
   },
 
   welcome: {
-    fontSize: 30,
-    color: 'black',
+    fontSize: 36,
+    color: '#6c4300',
     fontWeight: '600',
     fontFamily: 'Times'
   },
@@ -249,6 +252,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     paddingHorizontal: 20,
     marginBottom: 40,
+    paddingBottom: 30,
   },
 
   sectionHeader: {
@@ -277,7 +281,8 @@ const styles = StyleSheet.create({
 
   textSection: {
     fontSize: 20,
-    color: 'black',
+    color: '#443108',
+    fontWeight: '600',
     marginRight: 10,
     fontFamily: 'Poppins',
   },
@@ -316,7 +321,7 @@ const styles = StyleSheet.create({
 
   ParameterContent: {
     position: 'absolute',
-    top: 50, // Ajuste pour correspondre à la position de ton icône
+    top: 85, // Ajuste pour correspondre à la position de ton icône
     right: 80, // Ajuste selon l'alignement de l'icône
     backgroundColor: '#EEECE8',
     borderRadius: 10,
@@ -327,7 +332,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 5, // Pour ombre sur Android
-    zIndex: 100, // Assure-toi qu'elle est au premier plan
+    zIndex: 100, // Premier plan
   },
   ParameterTitle: {
     fontSize: 18,
@@ -347,9 +352,12 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     fontFamily: 'Poppins',
   },
-  closeButton: {
-    alignSelf: 'flex-end',
-    marginTop: 10, // espace entre la croix et le contenu Déconnexion
+
+  overlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)', // Fond semi-transparent
   },
 
 });
