@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   },
 
   logo: {
-    flex: 0.3,
+    flex: 0.5,
     width: "50%",
     height: "50%",
   },
@@ -207,8 +207,6 @@ const styles = StyleSheet.create({
     width: '25%',
     height: 3,
     backgroundColor: '#371B0C',
-    position: 'absolute',
-    top: 350
   },
 
   inputPwd: {
@@ -245,7 +243,7 @@ const styles = StyleSheet.create({
 
   button: {
     backgroundColor: "#D84815",
-    margin: 40,
+    marginVertical: 40,
     borderRadius: 10,
     padding: 10,
     justifyContent: 'center',
