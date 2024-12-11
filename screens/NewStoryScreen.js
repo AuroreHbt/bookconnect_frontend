@@ -31,7 +31,7 @@ export default function NewStoryScreen({ navigation }) {
   const [fileError, setFileError] = useState("");
   const [descError, setDescError] = useState('')
 
-  const [isAdult, setIsAdult] = useState('')
+  const [isAdult, setIsAdult] = useState(false)
 
   const handleSelectStoryFile = async () => {
     try {
@@ -60,7 +60,7 @@ export default function NewStoryScreen({ navigation }) {
   const handleSelectCoverImage = async () => {
     try {
       const image = await DocumentPicker.getDocumentAsync({
-        type: ["image/jpeg", "image/png"], 
+        type: ["image/jpeg", "image/png", "image/jpg"], 
         copyToCacheDirectory: true, 
       });
 
@@ -101,7 +101,7 @@ const handlePostStory = async () => {
     setFileError('Entrez une description')
     hasError = true
   } else {
-    setFileError('')
+    setDescError('')
   }
 
 
@@ -109,6 +109,8 @@ const handlePostStory = async () => {
 
   const formData = new FormData();
   formData.append('title', title)
+  formData.append('description', description)
+  formData.append("isAdult", isAdult)
   formData.append('storyFile', {
     uri: storyFile.uri,
     name: storyFile.name,
