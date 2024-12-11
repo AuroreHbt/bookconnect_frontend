@@ -1,20 +1,16 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { LinearGradient } from 'expo-linear-gradient';
 import {
-  SafeAreaView, feAreaView,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
   Modal,
-  SafeAreaProvider,
   Image,
-  GreySeparator,
-  FlatList,
-  Dimensions,
 } from 'react-native';
 
 
@@ -26,15 +22,6 @@ export default function DashboardScreen() {
     { id: '3', image: require('../assets/avatar.png') },
   ];
 
-  const Carousel = () => {
-    const [currentIndex, setCurrentIndex] = useState(0);
-
-    const onScroll = (event) => {
-      const contentOffsetX = event.nativeEvent.contentOffset.x;
-      const index = Math.round(contentOffsetX / Dimensions.get('window').width);
-      setCurrentIndex(index);
-    };
-  };
 
   // const dispatch = useDispatch()
   const user = useSelector((state) => state.user.value);
@@ -48,19 +35,23 @@ export default function DashboardScreen() {
   return (
 
     <SafeAreaView style={styles.container} >
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* Dégradé en haut */}
+      <View style={styles.gradientContainer}>
+        <LinearGradient
+          colors={['#FFA500', '#FF4500']}
+          style={styles.gradient}
+        />
+      </View>
       <View style={styles.header}>
 
         {/* Logo et Nom de l'app */}
         <View style={styles.identityApp}>
-          <Image
-            source={require('../assets/LogoBc.png')}
-            style={styles.logo}
-          />
 
           {/* Icône Paramètre */}
         </View>
         <TouchableOpacity onPress={toggleParameter} style={styles.ParameterButton}>
-          <FontAwesome name="gear" size={40} color="#a2845e" />
+          <FontAwesome name="gear" size={40} color="white" />
         </TouchableOpacity>
       </View>
 
@@ -88,7 +79,7 @@ export default function DashboardScreen() {
       {/* Photo de profil et Message de bienvenue */}
       <View style={styles.identityUser}>
         <Image
-          source={require('../assets/avatar.png')}
+          source={require('../assets/avatar1.jpeg')}
           style={styles.avatar}
         />
         <Text style={styles.welcome}>Hello {user?.username || 'Utilisateur'}</Text>
@@ -96,50 +87,80 @@ export default function DashboardScreen() {
 
       {/* Section carrousel mes lectures en cours */}
       <View style={styles.sectionContainer}>
-        <View style={styles.section}>
+        {/* Titre de la section */}
+        <View style={styles.sectionHeader}>
           <Text style={styles.textSection}>Mes lectures en cours</Text>
-          <FontAwesome name="arrow-right" size={20} color="#a2845e" />
+          <FontAwesome name="arrow-right" size={20} color="#D84815" />
         </View>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <View>
-            <Text style={styles.carrousel}>Book1</Text>
+        {/* ScrollView horizontal */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.booksContainer}>
+          <View style={styles.bookCard}>
             <Image
-              source={require('../assets/avatar.png')}
-              style={styles.avatar}
+              source={require('../assets/book3.png')}
+              style={styles.book}
             />
+            <Text style={styles.textCard}>Book1</Text>
+            <Text style={styles.subtextCard}>Elina M.</Text>
           </View>
-          <View>
-            <Text style={styles.carrousel}>Book2</Text>
+          <View style={styles.bookCard}>
             <Image
-              source={require('../assets/avatar.png')}
-              style={styles.avatar}
+              source={require('../assets/book1.png')}
+              style={styles.book}
             />
+            <Text style={styles.textCard}>Book2</Text>
+            <Text style={styles.subtextCard}>Aurore H.</Text>
           </View>
-          <View>
-            <Text style={styles.carrousel}>Book3</Text>
+          <View style={styles.bookCard}>
             <Image
-              source={require('../assets/avatar.png')}
-              style={styles.avatar}
+              source={require('../assets/book2.png')}
+              style={styles.book}
             />
+            <Text style={styles.textCard}>Book3</Text>
+            <Text style={styles.subtextCard}>Robin L.</Text>
           </View>
-          <View>
-            <Text style={styles.carrousel}>Book4</Text>
+          <View style={styles.bookCard}>
             <Image
-              source={require('../assets/avatar.png')}
-              style={styles.avatar}
+              source={require('../assets/book4.png')}
+              style={styles.book}
             />
+            <Text style={styles.textCard}>Book4</Text>
+            <Text style={styles.subtextCard}>Marie B.</Text>
           </View>
         </ScrollView>
       </View>
 
-      {/* Section carrousel mes évenements plannifiés*/}
-      <View style={styles.sectionContainer}>
-        <View style={styles.section}>
+     {/* Section carrousel mes évènements */}
+     <View style={styles.sectionContainer}>
+        {/* Titre de la section */}
+        <View style={styles.sectionHeader}>
           <Text style={styles.textSection}>Mes évènements</Text>
-          <FontAwesome name="arrow-right" size={20} color="black" />
+          <FontAwesome name="arrow-right" size={20} color="#D84815" />
         </View>
-        <Text style={styles.calendrier}>Calendrier</Text>
+        {/* ScrollView horizontal des évènements*/}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.eventsContainer}>
+          <View style={styles.bookCard}>
+          <View style={styles.event} backgroundColor={'green'}></View>
+            <Text style={styles.textCard}>Event1</Text>
+            <Text style={styles.subtextCard}>Samedi 14 décembre</Text>
+          </View>
+          <View style={styles.bookCard}>
+            <View style={styles.event} backgroundColor={'blue'}></View>
+            <Text style={styles.textCard}>Event2</Text>
+            <Text style={styles.subtextCard}>Samedi 21 décembre</Text>
+          </View>
+          <View style={styles.bookCard}>
+          <View style={styles.event} backgroundColor={'red'}></View>
+            <Text style={styles.textCard}>Event3</Text>
+            <Text style={styles.subtextCard}>Mercredi 25 décembre</Text>
+          </View>
+          <View style={styles.bookCard}>
+          <View style={styles.event} backgroundColor={'pink'}></View>
+            <Text style={styles.textCard}>Event4</Text>
+            <Text style={styles.subtextCard}>Mercredi 31 décembre</Text>
+          </View>
+        </ScrollView>
       </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -151,13 +172,29 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
+  },
+  gradientContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    width: '100%',
+    height: 200, // Hauteur du gradient
+    borderBottomLeftRadius: 50, // Arrondi en bas à gauche
+    borderBottomRightRadius: 50, // Arrondi en bas à droite
+    overflow: 'hidden', // Nécessaire pour l'arrondi
+  },
+  gradient: {
+    flex: 1, // Remplit tout l'espace du conteneur
+  },
+
+  scrollConetnt: {
+    paddingVertical: 20,
   },
 
   header: {
     position: 'absolute', // Colle le header en haut
-    top: 40, // Définit le haut
+    top: 30, // Définit le haut
     width: '100%', // Prend toute la largeur
     flexDirection: "row", // En ligne
     justifyContent: "space-between",
@@ -172,59 +209,102 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  logo: {
-    height: 90,
-    width: 90,
-  },
-
-  title: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: 'black',
-  },
-
   ParameterButton: {
     padding: 10, // Zone cliquable plus grande
   },
 
   identityUser: {
-    marginTop: 10, // Décale le contenu pour éviter le header
+    marginTop: 100, // Décale le contenu pour éviter le header
     alignItems: "center",
-    marginVertical: 20,
+    marginVertical: 50,
   },
 
   avatar: {
     width: 150,
     height: 150,
-    borderRadius: 50,
+    borderRadius: 100,
     marginBottom: 10,
     backgroundColor: '#f2f2f2',
   },
 
   welcome: {
-    fontSize: 24,
-    color: '#333',
+    fontSize: 30,
+    color: 'black',
+    fontWeight: '600',
+    fontFamily: 'Times'
   },
 
   sectionContainer: {
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "space-between",
-    alignItems: 'center',
+    alignItems: 'flex-start',
     paddingHorizontal: 20,
-    marginBottom: 20,
+    marginBottom: 40,
   },
 
-  section: {
-    flex: 1,
+  sectionHeader: {
     flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
+    marginBottom: 20,
+    paddingLeft: 10,
+  },
+
+  booksContainer: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    paddingHorizontal: 5,
+  },
+
+  bookCard: {
+    marginRight: 15, // Espacement entre les livres
+    alignItems: "center",
+    shadowColor: '#000', // Couleur de l'ombre
+    shadowOffset: { width: 0, height: 4 }, // Décalage de l'ombre
+    shadowOpacity: 0.5, // Opacité de l'ombre
+    shadowRadius: 5, // Rayon de flou de l'ombre
+    elevation: 5, // Ombre sur Android
   },
 
   textSection: {
-    fontSize: 16,
-    color: '#555',
+    fontSize: 20,
+    color: 'black',
     marginRight: 10,
+    fontFamily: 'Poppins',
   },
+
+  textCard: {
+    fontSize: 20,
+    fontFamily: 'Times',
+    color: 'black',
+  },
+
+  subtextCard: {
+    fontSize: 12,
+    fontFamily: 'Poppins',
+    color: 'grey',
+  },
+
+  book: {
+    width: 180,
+    height: 300,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+
+  eventsContainer: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    paddingHorizontal: 5,
+  },
+
+  event: {
+    width: 180,
+    height: 200,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+
   ParameterContent: {
     position: 'absolute',
     top: 60, // Ajuste pour correspondre à la position de ton icône
