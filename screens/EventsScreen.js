@@ -22,7 +22,6 @@ import {
   Alert
 } from "react-native";
 
-import { SearchBar } from "react-native-screens";
 
 
 
@@ -37,28 +36,38 @@ export default function EventsScreen({navigation}) {
     }
   
     try {
-      // Requête à l'API Nominatim
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${searchText}&format=json`
-      );
-      const data = await response.json();
+       const apiKey =process.env.EXPO_PUBLIC_GOOGLE_API_KEY
+      // URL pour l'API Google Places
+      const url = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${searchText}&inputtype=textquery&fields=geometry&key=${apiKey}`;
   
-      if (data.length === 0) {
+      const response = await fetch(url);
+  
+      if (!response.ok) {
+        throw new Error(`Erreur ${response.status}: ${response.statusText}`);
+      }
+  
+      const data = await response.json();
+   console.log(data)
+      // Vérifier si des résultats sont retournés
+      if (data.candidates.length === 0) {
         Alert.alert('Erreur', 'Localisation introuvable');
         return;
       }
   
       // Extraire les coordonnées du premier résultat
-      const { lat, lon } = data[0];
+      const { lat, lng } = data.candidates[0].geometry.location;
+  
+      // Naviguer vers l'écran MapScreen avec les coordonnées
       navigation.navigate("MapScreen", {
         latitude: parseFloat(lat),
-        longitude: parseFloat(lon),
+        longitude: parseFloat(lng),
       });
     } catch (error) {
-      Alert.alert('Erreur', 'Une erreur est survenue lors de la recherche.');
       console.error(error);
+      Alert.alert('Erreur', 'Une erreur est survenue lors de la recherche.');
     }
   };
+
 
   const handleGoToFavorite = () => {
     navigation.navigate("TabNavigator", { screen: "Favoris" });
@@ -72,7 +81,7 @@ export default function EventsScreen({navigation}) {
       <View style={styles.inputContainer}>
         <View style={styles.input}>
         <FontAwesome name="map-marker" size={30} color="#D84815" />
-          <View
+          <TextInput 
             placeholder="Ville ..."
             onChangeText={(value) => setSearchText(value)}
             value={searchText}
