@@ -35,10 +35,12 @@ export default function NewStoryScreen({ navigation }) {
 
   const [isAdult, setIsAdult] = useState(false)
 
+  const user = useSelector((state) => state.user.value)
+
   const handleSelectStoryFile = async () => {
     try {
       const document = await DocumentPicker.getDocumentAsync({
-        type: ["application/pdf", "text/plain"], 
+        type: ["application/pdf", "text/plain", ], 
         copyToCacheDirectory: true, 
       });
 
@@ -116,9 +118,10 @@ const handlePostStory = async () => {
 
 
   const formData = new FormData();
+  formData.append('author', user.username)
   formData.append('title', title)
   formData.append('description', description)
-  formData.append("isAdult", isAdult ? "true" : false)
+  formData.append("isAdult", isAdult ? true : false)
   formData.append('storyFile', {
     uri: storyFile.uri,
     name: storyFile.name,
