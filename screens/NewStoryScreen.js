@@ -63,10 +63,6 @@ export default function NewStoryScreen({ navigation }) {
   const [descError, setDescError] = useState('');
   const [fileError, setFileError] = useState('');
 
-
-
-  const [isAdult, setIsAdult] = useState(false)
-
   const user = useSelector((state) => state.user.value)
 
   const handleSelectStoryFile = async () => {
