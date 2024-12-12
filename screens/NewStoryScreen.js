@@ -4,7 +4,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
-  Switch,
   Text,
   TextInput,
   TouchableOpacity,
@@ -12,13 +11,16 @@ import {
 } from "react-native";
 import Checkbox from 'expo-checkbox'
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as DocumentPicker from 'expo-document-picker'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 
 const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS
 
+
+
 export default function NewStoryScreen({ navigation }) {
+
   const dispatch = useDispatch();
 
 
@@ -82,6 +84,11 @@ export default function NewStoryScreen({ navigation }) {
   };
 
 const handlePostStory = async () => {
+  console.log("Titre :", title); 
+  console.log("Description :", description); 
+  console.log("Fichier texte :", storyFile); 
+  console.log("Image de couverture :", coverImage); 
+  console.log("Adulte :", isAdult); 
   let hasError = false
   if (!title) {
     setTitleError('Le titre est obligatoire')
@@ -107,16 +114,16 @@ const handlePostStory = async () => {
 
   if (hasError) return;
 
+
   const formData = new FormData();
   formData.append('title', title)
   formData.append('description', description)
-  formData.append("isAdult", isAdult)
+  formData.append("isAdult", isAdult ? "true" : false)
   formData.append('storyFile', {
     uri: storyFile.uri,
     name: storyFile.name,
-    type: storyFile.mimeType
+    type: storyFile.mimeType 
   });
-  formData.append("isAdult", isAdult)
   if (coverImage) {
     formData.append('coverImage', {
       uri: coverImage.uri,
@@ -124,6 +131,10 @@ const handlePostStory = async () => {
       type: coverImage.mimeType
     })
   }
+
+ 
+
+
 
   fetch(`${BACKEND_ADDRESS}/stories/addstory`, {
     method: "POST",
