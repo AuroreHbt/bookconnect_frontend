@@ -8,6 +8,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 // import pour utliser le hook useFonts pour charger la police
 import { useFonts } from 'expo-font';
 
+import { LinearGradient } from 'expo-linear-gradient';
+
 import {
   Image,
   KeyboardAvoidingView,
@@ -37,7 +39,6 @@ export default function SignInScreen({ navigation }) {
   // utilisation google fonts
   const [fontsLoaded] = useFonts({
     'Girassol-Regular': require('../assets/fonts/Girassol-Regular.ttf'),
-    'GermaniaOne-Regular': require('../assets/fonts/GermaniaOne-Regular.ttf'),
     'Poppins-Medium': require('../assets/fonts/Poppins-Medium.ttf'),
     'Poppins-Regular': require('../assets/fonts/Poppins-Regular.ttf'),
     'Poppins-Light': require('../assets/fonts/Poppins-Light.ttf'),
@@ -181,18 +182,26 @@ export default function SignInScreen({ navigation }) {
           <Text style={styles.errorText}>{passwordError}</Text>
         ) : null}
 
-        <TouchableOpacity
-          onPress={() => handleSubmitSignIn()}
-          style={styles.button}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.textButton}>Se connecter</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <LinearGradient
+            colors={['rgba(216, 72, 21, 1)', 'rgba(216, 72, 21, 0.8)']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={styles.gradientButton}
+          >
+            <TouchableOpacity
+              onPress={() => handleSubmitSignIn()}
+              style={styles.button}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.textButton}>Se connecter</Text>
+            </TouchableOpacity>
+          </LinearGradient>
+        </View>
 
-        <View style={styles.returnContainer}>
+        <View>
           <TouchableOpacity
             onPress={goBack}
-            style={styles.returnButton}
             activeOpacity={0.8}
           >
             <Text style={styles.textReturn}>Je n'ai pas encore de compte</Text>
@@ -219,9 +228,9 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontFamily: 'GermaniaOne-Regular',
+    fontFamily: 'Girassol-Regular',
     fontWeight: '400',
-    fontSize: 32,
+    fontSize: 36,
     marginBottom: 10,
     color: 'rgba(55, 27, 12, 0.9)', // #371B0C
   },
@@ -250,7 +259,6 @@ const styles = StyleSheet.create({
   },
 
   inputContainer: {
-    justifyContent: "center",
     alignItems: 'center',
     width: '90%'
   },
@@ -266,21 +274,37 @@ const styles = StyleSheet.create({
     margin: 10,
   },
 
-  button: {
-    backgroundColor: "#E0D2C3",
-    marginVertical: 35,
+  errorText: {
+    textAlign: 'left',
+    fontFamily: 'sans-serif',
+    fontSize: 16,
+    color: 'red',
+  },
+
+  buttonContainer: {
+    marginTop: 15,
+    marginBottom: 10,
+    width: '75%',
+    alignItems: 'center',
+  },
+
+  gradientButton: {
     borderRadius: 10,
-    padding: 10,
-    justifyContent: 'center',
+    marginVertical: 10,
     width: '65%',
   },
 
+  button: {
+    padding: 5,
+    margin: 10,
+  },
+
   textButton: {
-    color: "#371B0C", // rgba(55, 27, 12, 1)
-    // fontFamily: 'sans-serif',
+    textAlign: 'center',
+    fontFamily: 'sans-serif',
     fontWeight: 'bold',
     fontSize: 18,
-    textAlign: 'center',
+    color: 'white', // 'rgba(55, 27, 12, 0.8)', // #371B0C
   },
 
   textReturn: {
@@ -293,4 +317,3 @@ const styles = StyleSheet.create({
   },
 
 });
-
