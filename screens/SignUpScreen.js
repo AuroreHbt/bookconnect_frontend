@@ -3,6 +3,11 @@ import React, { useState } from "react";
 // import de la bibliothèque d'icône Fontawsome via react-native-vector-icons
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+// https://docs.expo.dev/versions/latest/sdk/font/
+// https://docs.expo.dev/develop/user-interface/fonts/
+// import pour utliser le hook useFonts pour charger la police
+import { useFonts } from 'expo-font';
+
 import {
   Image,
   KeyboardAvoidingView,
@@ -17,6 +22,7 @@ import {
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 
+
 // Regex pour valider les emails et mots de passe
 const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -30,6 +36,21 @@ const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8
 const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
 
 export default function SignUpScreen({ navigation }) {
+
+  // utilisation google fonts
+  const [fontsLoaded] = useFonts({
+    'Girassol-Regular': require('../assets/fonts/Girassol-Regular.ttf'),
+    'GermaniaOne-Regular': require('../assets/fonts/GermaniaOne-Regular.ttf'),
+    'Poppins-Medium': require('../assets/fonts/Poppins-Medium.ttf'),
+    'Poppins-Regular': require('../assets/fonts/Poppins-Regular.ttf'),
+    'Poppins-Light': require('../assets/fonts/Poppins-Light.ttf'),
+  });
+
+  // vérification du chargement de la font
+  if (!fontsLoaded) {
+    return null;
+  };
+
   const dispatch = useDispatch();
 
   // Etat pour stocker les valeurs des champs de saisie
@@ -172,7 +193,7 @@ export default function SignUpScreen({ navigation }) {
             <Icon
               name={showPassword ? 'eye' : 'eye-slash'}
               size={24}
-              color={showPassword ? '#D84815' : '#D3D3D3'}
+              color={showPassword ? 'rgba(55, 27, 12, 0.8)' : '#D3D3D3'}
             />
           </TouchableOpacity>
         </View>
@@ -195,7 +216,7 @@ export default function SignUpScreen({ navigation }) {
             style={styles.returnButton}
             activeOpacity={0.8}
           >
-            <Text stye={styles.textReturn}>J'ai déjà un compte</Text>
+            <Text style={styles.textReturn}>J'ai déjà un compte</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -206,9 +227,10 @@ export default function SignUpScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: 'space-evenly',
+    marginTop: 75,
+    marginBottom: 100,
   },
 
   logo: {
@@ -218,16 +240,19 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 30,
-    marginBottom: 150,
-    fontWeight: 'bold',
-    color: '#371B0C',
+    fontFamily: 'GermaniaOne-Regular',
+    fontWeight: '400',
+    fontSize: 32,
+    marginBottom: 10,
+    color: 'rgba(55, 27, 12, 0.9)', // #371B0C
   },
 
   separator: {
     width: '25%',
-    height: 3,
-    backgroundColor: '#371B0C',
+    borderColor: 'rgba(55, 27, 12, 0.8)', // #371B0C
+    borderTopWidth: 2.5,
+    marginBottom: 35,
+    marginTop: 10,
   },
 
   inputPwd: {
@@ -239,41 +264,53 @@ const styles = StyleSheet.create({
 
   iconContainer: {
     position: 'absolute', // position absolue pour superposer l'icone sur l'input
-    right: 10,
+    justifyContent: 'center',
     top: 0,
     bottom: 0,
-    justifyContent: 'center',
+    right: 60,
   },
 
   inputContainer: {
     justifyContent: "center",
     alignItems: 'center',
-    width: '50%'
+    width: '90%'
   },
 
   input: {
     backgroundColor: "#EEECE8",
     paddingVertical: 15,
-    borderRadius: 1,
-    width: "100%",
-    margin: 10,
-    justifyContent: "center",
     borderRadius: 5,
-    paddingLeft: 10
+    borderBottomWidth: 0.7,
+    borderBottomColor: "rgba(55, 27, 12, 0.50)",
+    width: "75%",
+    paddingLeft: 15,
+    margin: 10,
   },
 
   button: {
-    backgroundColor: "#D84815",
-    marginVertical: 40,
+    backgroundColor: "#E0D2C3",
+    marginVertical: 35,
     borderRadius: 10,
     padding: 10,
     justifyContent: 'center',
-    width: '80%',
+    width: '65%',
   },
 
   textButton: {
-    color: "white",
+    color: "#371B0C", // rgba(55, 27, 12, 1)
+    // fontFamily: 'sans-serif',
     fontWeight: 'bold',
+    fontSize: 18,
     textAlign: 'center',
   },
+
+  textReturn: {
+    fontFamily: 'Poppins-Regular',
+    fontWeight: '300',
+    fontSize: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(55, 27, 12, 0.80)",
+    color: "rgba(55, 27, 12, 0.80)",
+  },
+
 });

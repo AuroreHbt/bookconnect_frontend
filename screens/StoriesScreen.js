@@ -1,23 +1,53 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Image } from 'react-native'
+
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    StyleSheet,
+    KeyboardAvoidingView,
+    Platform,
+    Image
+} from 'react-native'
+
+// https://docs.expo.dev/versions/latest/sdk/font/
+// https://docs.expo.dev/develop/user-interface/fonts/
+// import pour utliser le hook useFonts pour charger la police
+import { useFonts } from 'expo-font';
+
 
 export default function StoriesScreen({ navigation }) {
 
+    // utilisation google fonts
+    const [fontsLoaded] = useFonts({
+        'Girassol-Regular': require('../assets/fonts/Girassol-Regular.ttf'),
+        'GermaniaOne-Regular': require('../assets/fonts/GermaniaOne-Regular.ttf'),
+        'Poppins-Medium': require('../assets/fonts/Poppins-Medium.ttf'),
+        'Poppins-Regular': require('../assets/fonts/Poppins-Regular.ttf'),
+        'Poppins-Light': require('../assets/fonts/Poppins-Light.ttf'),
+    });
+
+    // vérification du chargement de la font
+    if (!fontsLoaded) {
+        return null;
+    };
+
+    // Navigation par lien définie dans App.js
     const handleNewStory = () => {
         navigation.navigate('NewStory')
-    }
+    };
 
     const handleMyPublishedStories = () => {
         navigation.navigate('MyPublishedStories')
-    }
+    };
 
     const handleMyCurrentReadings = () => {
         navigation.navigate('MyCurrentReadings')
-    }
+    };
 
     const handleFindStories = () => {
         navigation.navigate('FindStories')
-    }
+    };
 
 
     return (
@@ -25,34 +55,34 @@ export default function StoriesScreen({ navigation }) {
             <Image source={require('../assets/LogoBc.png')} style={styles.logo} />
 
             <View>
-                <Text style={styles.title}>Création d'histoires</Text>
+                <Text style={styles.title}>Ecrire et partager</Text>
             </View>
 
             <View style={styles.buttonContainer}>
 
                 <TouchableOpacity onPress={handleNewStory} style={styles.button}>
-                    <Text style={styles.textButton}>Ajouter une nouvelle histoire</Text>
+                    <Text style={styles.textButton}>Je publie mon histoire</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={handleMyPublishedStories} style={styles.button}>
-                    <Text style={styles.textButton}>Mes histoires postées</Text>
+                    <Text style={styles.textButton}>Mes histoires publiées</Text>
                 </TouchableOpacity>
 
             </View>
 
 
             <View>
-                <Text style={styles.title}>Histoires à découvrir</Text>
+                <Text style={styles.title}>Lire et découvrir</Text>
             </View>
 
-            <View>
+            <View style={styles.buttonContainer}>
 
                 <TouchableOpacity onPress={handleMyCurrentReadings} style={styles.button}>
                     <Text style={styles.textButton}>Mes lectures en cours</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={handleFindStories} style={styles.button}>
-                    <Text style={styles.textButton}>Trouver une histoire</Text>
+                    <Text style={styles.textButton}>Découvrir des histoires</Text>
                 </TouchableOpacity>
 
             </View>
@@ -66,42 +96,45 @@ const styles = StyleSheet.create({
 
     container: {
         flex: 1,
-        backgroundColor: 'FFFFFF',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-evenly',
+        marginTop: 75,
+        marginBottom: 75,
     },
 
     logo: {
         flex: 0.5,
-        width: '75%',
+        width: '50%',
         height: '50%',
-        marginBottom: 25,
     },
 
     title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        fontFamily: 'sans-serif',
-        marginBottom: 10,
-        color: '#371B0C',
+        fontFamily: 'Poppins-Medium',
+        fontWeight: '500',
+        fontSize: 22,
+        margin: 5,
+        color: 'rgba(55, 27, 12, 0.9)', // #371B0C
     },
 
     buttonContainer: {
-        marginBottom: 25,
+        marginBottom: 20,
+        width: '100%',
+        alignItems: 'center',
     },
 
     button: {
-        backgroundColor: '#D84815',
+        backgroundColor: "#E0D2C3",
         borderRadius: 10,
-        paddingVertical: 15,
-        margin: 15,
-        width: '60%',
+        padding: 15,
+        margin: 10,
+        width: '65%',
     },
 
     textButton: {
-        color: 'white',
-        fontSize: 16,
-        fontWeight: 'bold',
         textAlign: 'center',
+        fontFamily: 'Poppins-Regular',
+        fontWeight: '400',
+        fontSize: 18,
+        color: 'rgba(55, 27, 12, 0.8)', // #371B0C
     },
 });

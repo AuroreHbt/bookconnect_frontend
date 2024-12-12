@@ -9,6 +9,8 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo-google-fonts/germania-one": "^0.2.3",
+    "@expo-google-fonts/poppins": "^0.2.3",
     "@react-navigation/bottom-tabs": "6",
     "@react-navigation/native": "6",
     "@react-navigation/native-stack": "6",
@@ -16,6 +18,7 @@
     "expo": "~52.0.17",
     "expo-checkbox": "~4.0.0",
     "expo-document-picker": "~13.0.1",
+    "expo-font": "~13.0.1",
     "expo-linear-gradient": "~14.0.1",
     "expo-location": "~18.0.3",
     "expo-status-bar": "~2.0.0",
