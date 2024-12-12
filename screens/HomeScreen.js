@@ -22,7 +22,6 @@ export default function HomeScreen({ navigation }) {
     // utilisation google fonts
     const [fontsLoaded] = useFonts({
         'Girassol-Regular': require('../assets/fonts/Girassol-Regular.ttf'),
-        'GermaniaOne-Regular': require('../assets/fonts/GermaniaOne-Regular.ttf'),
         'Poppins-Medium': require('../assets/fonts/Poppins-Medium.ttf'),
         'Poppins-Regular': require('../assets/fonts/Poppins-Regular.ttf'),
         'Poppins-Light': require('../assets/fonts/Poppins-Light.ttf'),
@@ -59,19 +58,34 @@ export default function HomeScreen({ navigation }) {
 
             <View style={styles.buttonContainer}>
                 <LinearGradient
-                    colors={['#D84815', '#EEECE8']} // E0D2C3
-                    start={{ x: 0, y: 0 }} // Début du gradient (coin haut gauche)
-                    end={{ x: 1, y: 1 }}   // Fin du gradient (coin bas droit)
-                    style={styles.gradient}
-                />
-                <TouchableOpacity onPress={handleSubmitSignUp} style={styles.button}>
-                    <Text style={styles.textButton}>S'inscrire</Text>
-                </TouchableOpacity>
-                {/* </View>
-            <View style={styles.buttonContainer}> */}
-                <TouchableOpacity onPress={handleSubmitSignIn} style={styles.button}>
-                    <Text style={styles.textButton}>Se connecter</Text>
-                </TouchableOpacity>
+                    colors={['rgba(216, 72, 21, 1)', 'rgba(216, 72, 21, 0.8)']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 0, y: 1 }}
+                    style={styles.gradientButton}
+                >
+                    <TouchableOpacity
+                        onPress={handleSubmitSignUp}
+                        style={styles.button}
+                        activeOpacity={0.8}
+                    >
+                        <Text style={styles.textButton}>S'inscrire</Text>
+                    </TouchableOpacity>
+                </LinearGradient>
+
+                <LinearGradient
+                    colors={['rgba(216, 72, 21, 1)', 'rgba(216, 72, 21, 0.8)']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 0, y: 1 }}
+                    style={styles.gradientButton}
+                >
+                    <TouchableOpacity
+                        onPress={handleSubmitSignIn}
+                        style={styles.button}
+                        activeOpacity={0.8}
+                    >
+                        <Text style={styles.textButton}>Se connecter</Text>
+                    </TouchableOpacity>
+                </LinearGradient>
             </View>
         </KeyboardAvoidingView>
     );
@@ -113,19 +127,18 @@ const styles = StyleSheet.create({
         marginBottom: 25,
         width: '75%',
         alignItems: 'center',
-        height: 150, // Hauteur du gradient
     },
 
-    gradient: {
-        flex: 1, // Rempli tout l'espace du conteneur
+    gradientButton: {
+        borderRadius: 10,
+        marginVertical: 10,
+        width: '75%',
     },
 
     button: {
-        backgroundColor: '#E0D2C3',
-        borderRadius: 10,
-        padding: 15,
-        margin: 15,
-        width: '75%',
+        padding: 10,
+        margin: 10,
+
     },
 
     textButton: {
@@ -133,6 +146,6 @@ const styles = StyleSheet.create({
         fontFamily: 'sans-serif',
         fontWeight: 'bold',
         fontSize: 18,
-        color: 'rgba(55, 27, 12, 0.8)', // #371B0C
+        color: 'white', // 'rgba(55, 27, 12, 0.8)', // #371B0C
     },
 });
