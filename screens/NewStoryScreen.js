@@ -30,6 +30,12 @@ import { LinearGradient } from 'expo-linear-gradient';
 // import pour accéder aux dossiers du téléphone
 import * as DocumentPicker from 'expo-document-picker'
 
+// https://github.com/SimformSolutionsPvtLtd/react-native-spinner-button/blob/master/README.md
+// import pour mettre un spinner de chargement lors du press sur le bouton pour le délai d'upload/publication
+import SpinnerButton from 'react-native-spinner-button';
+
+
+
 const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS
 
 
