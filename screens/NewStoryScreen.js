@@ -65,12 +65,15 @@ export default function NewStoryScreen({ navigation }) {
 
 
 
-  // fonction qui permet d'accéder au téléphone
+  const [isAdult, setIsAdult] = useState(false)
+
+  const user = useSelector((state) => state.user.value)
+
   const handleSelectStoryFile = async () => {
     try {
       const document = await DocumentPicker.getDocumentAsync({
-        type: ["application/pdf", "text/plain"],
-        copyToCacheDirectory: true,
+        type: ["application/pdf", "text/plain"], 
+        copyToCacheDirectory: true, 
       });
 
       console.log("Résultat brut pour le fichier texte :", document);
@@ -153,7 +156,7 @@ export default function NewStoryScreen({ navigation }) {
     if (hasError) return; // early return pour stopper le code
 
     const formData = new FormData();
-    formData.append('author', author)
+    formData.append('author', user.username)
     formData.append('title', title)
     formData.append('category', category)
     formData.append("isAdult", isAdult ? true : false)
