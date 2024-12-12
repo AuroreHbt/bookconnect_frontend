@@ -223,7 +223,8 @@ export default function NewStoryScreen({ navigation }) {
           <Checkbox
             value={isAdult}
             onValueChange={(value) => setIsAdult(value)}
-            color={isAdult ? '#rgba(216, 72, 21, 1)' : undefined}
+            color={isAdult ? '#rgba(216, 72, 21, 0.8)' : undefined}
+            style={styles.checkBox}
           />
         </View>
 
@@ -239,7 +240,7 @@ export default function NewStoryScreen({ navigation }) {
           {descError ? <Text style={styles.errorText}>{descError}</Text> : null}
         </View>
 
-        <View style={styles.inputContainer}>
+        <View style={styles.fileContainer}>
           <TouchableOpacity
             onPress={handleSelectStoryFile}
           >
@@ -251,14 +252,14 @@ export default function NewStoryScreen({ navigation }) {
               style={styles.iconContainer}
               name="file-text"
               size={24}
-              color={storyFile ? 'rgba(216, 72, 21, 0.9)' : '#D3D3D3'}
+              color={storyFile ? 'rgba(216, 72, 21, 0.9)' : 'rgba(211, 211, 211, 1)'}
             />
           </TouchableOpacity>
           {fileError ? <Text style={styles.errorText}>{fileError}</Text> : null}
         </View>
 
 
-        <View style={styles.inputContainer}>
+        <View style={styles.fileContainer}>
           <TouchableOpacity
             onPress={handleSelectCoverImage}
           >
@@ -295,10 +296,10 @@ export default function NewStoryScreen({ navigation }) {
           </LinearGradient>
         </View>
 
-        <View style={styles.returnContainer}>
+        <View>
           <TouchableOpacity
             onPress={goBack}
-            style={styles.returnButton}
+            style={styles.returnContainer}
             activeOpacity={0.8}
           >
             <Text style={styles.textReturn}>Retour</Text>
@@ -332,16 +333,9 @@ const styles = StyleSheet.create({
     maxWidth: '75%',
   },
 
-  iconContainer: {
-    position: 'absolute', // position absolue pour superposer l'icone sur l'input
-    top: 0,
-    bottom: 0,
-    right: 60,
-  },
-
   inputContainer: {
     alignItems: 'center',
-    width: '90%'
+    width: '100%'
   },
 
   titleInputContainer: {
@@ -350,7 +344,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderBottomWidth: 0.7,
     borderBottomColor: "rgba(55, 27, 12, 0.50)",
-    width: "75%",
+    width: "65%",
     paddingLeft: 5,
     margin: 10,
   },
@@ -361,20 +355,48 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderBottomWidth: 0.7,
     borderBottomColor: "rgba(55, 27, 12, 0.50)",
-    width: "75%",
+    width: "65%",
     paddingLeft: 5,
     margin: 10,
   },
 
-  storyFileInput: {
+  checkBoxContainer: {
     backgroundColor: "#EEECE8",
     paddingVertical: 5,
     borderRadius: 5,
-    borderBottomWidth: 0.7,
-    borderBottomColor: "rgba(55, 27, 12, 0.50)",
-    width: "75%",
+    width: "65%",
     paddingLeft: 5,
     margin: 10,
+  },
+
+  textCheckbox: {
+    paddingLeft: 10,
+  },
+
+  checkBox: {
+    position: 'absolute', // position absolue pour superposer l'icone sur l'input
+    top: 5,
+    right: 10,
+  },
+
+  fileContainer: {
+    backgroundColor: "#EEECE8",
+    paddingVertical: 5,
+    borderRadius: 5,
+    width: "65%",
+    paddingLeft: 5,
+    margin: 10,
+  },
+
+  fileInput: {
+    paddingLeft: 10,
+    height: 30,
+  },
+
+  iconContainer: {
+    position: 'absolute', // position absolue pour superposer l'icone sur l'input
+    top: 3,
+    right: 10,
   },
 
   errorText: {
@@ -385,16 +407,13 @@ const styles = StyleSheet.create({
   },
 
   buttonContainer: {
-    marginTop: 15,
-    marginBottom: 10,
-    width: '75%',
     alignItems: 'center',
+    width: '100%',
   },
 
   gradientButton: {
     borderRadius: 10,
-    marginVertical: 10,
-    width: '65%',
+    width: '40%',
   },
 
   button: {
@@ -411,11 +430,11 @@ const styles = StyleSheet.create({
   },
 
   returnContainer: {
-    backgroundColor: "#E0D2C3",
+    backgroundColor: 'rgba(224, 210, 195, 0.8)', // "#E0D2C3",
     marginVertical: 35,
     borderRadius: 10,
     padding: 10,
-    width: '65%',
+    width: '40%',
   },
 
   textReturn: {
@@ -423,7 +442,7 @@ const styles = StyleSheet.create({
     fontFamily: 'sans-serif',
     fontWeight: 'bold',
     fontSize: 16,
-    color: "rgba(55, 27, 12, 0.80)",
+    color: "rgba(55, 27, 12, 0.7)",
   },
 
 });
