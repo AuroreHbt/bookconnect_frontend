@@ -9,9 +9,13 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Pressable
 } from "react-native";
 
 import Checkbox from 'expo-checkbox'
+
+// import pour faire un menu déroulant
+import { Picker } from '@react-native-picker/picker';
 
 // import de la bibliothèque d'icône Fontawsome via react-native-vector-icons
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -60,13 +64,15 @@ export default function NewStoryScreen({ navigation }) {
   const [descError, setDescError] = useState('');
   const [fileError, setFileError] = useState('');
 
+  const [categorySelected, setCategorySelected] = useState('');
+
   const user = useSelector((state) => state.user.value)
 
   const handleSelectStoryFile = async () => {
     try {
       const document = await DocumentPicker.getDocumentAsync({
-        type: ["application/pdf", "text/plain"], 
-        copyToCacheDirectory: true, 
+        type: ["application/pdf", "text/plain"],
+        copyToCacheDirectory: true,
       });
 
       console.log("Résultat brut pour le fichier texte :", document);
@@ -203,6 +209,7 @@ export default function NewStoryScreen({ navigation }) {
           {titleError ? <Text style={styles.errorText}>{titleError}</Text> : null}
         </View>
 
+        {/* Categorie : input type texte
         <View style={styles.titleInputContainer}>
           <TextInput
             placeholder="Type d'histoire (obligatoire)"
@@ -210,9 +217,37 @@ export default function NewStoryScreen({ navigation }) {
             value={category}
           />
           {categoryError ? <Text style={styles.errorText}>{categoryError}</Text> : null}
+        </View> */}
+
+        {/* Catégorie : liste de choix */}
+        <View style={styles.pickerContainer}>
+          <Text style={styles.pickerText} >Choisir une catégorie (obligatoire) :</Text>
+          <Pressable
+            style={[
+              styles.picker,
+              categorySelected ? styles.categorySelected : null
+            ]}
+            // styles.picker est le style de base toujours appiqué. Si categorySelected est vrai (true=category sélectionné/pressé), styles.categorySelected sera appliqué, sinon null sera ajouté (donc pas de style supplémentaire)
+          >
+            <Picker
+              selectedValue={category}
+              onValueChange={(value) => { setCategory(value); setCategorySelected(value) }}
+            >
+              <Picker.Item label="Autre" value="autre" />
+              <Picker.Item label="Autobiographie / Biographie" value="bio" />
+              <Picker.Item label="Essai" value="essai" />
+              <Picker.Item label="Poésie" value="poesie" />
+              <Picker.Item label="Science-Fiction" value="sci-fi" />
+              <Picker.Item label="Fantasy" value="fantasy" />
+              <Picker.Item label="Romance" value="romance" />
+              <Picker.Item label="Policier" value="policier" />
+              {/* Ajouter d'autres catégories ici */}
+            </Picker>
+          </Pressable>
+          {categoryError ? <Text style={styles.errorText}>{categoryError}</Text> : null}
         </View>
 
-        <View style={styles.checkBoxContainer}>
+        <View style={isAdult ? styles.checkBoxTrue : styles.checkBoxContainer}>
           <Text style={styles.textCheckbox}>
             Contenu 18+
           </Text>
@@ -220,13 +255,12 @@ export default function NewStoryScreen({ navigation }) {
             value={isAdult}
             onValueChange={(value) => setIsAdult(value)}
             color={isAdult ? '#rgba(216, 72, 21, 0.8)' : undefined}
-            style={styles.checkBox}
           />
         </View>
 
         <View style={styles.inputMultiline} >
           <TextInput
-            placeholder="Description (obligatoire), 250 caractères max"
+            placeholder="Description (obligatoire), 300 caractères max"
             maxLength={300}
             multiline
             numberOfLines={7}
@@ -241,7 +275,7 @@ export default function NewStoryScreen({ navigation }) {
             onPress={handleSelectStoryFile}
           >
             <Text style={styles.fileInput}>
-              {storyFile ? storyFile.name : "Sélectionner un fichier"}
+              {storyFile ? storyFile.name : "Choisir un texte"}
             </Text>
 
             <Icon
@@ -254,20 +288,19 @@ export default function NewStoryScreen({ navigation }) {
           {fileError ? <Text style={styles.errorText}>{fileError}</Text> : null}
         </View>
 
-
         <View style={styles.fileContainer}>
           <TouchableOpacity
             onPress={handleSelectCoverImage}
           >
             <Text style={styles.fileInput}>
-              {coverImage ? coverImage.name : "Aucune image sélectionnée"}
+              {coverImage ? coverImage.name : "Choisir une image de couverture"}
             </Text>
 
             <Icon
               style={styles.iconContainer}
               name="image"
               size={24}
-              color={storyFile ? 'rgba(216, 72, 21, 0.9)' : '#D3D3D3'}
+              color={coverImage ? 'rgba(216, 72, 21, 0.9)' : '#D3D3D3'}
             />
           </TouchableOpacity>
         </View>
@@ -277,15 +310,15 @@ export default function NewStoryScreen({ navigation }) {
 
         <View>
           <LinearGradient
-            colors={['rgba(216, 72, 21, 1)', 'rgba(216, 72, 21, 0.8)']}
+            colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
             start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
+            end={{ x: 0, y: 0.7 }}
             style={styles.gradientButton}
+            activeOpacity={0.8}
           >
             <TouchableOpacity
               onPress={handlePostStory}
               style={styles.button}
-              activeOpacity={0.8}
             >
               <Text style={styles.textButton}>Publier</Text>
             </TouchableOpacity>
@@ -329,6 +362,27 @@ const styles = StyleSheet.create({
     maxWidth: '75%',
   },
 
+  pickerContainer: {
+    width: '65%',
+  },
+
+  pickerText: {
+    textAlign: 'left',
+    fontFamily: 'sans-serif',
+    fontSize: 16,
+    marginBottom: 5,
+  },
+
+  categorySelected: {
+    backgroundColor: "rgba(255, 123, 0, 0.3)",
+    borderRadius: 5,
+  },
+
+  picker: {
+    backgroundColor: 'rgba(238, 236, 232, 0.9)',
+    borderRadius: 5,
+  },
+
   inputContainer: {
     alignItems: 'center',
     width: '100%'
@@ -357,26 +411,43 @@ const styles = StyleSheet.create({
   },
 
   checkBoxContainer: {
-    backgroundColor: "#EEECE8",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: "rgba(238, 236, 232, 0.9)",
     paddingVertical: 5,
+    paddingHorizontal: 10,
     borderRadius: 5,
     width: "65%",
-    paddingLeft: 5,
+    margin: 10,
+  },
+
+  checkBoxTrue: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: "rgba(255, 123, 0, 0.3)",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    width: "65%",
     margin: 10,
   },
 
   textCheckbox: {
+    fontFamily: 'sans-serif',
+    fontSize: 16,
     paddingLeft: 10,
   },
 
   checkBox: {
-    position: 'absolute', // position absolue pour superposer l'icone sur l'input
-    top: 5,
-    right: 10,
+    paddingRight: 10,
+    marginRight: 10,
+    width: '60%',
   },
 
   fileContainer: {
-    backgroundColor: "#EEECE8",
+    backgroundColor: "rgba(238, 236, 232, 0.9)", //  #EEECE8
     paddingVertical: 5,
     borderRadius: 5,
     width: "65%",
@@ -385,6 +456,7 @@ const styles = StyleSheet.create({
   },
 
   fileInput: {
+    paddingTop: 5,
     paddingLeft: 10,
     height: 30,
   },
@@ -426,7 +498,7 @@ const styles = StyleSheet.create({
   },
 
   returnContainer: {
-    backgroundColor: 'rgba(224, 210, 195, 0.8)', // "#E0D2C3",
+    backgroundColor: 'rgba(224, 210, 195, 0.7)', // "#E0D2C3",
     marginVertical: 35,
     borderRadius: 10,
     padding: 10,

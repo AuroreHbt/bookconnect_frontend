@@ -16,14 +16,37 @@ import {
 import { useDispatch } from "react-redux";
 import { logout } from "../reducers/user";
 
+// import de la bibliothèque d'icône Fontawsome via react-native-vector-icons
+import Icon from 'react-native-vector-icons/FontAwesome';
+
+// https://docs.expo.dev/versions/latest/sdk/font/
+// https://docs.expo.dev/develop/user-interface/fonts/
+// import pour utliser le hook useFonts pour charger la police
+import { useFonts } from 'expo-font';
+
+
 
 export default function DashboardScreen({ navigation }) {
 
- /*  const data = [
-    { id: '1', image: require('../assets/avatar.png') },
-    { id: '2', image: require('../assets/avatar.png') },
-    { id: '3', image: require('../assets/avatar.png') },
-  ]; */
+  // utilisation google fonts
+  const [fontsLoaded] = useFonts({
+    'Girassol-Regular': require('../assets/fonts/Girassol-Regular.ttf'),
+    'Poppins-Medium': require('../assets/fonts/Poppins-Medium.ttf'),
+    'Poppins-Regular': require('../assets/fonts/Poppins-Regular.ttf'),
+    'Poppins-Light': require('../assets/fonts/Poppins-Light.ttf'),
+  });
+
+  // vérification du chargement de la font
+  if (!fontsLoaded) {
+    return null;
+  };
+
+
+  /*  const data = [
+     { id: '1', image: require('../assets/avatar.png') },
+     { id: '2', image: require('../assets/avatar.png') },
+     { id: '3', image: require('../assets/avatar.png') },
+   ]; */
 
 
   const dispatch = useDispatch()
@@ -37,9 +60,9 @@ export default function DashboardScreen({ navigation }) {
 
   // Déconnexion
   const handleLogout = () => {
-		dispatch(logout());
+    dispatch(logout());
     navigation.navigate('Home', { screen: 'HomeScreen' })
-	};
+  };
 
   return (
 
@@ -47,132 +70,132 @@ export default function DashboardScreen({ navigation }) {
       <ScrollView contentContainerStyle={styles.scrollContent}>
 
         {/* Dégradé en haut */}
-      <View style={styles.gradientContainer}>
-        <LinearGradient
-          colors={['#FFA500', '#FF4500']}
-          start={{ x: 0, y: 0 }} // Début du gradient (coin haut gauche)
-          end={{ x: 1, y: 1 }}   // Fin du gradient (coin bas droit)
-          style={styles.gradient}
-        />
-      </View>
-      <View style={styles.header}>
-
-        {/* Logo et Nom de l'app */}
-        <View style={styles.identityApp}>
-
-          {/* Icône Paramètre */}
+        <View style={styles.gradientContainer}>
+          <LinearGradient
+            colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
+            start={{ x: 0.7, y: 0 }} // Début du gradient (coin haut gauche)
+            end={{ x: 0.5, y: 0.9 }}  // Fin du gradient (coin bas droit)
+            style={styles.gradient}
+          />
         </View>
-        <TouchableOpacity onPress={toggleParameter} style={styles.ParameterButton}>
-          <FontAwesome name="gear" size={30} color="white" />
-        </TouchableOpacity>
-      </View>
+        <View style={styles.header}>
 
-      {/* Modal */}
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={isParameterVisible}
-        onRequestClose={toggleParameter}
-      >
-        {/* TouchableWithoutFeedback pour fermer la modal quand on touche n'importe où sur l'écran */}
-        <TouchableWithoutFeedback onPress={toggleParameter}>
-        <View style={styles.overlay}>
-        <View style={styles.ParameterContent}>
+          {/* Logo et Nom de l'app */}
+          <View style={styles.identityApp}>
 
-          {/* Options de paramètres */}
-          <TouchableOpacity style={styles.optionButton}>
-            <Text style={styles.optionText} onPress={() => handleLogout()}>Déconnexion</Text>
-            <FontAwesome name='sign-out' size={20} color='black' style={styles.logoutIcon} />
+            {/* Icône Paramètre */}
+          </View>
+          <TouchableOpacity onPress={toggleParameter} style={styles.ParameterButton}>
+            <FontAwesome name="gear" size={30} color="white" />
           </TouchableOpacity>
-          </View>
         </View>
-        </TouchableWithoutFeedback>
-      </Modal>
 
-      {/* Photo de profil et Message de bienvenue */}
-      <View style={styles.identityUser}>
-        <Image
-          source={require('../assets/avatar1.jpeg')}
-          style={styles.avatar}
-        />
-        <Text style={styles.welcome}>Hello {user?.username || 'Utilisateur'}</Text>
-      </View>
+        {/* Modal */}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={isParameterVisible}
+          onRequestClose={toggleParameter}
+        >
+          {/* TouchableWithoutFeedback pour fermer la modal quand on touche n'importe où sur l'écran */}
+          <TouchableWithoutFeedback onPress={toggleParameter}>
+            <View style={styles.overlay}>
+              <View style={styles.ParameterContent}>
 
-      {/* Section carrousel mes lectures en cours */}
-      <View style={styles.sectionContainer}>
-        {/* Titre de la section */}
-        <View style={styles.sectionHeader}>
-          <Text style={styles.textSection}>Mes lectures en cours</Text>
-          <FontAwesome name="arrow-right" size={20} color="#D84815" />
+                {/* Options de paramètres */}
+                <TouchableOpacity style={styles.optionButton}>
+                  <Text style={styles.optionText} onPress={() => handleLogout()}>Déconnexion</Text>
+                  <FontAwesome name='sign-out' size={20} color='black' style={styles.logoutIcon} />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+
+        {/* Photo de profil et Message de bienvenue */}
+        <View style={styles.identityUser}>
+          <Image
+            source={require('../assets/avatar1.jpeg')}
+            style={styles.avatar}
+          />
+          <Text style={styles.welcome}>Hello {user?.username || 'Utilisateur'}</Text>
         </View>
-        {/* ScrollView horizontal */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.booksContainer}>
-          <View style={styles.bookCard}>
-            <Image
-              source={require('../assets/book3.png')}
-              style={styles.book}
-            />
-            <Text style={styles.textCard}>Book1</Text>
-            <Text style={styles.subtextCard}>Elina M.</Text>
-          </View>
-          <View style={styles.bookCard}>
-            <Image
-              source={require('../assets/book1.png')}
-              style={styles.book}
-            />
-            <Text style={styles.textCard}>Book2</Text>
-            <Text style={styles.subtextCard}>Aurore H.</Text>
-          </View>
-          <View style={styles.bookCard}>
-            <Image
-              source={require('../assets/book2.png')}
-              style={styles.book}
-            />
-            <Text style={styles.textCard}>Book3</Text>
-            <Text style={styles.subtextCard}>Robin L.</Text>
-          </View>
-          <View style={styles.bookCard}>
-            <Image
-              source={require('../assets/book4.png')}
-              style={styles.book}
-            />
-            <Text style={styles.textCard}>Book4</Text>
-            <Text style={styles.subtextCard}>Marie B.</Text>
-          </View>
-        </ScrollView>
-      </View>
 
-     {/* Section carrousel mes évènements */}
-     <View style={styles.sectionContainer}>
-        {/* Titre de la section */}
-        <View style={styles.sectionHeader}>
-          <Text style={styles.textSection}>Mes évènements</Text>
-          <FontAwesome name="arrow-right" size={20} color="#D84815" />
+        {/* Section carrousel mes lectures en cours */}
+        <View style={styles.sectionContainer}>
+          {/* Titre de la section */}
+          <View style={styles.sectionHeader}>
+            <Text style={styles.textSection}>Mes lectures en cours</Text>
+            <FontAwesome name="arrow-right" size={20} color="rgba(216, 72, 21, 0.9)" />
+          </View>
+          {/* ScrollView horizontal */}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.booksContainer}>
+            <View style={styles.bookCard}>
+              <Image
+                source={require('../assets/book3.png')}
+                style={styles.book}
+              />
+              <Text style={styles.textCard}>Book1</Text>
+              <Text style={styles.subtextCard}>Elina M.</Text>
+            </View>
+            <View style={styles.bookCard}>
+              <Image
+                source={require('../assets/book1.png')}
+                style={styles.book}
+              />
+              <Text style={styles.textCard}>Book2</Text>
+              <Text style={styles.subtextCard}>Aurore H.</Text>
+            </View>
+            <View style={styles.bookCard}>
+              <Image
+                source={require('../assets/book2.png')}
+                style={styles.book}
+              />
+              <Text style={styles.textCard}>Book3</Text>
+              <Text style={styles.subtextCard}>Robin L.</Text>
+            </View>
+            <View style={styles.bookCard}>
+              <Image
+                source={require('../assets/book4.png')}
+                style={styles.book}
+              />
+              <Text style={styles.textCard}>Book4</Text>
+              <Text style={styles.subtextCard}>Marie B.</Text>
+            </View>
+          </ScrollView>
         </View>
-        {/* ScrollView horizontal des évènements*/}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.eventsContainer}>
-          <View style={styles.bookCard}>
-          <View style={styles.event} backgroundColor={'green'}></View>
-            <Text style={styles.textCard}>Event1</Text>
-            <Text style={styles.subtextCard}>Samedi 14 décembre</Text>
+
+        {/* Section carrousel mes évènements */}
+        <View style={styles.sectionContainer}>
+          {/* Titre de la section */}
+          <View style={styles.sectionHeader}>
+            <Text style={styles.textSection}>Mes évènements</Text>
+            <FontAwesome name="arrow-right" size={20} color="rgba(216, 72, 21, 0.9)" />
           </View>
-          <View style={styles.bookCard}>
-            <View style={styles.event} backgroundColor={'blue'}></View>
-            <Text style={styles.textCard}>Event2</Text>
-            <Text style={styles.subtextCard}>Samedi 21 décembre</Text>
-          </View>
-          <View style={styles.bookCard}>
-          <View style={styles.event} backgroundColor={'red'}></View>
-            <Text style={styles.textCard}>Event3</Text>
-            <Text style={styles.subtextCard}>Mercredi 25 décembre</Text>
-          </View>
-          <View style={styles.bookCard}>
-          <View style={styles.event} backgroundColor={'pink'}></View>
-            <Text style={styles.textCard}>Event4</Text>
-            <Text style={styles.subtextCard}>Mercredi 31 décembre</Text>
-          </View>
-        </ScrollView>
-      </View>
+          {/* ScrollView horizontal des évènements*/}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.eventsContainer}>
+            <View style={styles.bookCard}>
+              <View style={styles.event} backgroundColor={'green'}></View>
+              <Text style={styles.textCard}>Event1</Text>
+              <Text style={styles.subtextCard}>Samedi 14 décembre</Text>
+            </View>
+            <View style={styles.bookCard}>
+              <View style={styles.event} backgroundColor={'blue'}></View>
+              <Text style={styles.textCard}>Event2</Text>
+              <Text style={styles.subtextCard}>Samedi 21 décembre</Text>
+            </View>
+            <View style={styles.bookCard}>
+              <View style={styles.event} backgroundColor={'red'}></View>
+              <Text style={styles.textCard}>Event3</Text>
+              <Text style={styles.subtextCard}>Mercredi 25 décembre</Text>
+            </View>
+            <View style={styles.bookCard}>
+              <View style={styles.event} backgroundColor={'pink'}></View>
+              <Text style={styles.textCard}>Event4</Text>
+              <Text style={styles.subtextCard}>Mercredi 31 décembre</Text>
+            </View>
+          </ScrollView>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -240,10 +263,10 @@ const styles = StyleSheet.create({
   },
 
   welcome: {
+    fontFamily: 'Poppins-Medium',
+    fontWeight: '500',
     fontSize: 36,
-    color: '#6c4300',
-    fontWeight: '600',
-    fontFamily: 'Times'
+    color: 'rgba(55, 27, 12, 0.9)',
   },
 
   sectionContainer: {
