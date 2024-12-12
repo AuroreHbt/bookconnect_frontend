@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 
 import {
   KeyboardAvoidingView,
@@ -22,8 +23,6 @@ import { useFonts } from 'expo-font';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { useDispatch } from "react-redux";
-
 // import pour accéder aux dossiers du téléphone
 import * as DocumentPicker from 'expo-document-picker'
 
@@ -44,8 +43,6 @@ export default function NewStoryScreen({ navigation }) {
   if (!fontsLoaded) {
     return null;
   };
-
-  const dispatch = useDispatch();
 
   // https://reactnavigation.org/docs/navigation-object/#goback
   const goBack = () => navigation.goBack();
