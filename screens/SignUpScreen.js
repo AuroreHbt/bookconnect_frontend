@@ -132,7 +132,9 @@ export default function SignUpScreen({ navigation }) {
       <View>
         <Text style={styles.title}>BookConnect</Text>
       </View>
+
       <View style={styles.separator} />
+
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="Nom d'utilisateur"
@@ -210,7 +212,7 @@ const styles = StyleSheet.create({
   },
 
   logo: {
-    flex: 0.3,
+    flex: 0.5,
     width: "50%",
     height: "50%",
   },
@@ -226,8 +228,6 @@ const styles = StyleSheet.create({
     width: '25%',
     height: 3,
     backgroundColor: '#371B0C',
-    position: 'absolute',
-    top: 350
   },
 
   inputPwd: {
