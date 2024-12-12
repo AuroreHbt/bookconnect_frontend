@@ -5,7 +5,7 @@ export default function ReadStoryScreen() {
     return (
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
             <Text>Read Story Screen</Text>
-            <Text>attention à la MAJUSCULE!!</Text>
+            <Text>attention à la MAJUSCULE!!!</Text>
         </KeyboardAvoidingView>
     );
 };

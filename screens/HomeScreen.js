@@ -58,10 +58,16 @@ export default function HomeScreen({ navigation }) {
             </View>
 
             <View style={styles.buttonContainer}>
+                <LinearGradient
+                    colors={['#D84815', '#EEECE8']} // E0D2C3
+                    start={{ x: 0, y: 0 }} // Début du gradient (coin haut gauche)
+                    end={{ x: 1, y: 1 }}   // Fin du gradient (coin bas droit)
+                    style={styles.gradient}
+                />
                 <TouchableOpacity onPress={handleSubmitSignUp} style={styles.button}>
                     <Text style={styles.textButton}>S'inscrire</Text>
                 </TouchableOpacity>
-            {/* </View>
+                {/* </View>
             <View style={styles.buttonContainer}> */}
                 <TouchableOpacity onPress={handleSubmitSignIn} style={styles.button}>
                     <Text style={styles.textButton}>Se connecter</Text>
@@ -107,6 +113,11 @@ const styles = StyleSheet.create({
         marginBottom: 25,
         width: '75%',
         alignItems: 'center',
+        height: 150, // Hauteur du gradient
+    },
+
+    gradient: {
+        flex: 1, // Rempli tout l'espace du conteneur
     },
 
     button: {
