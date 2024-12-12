@@ -28,51 +28,45 @@ import {
 export default function EventsScreen({navigation}) {
   const [searchText, setSearchText] = useState("");
 
+  const addEvent = () => {
+    navigation.navigate('NewEvent', { screen: 'NewEventScreen' })
+  };
 
   const handleSearchPlace = async () => { 
     if (!searchText) {
-      Alert.alert('Erreur', 'Veuillez entrer une localisation');
+      Alert.alert('Erreur','Veuillez entrer une localisation');
       return;
     }
-  
+    
     try {
-       const apiKey =process.env.EXPO_PUBLIC_GOOGLE_API_KEY
-      // URL pour l'API Google Places
-      const url = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${searchText}&inputtype=textquery&fields=geometry&key=${apiKey}`;
-  
+       const apiKey =process.env.EXPO_PUBLIC_MAP_API_KEY
+      // URL pour l'API 
+      const url = `https://api.opencagedata.com/geocode/v1/json?q=${searchText}&key=${apiKey}`
+      
       const response = await fetch(url);
-  
-      if (!response.ok) {
-        throw new Error(`Erreur ${response.status}: ${response.statusText}`);
-      }
-  
-      const data = await response.json();
-   console.log(data)
-      // Vérifier si des résultats sont retournés
-      if (data.candidates.length === 0) {
-        Alert.alert('Erreur', 'Localisation introuvable');
-        return;
-      }
-  
-      // Extraire les coordonnées du premier résultat
-      const { lat, lng } = data.candidates[0].geometry.location;
-  
-      // Naviguer vers l'écran MapScreen avec les coordonnées
-      navigation.navigate("MapScreen", {
-        latitude: parseFloat(lat),
-        longitude: parseFloat(lng),
-      });
-    } catch (error) {
-      console.error(error);
-      Alert.alert('Erreur', 'Une erreur est survenue lors de la recherche.');
+
+    if (!response.ok) {
+      throw new Error(`Erreur ${response.status}: ${response.statusText}`);
     }
-  };
 
+    const data = await response.json();
 
-  const handleGoToFavorite = () => {
-    navigation.navigate("TabNavigator", { screen: "Favoris" });
-  };
+    if (data.results.length === 0) {
+      Alert.alert("Erreur", "Localisation introuvable");
+      return;
+    }
 
+    const { lat, lng } = data.results[0].geometry;
+
+    navigation.navigate("MapScreen", {
+      latitude: parseFloat(lat),
+      longitude: parseFloat(lng),
+    });
+  } catch (error) {
+    console.error(error);
+    Alert.alert("Erreur", "Une erreur est survenue lors de la recherche.");
+  }
+};
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -80,21 +74,12 @@ export default function EventsScreen({navigation}) {
     >
       <View style={styles.inputContainer}>
         <View style={styles.input}>
-        <FontAwesome name="map-marker" size={30} color="#D84815" />
-          <TextInput 
+          <FontAwesome name="map-marker" size={30} color="#D84815" />
+          <TextInput
             placeholder="Ville ..."
             onChangeText={(value) => setSearchText(value)}
             value={searchText}
-            style={styles.input}
-          />
-        </View>
-        <View style={styles.input}>
-        <FontAwesome name="search" size={30} color="#D84815" />
-          <TextInput
-            placeholder="Type d'évenement ..."
-            //   onChangeText={(value) => setUsername(value)}
-            //   value={username}
-            //   style={styles.input}
+            style={styles.inputField}
           />
         </View>
       </View>
@@ -102,7 +87,7 @@ export default function EventsScreen({navigation}) {
         <TouchableOpacity onPress={handleSearchPlace} style={styles.button}>
           <Text style={styles.textButton}>Rechercher</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleGoToFavorite} style={styles.button}>
+        <TouchableOpacity onPress={addEvent} style={styles.button}>
           <Text style={styles.textButton}>Mes événements</Text>
         </TouchableOpacity>
       </View>
@@ -110,7 +95,6 @@ export default function EventsScreen({navigation}) {
   );
 }
 
-// attention : le StyleSheet doit bien être en dehors de la fonction!
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -118,45 +102,25 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-
-  logo: {
-    flex: 0.5,
-    width: "75%",
-    height: "50%",
-  },
-
-  title: {
-    fontSize: 36,
-    fontWeight: "bold",
-    fontFamily: "sans-serif",
-    marginBottom: 10,
-  },
-
   inputContainer: {
     justifyContent: "center",
-    width : '50%'
+    width: "80%",
   },
-
   input: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    backgroundColor: '#EEECE8',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#EEECE8",
     padding: 10,
     marginTop: 20,
     borderRadius: 10,
   },
-
-  text: {
-    fontSize: 22,
-    fontFamily: "sans-serif",
-    marginBottom: 50,
+  inputField: {
+    flex: 1,
+    marginLeft: 10,
   },
-
   buttonContainer: {
-    marginBottom: 25,
+    marginTop: 25,
   },
-
   button: {
     backgroundColor: "#D84815",
     borderRadius: 10,
@@ -164,12 +128,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 35,
     margin: 15,
   },
-
   textButton: {
     color: "white",
     fontSize: 18,
     fontWeight: "bold",
     textAlign: "center",
   },
-  
 });

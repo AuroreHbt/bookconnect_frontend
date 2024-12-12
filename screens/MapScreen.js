@@ -6,9 +6,9 @@ import * as Location from 'expo-location';
 
 export default function MapScreen({ route }) {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.value);
 
-  // Assurez-vous que les paramètres sont passés correctement
+
+
   const { latitude, longitude } = route.params;
 
   const [currentPosition, setCurrentPosition] = useState(null);
@@ -32,8 +32,8 @@ export default function MapScreen({ route }) {
       provider={PROVIDER_GOOGLE} 
       style={styles.map}
       initialRegion={{
-        latitude: latitude || currentPosition?.latitude || 37.7749, // Utilisez la latitude de la ville ou la position actuelle
-        longitude: longitude || currentPosition?.longitude || -122.4194, // Utilisez la longitude de la ville ou la position actuelle
+        latitude: latitude || currentPosition?.latitude || 37.7749, // Utiliser la latitude de la ville ou la position actuelle
+        longitude: longitude || currentPosition?.longitude || -122.4194, // Utiliser la longitude de la ville ou la position actuelle
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       }}

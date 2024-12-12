@@ -11,6 +11,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 // Import des Screens pour la nav
 import HomeScreen from './screens/HomeScreen';
 import EventsScreen from './screens/EventsScreen';
+import NewEventScreen from './screens/NewEventScreen';
 import StoriesScreen from './screens/StoriesScreen';
 import FavoritesScreen from './screens/FavoritesScreen';
 import SignUpScreen from './screens/SignUpScreen';
@@ -94,6 +95,7 @@ export default function App() {
           <Stack.Screen name="NewStory" component={NewStoryScreen} />
           <Stack.Screen name="ReadStory" component={ReadStoryScreen} />
           <Stack.Screen name="ResultResearchStories" component={ResultResearchStoriesScreen} />
+          <Stack.Screen name="NewEvent" component={NewEventScreen} />
           <Stack.Screen name="TabNavigator" component={TabNavigator} />
         </Stack.Navigator>
       </NavigationContainer>
