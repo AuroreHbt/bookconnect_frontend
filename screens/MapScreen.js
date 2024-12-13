@@ -1,16 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import MapView, { PROVIDER_GOOGLE , Marker } from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
 export default function MapScreen({ route }) {
-  const dispatch = useDispatch();
-
-
-
-  const { latitude, longitude } = route.params;
-
+  const { latitude, longitude, events =[] } = route.params; 
+  console.log(latitude, longitude, events)// Récupérer les événements passés via la navigation
   const [currentPosition, setCurrentPosition] = useState(null);
 
   useEffect(() => {
@@ -38,6 +34,8 @@ export default function MapScreen({ route }) {
         longitudeDelta: 0.0421,
       }}
     >
+    
+      {/* Affichage de la position actuelle */}
       {currentPosition && (
         <Marker
           coordinate={currentPosition}
@@ -45,10 +43,26 @@ export default function MapScreen({ route }) {
           pinColor="#fecb2d"
         />
       )}
+
+      {/* Affichage des marqueurs des événements */}
+      {events && events.map((event, index) => {
+        const { location } = event;  // Extraction de location de l'événement
+        if (location && location.coordinates) {
+          const [longitude, latitude] = location.coordinates;  // Les coordonnées sont sous la forme [longitude, latitude]
+          return (
+            <Marker
+              key={index}
+              coordinates={{ latitude, longitude }}
+              title={event.title}
+              description={event.description}
+            />
+          );
+        }
+        return null;  // Si la location ou les coordonnées sont manquantes, ne rien afficher
+      })}
     </MapView>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
