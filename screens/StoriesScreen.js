@@ -61,15 +61,15 @@ export default function StoriesScreen({ navigation }) {
 
             <View style={styles.buttonContainer}>
                 <LinearGradient
-                    colors={['rgba(216, 72, 21, 1)', 'rgba(216, 72, 21, 0.8)']}
+                    colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
                     start={{ x: 0, y: 0 }}
-                    end={{ x: 0, y: 1 }}
+                    end={{ x: 0, y: 0.7 }}
                     style={styles.gradientButton}
+                    activeOpacity={0.8}
                 >
                     <TouchableOpacity
                         onPress={handleNewStory}
                         style={styles.button}
-                        activeOpacity={0.8}
                     >
                         <Text style={styles.textButton}>Je publie mon histoire</Text>
                     </TouchableOpacity>
@@ -78,15 +78,15 @@ export default function StoriesScreen({ navigation }) {
 
             <View style={styles.buttonContainer}>
                 <LinearGradient
-                    colors={['rgba(216, 72, 21, 1)', 'rgba(216, 72, 21, 0.8)']}
+                    colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
                     start={{ x: 0, y: 0 }}
-                    end={{ x: 0, y: 1 }}
+                    end={{ x: 0, y: 0.7 }}
                     style={styles.gradientButton}
+                    activeOpacity={0.8}
                 >
                     <TouchableOpacity
                         onPress={handleMyPublishedStories}
                         style={styles.button}
-                        activeOpacity={0.8}
                     >
                         <Text style={styles.textButton}>Mes histoires publiées</Text>
                     </TouchableOpacity>
@@ -99,15 +99,15 @@ export default function StoriesScreen({ navigation }) {
 
             <View style={styles.buttonContainer}>
                 <LinearGradient
-                    colors={['rgba(216, 72, 21, 1)', 'rgba(216, 72, 21, 0.8)']}
+                    colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
                     start={{ x: 0, y: 0 }}
-                    end={{ x: 0, y: 1 }}
+                    end={{ x: 0, y: 0.7 }}
                     style={styles.gradientButton}
+                    activeOpacity={0.8}
                 >
                     <TouchableOpacity
                         onPress={handleMyCurrentReadings}
                         style={styles.button}
-                        activeOpacity={0.8}
                     >
                         <Text style={styles.textButton}>Mes lectures en cours</Text>
                     </TouchableOpacity>
@@ -116,15 +116,15 @@ export default function StoriesScreen({ navigation }) {
 
             <View style={styles.buttonContainer}>
                 <LinearGradient
-                    colors={['rgba(216, 72, 21, 1)', 'rgba(216, 72, 21, 0.8)']}
+                    colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
                     start={{ x: 0, y: 0 }}
-                    end={{ x: 0, y: 1 }}
+                    end={{ x: 0, y: 0.7 }}
                     style={styles.gradientButton}
+                    activeOpacity={0.8}
                 >
                     <TouchableOpacity
                         onPress={handleFindStories}
                         style={styles.button}
-                        activeOpacity={0.8}
                     >
                         <Text style={styles.textButton}>Découvrir des histoires</Text>
                     </TouchableOpacity>

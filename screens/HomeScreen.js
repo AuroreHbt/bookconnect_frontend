@@ -58,30 +58,30 @@ export default function HomeScreen({ navigation }) {
 
             <View style={styles.buttonContainer}>
                 <LinearGradient
-                    colors={['rgba(216, 72, 21, 1)', 'rgba(216, 72, 21, 0.8)']}
+                    colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
                     start={{ x: 0, y: 0 }}
-                    end={{ x: 0, y: 1 }}
+                    end={{ x: 0, y: 0.7 }}
                     style={styles.gradientButton}
+                    activeOpacity={0.8}
                 >
                     <TouchableOpacity
                         onPress={handleSubmitSignUp}
                         style={styles.button}
-                        activeOpacity={0.8}
                     >
                         <Text style={styles.textButton}>S'inscrire</Text>
                     </TouchableOpacity>
                 </LinearGradient>
 
                 <LinearGradient
-                    colors={['rgba(216, 72, 21, 1)', 'rgba(216, 72, 21, 0.8)']}
+                    colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
                     start={{ x: 0, y: 0 }}
-                    end={{ x: 0, y: 1 }}
+                    end={{ x: 0, y: 0.7 }}
                     style={styles.gradientButton}
+                    activeOpacity={0.8}
                 >
                     <TouchableOpacity
                         onPress={handleSubmitSignIn}
                         style={styles.button}
-                        activeOpacity={0.8}
                     >
                         <Text style={styles.textButton}>Se connecter</Text>
                     </TouchableOpacity>
