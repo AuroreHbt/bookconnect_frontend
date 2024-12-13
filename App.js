@@ -38,7 +38,27 @@ const store = configureStore({
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+const StoriesStack = createNativeStackNavigator();
 
+function StoriesStackNavigator() {
+  return (
+    <StoriesStack.Navigator screenOptions={{ headerShown: false }}>
+      <StoriesStack.Screen name="Histoire" component={StoriesScreen} />
+      <StoriesStack.Screen
+        name="MyPublishedStories"
+        component={MyPublishedStoriesScreen}
+      />
+       <StoriesStack.Screen
+        name="NewStory"
+        component={NewStoryScreen}
+      />
+      <StoriesStack.Screen
+        name="ReadStory"
+        component={ReadStoryScreen}
+      />
+    </StoriesStack.Navigator>
+  );
+}
 
 function TabNavigator() {
   return (
@@ -74,7 +94,7 @@ function TabNavigator() {
     >
       <Tab.Screen name="Dashboard" component={DashboardScreen} />
       <Tab.Screen name="Evenement" component={EventsScreen} />
-      <Tab.Screen name="Histoire" component={StoriesScreen} />
+      <Tab.Screen name="Histoire" component={StoriesStackNavigator} />
       <Tab.Screen name="Favoris" component={FavoritesScreen} />
     </Tab.Navigator>
   );

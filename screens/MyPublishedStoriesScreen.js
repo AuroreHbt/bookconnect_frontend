@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, StyleSheet, Image } from "react-native";
+import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
+
 
 const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
 
-export default function MyPublishedStoriesScreen() {
+export default function MyPublishedStoriesScreen({navigation}) {
   const [stories, setStories] = useState([]); //hook d'état pour stocker les histoires publiées
   const user = useSelector((state) => state.user.value); // Informations recupérées depuis le store
 
@@ -21,9 +22,13 @@ export default function MyPublishedStoriesScreen() {
         keyExtractor={(item) => item._id}
         data={stories}
         renderItem={({ item }) => (
+          <TouchableOpacity
+            onPress={() => navigation.navigate("ReadStory", { story: item })} // Navigation avec paramètres
+          >
           <View style={styles.storyCard}>
             <View style={styles.leftRectangle}>
             <Text style={styles.storyTitle}>{item.title}</Text>
+            <Text style={styles.storyCategory}>{item.category}</Text>
             <Text style={styles.storyDescription}>{item.description}</Text>
             </View>
             {item.coverImage && (
@@ -33,6 +38,7 @@ export default function MyPublishedStoriesScreen() {
             />
   )}
           </View>
+          </TouchableOpacity>
         )}
       />
     </View>
@@ -67,8 +73,14 @@ padding: 20
     storyTitle : {
         fontSize: 18,
         fontWeight: 'bold',
-        marginBottom: 35
+        marginBottom: 5
     },
+
+storyCategory : {
+    fontSize: 16,
+    marginBottom: 12,
+    
+},
 
     storyDescription : {
         fontSize: 14,
