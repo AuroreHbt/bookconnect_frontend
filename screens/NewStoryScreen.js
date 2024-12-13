@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
+// import de PermissionsAndroid & Platform pour gérer l'autorisation d'acces aux dossiers (Android)
+// import de Pressable pour gérer les interactions tactiles (onPress, onLongPress etc)
 import {
   KeyboardAvoidingView,
+  PermissionsAndroid,
   Platform,
   StyleSheet,
   Text,
@@ -12,28 +15,29 @@ import {
   Pressable
 } from "react-native";
 
-import Checkbox from 'expo-checkbox'
+// import pour créer une case à cocher
+import Checkbox from 'expo-checkbox';
 
 // import pour faire un menu déroulant
 import { Picker } from '@react-native-picker/picker';
 
-// import de la bibliothèque d'icône Fontawsome via react-native-vector-icons
+// import pour utiliser le comoposant Icon de la bibliothèque react-native-vector-icons (/FontAwesome)
 import Icon from 'react-native-vector-icons/FontAwesome';
+
+// https://github.com/SimformSolutionsPvtLtd/react-native-spinner-button/blob/master/README.md
+// import pour mettre un spinner de chargement lors du press sur le bouton pour le délai d'upload/publication
+import SpinnerButton from 'react-native-spinner-button';
 
 // https://docs.expo.dev/versions/latest/sdk/font/
 // https://docs.expo.dev/develop/user-interface/fonts/
 // import pour utliser le hook useFonts pour charger la police
 import { useFonts } from 'expo-font';
 
+// import pour utiliser des dégradés linéaires (x,y)
 import { LinearGradient } from 'expo-linear-gradient';
 
 // import pour accéder aux dossiers du téléphone
 import * as DocumentPicker from 'expo-document-picker'
-
-// https://github.com/SimformSolutionsPvtLtd/react-native-spinner-button/blob/master/README.md
-// import pour mettre un spinner de chargement lors du press sur le bouton pour le délai d'upload/publication
-import SpinnerButton from 'react-native-spinner-button';
-
 
 
 const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS
