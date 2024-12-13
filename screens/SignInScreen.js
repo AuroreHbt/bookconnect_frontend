@@ -184,15 +184,15 @@ export default function SignInScreen({ navigation }) {
 
         <View style={styles.buttonContainer}>
           <LinearGradient
-            colors={['rgba(216, 72, 21, 1)', 'rgba(216, 72, 21, 0.8)']}
+            colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
             start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
+            end={{ x: 0, y: 0.7 }}
             style={styles.gradientButton}
+            activeOpacity={0.8}
           >
             <TouchableOpacity
               onPress={() => handleSubmitSignIn()}
               style={styles.button}
-              activeOpacity={0.8}
             >
               <Text style={styles.textButton}>Se connecter</Text>
             </TouchableOpacity>
@@ -274,13 +274,6 @@ const styles = StyleSheet.create({
     margin: 10,
   },
 
-  errorText: {
-    textAlign: 'left',
-    fontFamily: 'sans-serif',
-    fontSize: 16,
-    color: 'red',
-  },
-
   buttonContainer: {
     marginTop: 15,
     marginBottom: 10,
@@ -314,6 +307,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "rgba(55, 27, 12, 0.80)",
     color: "rgba(55, 27, 12, 0.80)",
+  },
+
+  errorText: {
+    textAlign: 'left',
+    fontFamily: 'sans-serif',
+    fontSize: 16,
+    color: 'red',
   },
 
 });
