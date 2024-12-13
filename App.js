@@ -27,12 +27,13 @@ import ResultResearchStoriesScreen from './screens/ResultResearchStoriesScreen';
 
 // Imports pour configurer le store redux
 import user from './reducers/user';
+import story from './reducers/story';
 import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit'
+import { configureStore } from '@reduxjs/toolkit';
 
 
 const store = configureStore({
-  reducer: { user },
+  reducer: { user, story },
 })
 
 
@@ -48,7 +49,7 @@ function StoriesStackNavigator() {
         name="MyPublishedStories"
         component={MyPublishedStoriesScreen}
       />
-       <StoriesStack.Screen
+      <StoriesStack.Screen
         name="NewStory"
         component={NewStoryScreen}
       />
@@ -81,7 +82,7 @@ function TabNavigator() {
       },
 
       headerShown: false,
-      tabBarActiveTintColor: '#D84815',
+      tabBarActiveTintColor: 'rgba(216, 72, 21, 0.9)',
       tabBarInactiveTintColor: '#6C4300',
       tabBarStyle: { position: 'absolute' },
 

@@ -167,8 +167,8 @@ const styles = StyleSheet.create({
     },
 
     gradientButton: {
-        borderRadius: 10,
-        width: '65%',
+        borderRadius: 15,
+        width: '60%',
     },
 
     button: {

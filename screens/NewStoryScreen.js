@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { addStory } from "../reducers/story";
 
 // import de PermissionsAndroid & Platform pour gérer l'autorisation d'acces aux dossiers (Android)
 // import de Pressable pour gérer les interactions tactiles (onPress, onLongPress etc)
@@ -61,6 +62,8 @@ export default function NewStoryScreen({ navigation }) {
   // https://reactnavigation.org/docs/navigation-object/#goback
   const goBack = () => navigation.goBack();
 
+  const [story, setStory] = useState({});
+
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
   const [isAdult, setIsAdult] = useState(false);
@@ -77,6 +80,8 @@ export default function NewStoryScreen({ navigation }) {
   const [categorySelected, setCategorySelected] = useState('');
 
   const user = useSelector((state) => state.user.value)
+
+  const dispatch = useDispatch();
 
   const handleSelectStoryFile = async () => {
     try {
@@ -191,6 +196,8 @@ export default function NewStoryScreen({ navigation }) {
       .then((data) => {
         console.log("réponse du serveur", data)
         if (data.result) {
+          dispatch(addStory())
+          setStory('')
           console.log('Histoire publiée');
           navigation.navigate('MyPublishedStories')
         } else {
@@ -237,7 +244,7 @@ export default function NewStoryScreen({ navigation }) {
               styles.picker,
               categorySelected ? styles.categorySelected : null
             ]}
-            // styles.picker est le style de base toujours appiqué. Si categorySelected est vrai (true=category sélectionné/pressé), styles.categorySelected sera appliqué, sinon null sera ajouté (donc pas de style supplémentaire)
+          // styles.picker est le style de base toujours appiqué. Si categorySelected est vrai (true=category sélectionné/pressé), styles.categorySelected sera appliqué, sinon null sera ajouté (donc pas de style supplémentaire)
           >
             <Picker
               selectedValue={category}
@@ -490,7 +497,7 @@ const styles = StyleSheet.create({
   },
 
   gradientButton: {
-    borderRadius: 10,
+    borderRadius: 15,
     width: '40%',
   },
 
