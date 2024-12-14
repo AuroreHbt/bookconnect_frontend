@@ -8,12 +8,11 @@ import {
 } from 'react-native';
 
 
-export default function ReadStoryScreen() {
+export default function FavEventScreen() {
 
     return (
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-            <Text>Read Story Screen</Text>
-
+            <Text>Mes Events : créés et enregistrés</Text>
         </KeyboardAvoidingView>
     );
 };

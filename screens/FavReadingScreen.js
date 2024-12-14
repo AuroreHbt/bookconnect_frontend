@@ -14,7 +14,7 @@ export default function FavReadingScreen() {
 const styles = StyleSheet.create({
 
     container: {
-        flex: 1,
+        flex: 0.9,
         backgroundColor: 'pink',
         alignItems: 'center',
         justifyContent: 'center',

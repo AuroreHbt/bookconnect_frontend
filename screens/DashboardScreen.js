@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
 import { LinearGradient } from 'expo-linear-gradient';
+
+// import de la bibliothèque d'icône Fontawsome via react-native-vector-icons
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 import {
   SafeAreaView,
   ScrollView,
@@ -13,17 +17,14 @@ import {
   Image,
   TouchableWithoutFeedback,
 } from 'react-native';
+
 import { useDispatch } from "react-redux";
 import { logout } from "../reducers/user";
-
-// import de la bibliothèque d'icône Fontawsome via react-native-vector-icons
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 // https://docs.expo.dev/versions/latest/sdk/font/
 // https://docs.expo.dev/develop/user-interface/fonts/
 // import pour utliser le hook useFonts pour charger la police
 import { useFonts } from 'expo-font';
-
 
 
 export default function DashboardScreen({ navigation }) {
@@ -61,8 +62,17 @@ export default function DashboardScreen({ navigation }) {
   // Déconnexion
   const handleLogout = () => {
     dispatch(logout());
-    navigation.navigate('Home', { screen: 'HomeScreen' })
+    navigation.navigate('Home')
   };
+
+  const handleMyCurrentReadings = () => {
+    navigation.navigate('MyCurrentReadings')
+  }
+
+  const handleMyEvents = () => {
+    navigation.navigate('NewEvent')
+  }
+
 
   return (
 
@@ -86,7 +96,7 @@ export default function DashboardScreen({ navigation }) {
             {/* Icône Paramètre */}
           </View>
           <TouchableOpacity onPress={toggleParameter} style={styles.ParameterButton}>
-            <FontAwesome name="gear" size={30} color="white" />
+            <Icon name="gear" size={36} color="white" />
           </TouchableOpacity>
         </View>
 
@@ -105,7 +115,7 @@ export default function DashboardScreen({ navigation }) {
                 {/* Options de paramètres */}
                 <TouchableOpacity style={styles.optionButton}>
                   <Text style={styles.optionText} onPress={() => handleLogout()}>Déconnexion</Text>
-                  <FontAwesome name='sign-out' size={20} color='black' style={styles.logoutIcon} />
+                  <Icon name='sign-out' size={20} color='rgba(216, 72, 21, 0.9)' style={styles.logoutIcon} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -126,8 +136,14 @@ export default function DashboardScreen({ navigation }) {
           {/* Titre de la section */}
           <View style={styles.sectionHeader}>
             <Text style={styles.textSection}>Mes lectures en cours</Text>
-            <FontAwesome name="arrow-right" size={20} color="rgba(216, 72, 21, 0.9)" />
+            <TouchableOpacity
+              onPress={handleMyCurrentReadings}
+              activeOpacity={0.8}
+            >
+              <Icon name="arrow-right" size={20} color="rgba(216, 72, 21, 0.9)" />
+            </TouchableOpacity>
           </View>
+
           {/* ScrollView horizontal */}
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.booksContainer}>
             <View style={styles.bookCard}>
@@ -170,7 +186,12 @@ export default function DashboardScreen({ navigation }) {
           {/* Titre de la section */}
           <View style={styles.sectionHeader}>
             <Text style={styles.textSection}>Mes évènements</Text>
-            <FontAwesome name="arrow-right" size={20} color="rgba(216, 72, 21, 0.9)" />
+            <TouchableOpacity
+              onPress={handleMyEvents}
+              activeOpacity={0.8}
+            >
+              <Icon name="arrow-right" size={20} color="rgba(216, 72, 21, 0.9)" />
+            </TouchableOpacity>
           </View>
           {/* ScrollView horizontal des évènements*/}
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.eventsContainer}>
@@ -206,7 +227,7 @@ export default function DashboardScreen({ navigation }) {
 const styles = StyleSheet.create({
 
   container: {
-    flex: 1,
+    flex: 0.95,
     backgroundColor: 'white',
   },
   gradientContainer: {
@@ -370,7 +391,7 @@ const styles = StyleSheet.create({
   },
   optionText: {
     fontSize: 16,
-    color: 'black',
+    color: 'rgba(216, 72, 21, 0.9)',
     fontWeight: 'bold',
     textAlign: 'left',
     fontFamily: 'Poppins',

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from "react-native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+
+import { deleteStory } from "../reducers/story";
 
 // import de la bibliothèque d'icône Fontawsome via react-native-vector-icons
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -17,7 +19,9 @@ export default function MyPublishedStoriesScreen({ navigation }) {
 
   const user = useSelector((state) => state.user.value); // Informations recupérées depuis le store
 
-  const story = useSelector((state) => state.user.value)
+  const story = useSelector((state) => state.story.value)
+
+  const dispatch = useDispatch();
 
   // https://reactnavigation.org/docs/navigation-object/#goback
   const goBack = () => navigation.goBack();
@@ -29,9 +33,13 @@ export default function MyPublishedStoriesScreen({ navigation }) {
       .then((data) => setStories(data.stories)); // Mettre à jour l'etat avec les données des histoires
   }, [user.username]); // Actualisation sur l'utilisateur en cas de changement
 
+
   // Fonction pour supprimer une histoire que l'on a postée
   const handleDeleteStory = () => {
-    fetch(`${BACKEND_ADDRESS}/stories/deletepublishedstory`, {
+    console.log(user.username)
+    console.log(user)
+    console.log(story)
+    fetch(`${BACKEND_ADDRESS}/stories/deletepublishedstory/${user.username}/${story}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -40,18 +48,23 @@ export default function MyPublishedStoriesScreen({ navigation }) {
       .then((response) => response.json())
       .then((data) => {
         console.log(data)
-        setStories([]);
-        console.log('story supprimée !');
+        if (data.result) {
+          console.log('Réponse du serveur:', data)
+          dispatch(deleteStory(story._id))
+          setStory('')
+          console.log('story supprimée !');
+          navigation.navigate('MyPublishedStories')
+        }
       })
       .catch((error) => {
         console.error("Erreur lors de la suppression de l'histoire:", error);
       });
   };
 
-  // // Fonction pour modifier une histoire postée : à définir
-  // const handlePutStory = async () => {
+  // Fonction pour modifier une histoire postée : à définir
+  const handlePutStory = async () => {
 
-  // }
+  }
 
 
   return (
@@ -75,8 +88,10 @@ export default function MyPublishedStoriesScreen({ navigation }) {
 
       {/* Affichage des histoires publiées */}
       <FlatList
+        initialScrollIndex={0}
         keyExtractor={(item) => item._id}
         data={stories}
+        //data={stories.reverse()} // pour inverser l'affichage des story postées sans gérer un tri par date
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => navigation.navigate("ReadStory", { story: item })} // Navigation avec paramètres

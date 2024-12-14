@@ -25,8 +25,8 @@ import { Picker } from '@react-native-picker/picker';
 // import pour utiliser le comoposant Icon de la bibliothèque react-native-vector-icons (/FontAwesome)
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-// https://github.com/SimformSolutionsPvtLtd/react-native-spinner-button/blob/master/README.md
 // import pour mettre un spinner de chargement lors du press sur le bouton pour le délai d'upload/publication
+// https://github.com/SimformSolutionsPvtLtd/react-native-spinner-button/blob/master/README.md
 import SpinnerButton from 'react-native-spinner-button';
 
 // https://docs.expo.dev/versions/latest/sdk/font/
@@ -38,6 +38,7 @@ import { useFonts } from 'expo-font';
 import { LinearGradient } from 'expo-linear-gradient';
 
 // import pour accéder aux dossiers du téléphone
+// https://docs.expo.dev/versions/latest/sdk/document-picker/#using-with-expo-file-system
 import * as DocumentPicker from 'expo-document-picker'
 
 
@@ -137,6 +138,7 @@ export default function NewStoryScreen({ navigation }) {
     console.log("Fichier texte :", storyFile);
     console.log("Image de couverture :", coverImage);
 
+    // validation des champs :
     let hasError = false
 
     if (!title) {
@@ -167,8 +169,10 @@ export default function NewStoryScreen({ navigation }) {
       setFileError('')
     }
 
-    if (hasError) return; // early return pour stopper le code
+    // early return pour stopper le code si des erreurs sont détectées:
+    if (hasError) return;
 
+    // céation de l'objet formData pour l'envoi de fichiers et de données
     const formData = new FormData();
     formData.append('author', user.username)
     formData.append('title', title)
@@ -181,6 +185,7 @@ export default function NewStoryScreen({ navigation }) {
       type: storyFile.mimeType
     });
 
+    // ajout de la cover (optionnel)
     if (coverImage) {
       formData.append('coverImage', {
         uri: coverImage.uri,
@@ -192,11 +197,13 @@ export default function NewStoryScreen({ navigation }) {
     fetch(`${BACKEND_ADDRESS}/stories/addstory`, {
       method: "POST",
       body: formData,
-    }).then((response) => response.json())
+    })
+      .then((response) => response.json())
       .then((data) => {
         console.log("réponse du serveur", data)
         if (data.result) {
-          dispatch(addStory())
+          console.log(data)
+          dispatch(addStory(data.story))
           setStory('')
           console.log('Histoire publiée');
           navigation.navigate('MyPublishedStories')
@@ -225,16 +232,6 @@ export default function NewStoryScreen({ navigation }) {
           />
           {titleError ? <Text style={styles.errorText}>{titleError}</Text> : null}
         </View>
-
-        {/* Categorie : input type texte
-        <View style={styles.titleInputContainer}>
-          <TextInput
-            placeholder="Type d'histoire (obligatoire)"
-            onChangeText={(value) => setCategory(value)}
-            value={category}
-          />
-          {categoryError ? <Text style={styles.errorText}>{categoryError}</Text> : null}
-        </View> */}
 
         {/* Catégorie : liste de choix */}
         <View style={styles.pickerContainer}>
@@ -362,7 +359,7 @@ export default function NewStoryScreen({ navigation }) {
 const styles = StyleSheet.create({
 
   container: {
-    flex: 1,
+    flex: 0.95,
     alignItems: "center",
     justifyContent: 'space-evenly',
     marginTop: 50,

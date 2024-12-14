@@ -25,48 +25,48 @@ import {
 
 
 
-export default function EventsScreen({navigation}) {
+export default function EventsScreen({ navigation }) {
   const [searchText, setSearchText] = useState("");
 
   const addEvent = () => {
     navigation.navigate('NewEvent', { screen: 'NewEventScreen' })
   };
 
-  const handleSearchPlace = async () => { 
+  const handleSearchPlace = async () => {
     if (!searchText) {
-      Alert.alert('Erreur','Veuillez entrer une localisation');
+      Alert.alert('Erreur', 'Veuillez entrer une localisation');
       return;
     }
-    
+
     try {
-       const apiKey =process.env.EXPO_PUBLIC_MAP_API_KEY
+      const apiKey = process.env.EXPO_PUBLIC_MAP_API_KEY
       // URL pour l'API 
       const url = `https://api.opencagedata.com/geocode/v1/json?q=${searchText}&key=${apiKey}`
-      
+
       const response = await fetch(url);
 
-    if (!response.ok) {
-      throw new Error(`Erreur ${response.status}: ${response.statusText}`);
+      if (!response.ok) {
+        throw new Error(`Erreur ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      if (data.results.length === 0) {
+        Alert.alert("Erreur", "Localisation introuvable");
+        return;
+      }
+
+      const { lat, lng } = data.results[0].geometry;
+
+      navigation.navigate("Map", {
+        latitude: parseFloat(lat),
+        longitude: parseFloat(lng),
+      });
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Erreur", "Une erreur est survenue lors de la recherche.");
     }
-
-    const data = await response.json();
-
-    if (data.results.length === 0) {
-      Alert.alert("Erreur", "Localisation introuvable");
-      return;
-    }
-
-    const { lat, lng } = data.results[0].geometry;
-
-    navigation.navigate("MapScreen", {
-      latitude: parseFloat(lat),
-      longitude: parseFloat(lng),
-    });
-  } catch (error) {
-    console.error(error);
-    Alert.alert("Erreur", "Une erreur est survenue lors de la recherche.");
-  }
-};
+  };
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -97,7 +97,7 @@ export default function EventsScreen({navigation}) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 0.95,
     backgroundColor: "#ffffff",
     alignItems: "center",
     justifyContent: "center",

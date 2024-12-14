@@ -1,4 +1,12 @@
-import { StyleSheet, KeyboardAvoidingView, Platform, Text, View } from 'react-native';
+import {
+    TouchableOpacity,
+    StyleSheet,
+    KeyboardAvoidingView,
+    Platform,
+    Text,
+    View
+} from 'react-native';
+
 
 export default function FavEventScreen() {
 
@@ -14,7 +22,7 @@ export default function FavEventScreen() {
 const styles = StyleSheet.create({
 
     container: {
-        flex: 1,
+        flex: 0.95,
         backgroundColor: 'pink',
         alignItems: 'center',
         justifyContent: 'center',

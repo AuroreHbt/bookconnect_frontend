@@ -140,7 +140,7 @@ export default function StoriesScreen({ navigation }) {
 const styles = StyleSheet.create({
 
     container: {
-        flex: 1,
+        flex: 0.95,
         alignItems: 'center',
         justifyContent: 'space-evenly',
         marginTop: 50,
