@@ -14,7 +14,7 @@ export default function MyCurrentReadingsScreen() {
 const styles = StyleSheet.create({
 
     container: {
-        flex: 1,
+        flex: 0.95,
         backgroundColor: 'pink',
         alignItems: 'center',
         justifyContent: 'center',

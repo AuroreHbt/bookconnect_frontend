@@ -6,7 +6,6 @@ import { addStory } from "../reducers/story";
 // import de Pressable pour gérer les interactions tactiles (onPress, onLongPress etc)
 import {
   KeyboardAvoidingView,
-  PermissionsAndroid,
   Platform,
   StyleSheet,
   Text,
@@ -25,10 +24,6 @@ import { Picker } from '@react-native-picker/picker';
 // import pour utiliser le comoposant Icon de la bibliothèque react-native-vector-icons (/FontAwesome)
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-// import pour mettre un spinner de chargement lors du press sur le bouton pour le délai d'upload/publication
-// https://github.com/SimformSolutionsPvtLtd/react-native-spinner-button/blob/master/README.md
-import SpinnerButton from 'react-native-spinner-button';
-
 // https://docs.expo.dev/versions/latest/sdk/font/
 // https://docs.expo.dev/develop/user-interface/fonts/
 // import pour utliser le hook useFonts pour charger la police
@@ -41,6 +36,16 @@ import { LinearGradient } from 'expo-linear-gradient';
 // https://docs.expo.dev/versions/latest/sdk/document-picker/#using-with-expo-file-system
 import * as DocumentPicker from 'expo-document-picker'
 
+// import pour mettre un spinner de chargement lors du press sur le bouton pour le délai d'upload/publication
+// https://github.com/SimformSolutionsPvtLtd/react-native-spinner-button/blob/master/README.md
+import SpinnerButton from 'react-native-spinner-button';
+
+// composant wrapper pour résoudre cette erreur :
+// Warning: A props object containing a "key" prop is being spread into JSX: <Animated(View) key={someKey} {...props} />
+const SafeSpinnerButton = React.forwardRef((props, ref) => {
+  const { key, ...otherProps } = props;
+  return <SpinnerButton ref={ref} {...otherProps} />;
+});
 
 const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS
 
@@ -63,7 +68,6 @@ export default function NewStoryScreen({ navigation }) {
   // https://reactnavigation.org/docs/navigation-object/#goback
   const goBack = () => navigation.goBack();
 
-  const [story, setStory] = useState({});
 
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
@@ -79,8 +83,10 @@ export default function NewStoryScreen({ navigation }) {
   const [fileError, setFileError] = useState('');
 
   const [categorySelected, setCategorySelected] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const user = useSelector((state) => state.user.value)
+  const story = useSelector((state) => state.story.value)
 
   const dispatch = useDispatch();
 
@@ -90,12 +96,14 @@ export default function NewStoryScreen({ navigation }) {
         type: ["application/pdf", "text/plain"],
         copyToCacheDirectory: true,
       });
+      setIsLoading(true); // Activer le spinner
 
       console.log("Résultat brut pour le fichier texte :", document);
 
       // Vérifiez si l'utilisateur a annulé ou si `assets` est vide
       if (document.canceled || !document.assets || document.assets.length === 0) {
         console.log("Annulé par l'utilisateur");
+        setIsLoading(false); // Arrêter le spinner
         return;
       }
 
@@ -104,6 +112,8 @@ export default function NewStoryScreen({ navigation }) {
       console.log("Fichier texte sélectionné :", selectedFile.name);
     } catch (error) {
       console.error("Erreur lors de la sélection du fichier texte :", error);
+    } finally {
+      setIsLoading(false); // Arrêter le chargement une fois terminé
     }
   };
 
@@ -114,12 +124,14 @@ export default function NewStoryScreen({ navigation }) {
         type: ["image/jpeg", "image/png", "image/jpg"],
         copyToCacheDirectory: true,
       });
+      setIsLoading(true); // Activer le spinner
 
       console.log("Résultat brut pour l'image :", image);
 
       // Vérifiez si l'utilisateur a annulé ou si `assets` est vide
       if (image.canceled || !image.assets || image.assets.length === 0) {
         console.log("Sélection annulée pour l'image.");
+        setIsLoading(false); // Arrêter le spinner
         return;
       }
       const selectedImage = image.assets[0];
@@ -127,16 +139,21 @@ export default function NewStoryScreen({ navigation }) {
       console.log("Image sélectionnée :", selectedImage.name);
     } catch (error) {
       console.error("Erreur lors de la sélection de l'image :", error);
+    } finally {
+      setIsLoading(false); // Arrêter le chargement une fois terminé
     }
   };
 
   const handlePostStory = async () => {
+    console.log("Contenu actuel de story :", story);
     console.log("Titre :", title);
     console.log("Catégorie :", category);
     console.log("Contenu 18+ :", isAdult);
     console.log("Description :", description);
     console.log("Fichier texte :", storyFile);
     console.log("Image de couverture :", coverImage);
+
+    setIsLoading(true); // Activer le spinner
 
     // validation des champs :
     let hasError = false
@@ -170,9 +187,12 @@ export default function NewStoryScreen({ navigation }) {
     }
 
     // early return pour stopper le code si des erreurs sont détectées:
-    if (hasError) return;
+    if (hasError) {
+      setIsLoading(false); // Désactiver le spinner si erreur
+      return;
+    }
 
-    // céation de l'objet formData pour l'envoi de fichiers et de données
+    // création de l'objet formData pour l'envoi de fichiers et de données
     const formData = new FormData();
     formData.append('author', user.username)
     formData.append('title', title)
@@ -200,18 +220,27 @@ export default function NewStoryScreen({ navigation }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("réponse du serveur", data)
+        // console.log("réponse du serveur", data)
         if (data.result) {
-          console.log(data)
+          console.log("data.result: ", data.result)
           dispatch(addStory(data.story))
-          setStory('')
-          console.log('Histoire publiée');
+          // console.log("data.story: ", data.story);
+
+          setTitle('')
+          setCategory('')
+          setIsAdult(false)
+          setDescription('')
+          setStoryFile('')
+          setCoverImage('')
+          setIsLoading(false)
+          console.log('Histoire publiée avec succès!');
           navigation.navigate('MyPublishedStories')
         } else {
           console.log('erreur lors de la publication', data.error);
         }
       });
   }
+
 
   return (
     <KeyboardAvoidingView
@@ -303,6 +332,7 @@ export default function NewStoryScreen({ navigation }) {
         </View>
 
         <View style={styles.fileContainer}>
+
           <TouchableOpacity
             onPress={handleSelectCoverImage}
           >
@@ -320,19 +350,34 @@ export default function NewStoryScreen({ navigation }) {
         </View>
       </View>
 
-      <View style={styles.buttonContainer}>
 
+      <View style={styles.buttonContainer}>
         <View>
+          <View style={styles.spinner}>
+            {/* Pour matérialiser le chargement */}
+            <SpinnerButton
+              key="uniqueKeyForSpinnerButton"
+              isLoading={isLoading}
+              indicatorCount={10}
+              spinnerColor="rgba(216, 72, 21, 0.9)"
+              spinnerType="PacmanIndicator"
+              buttonStyle={[styles.buttonContainer, styles.spinner]}
+              animateHeight={40}
+              size={40}
+            >
+            </SpinnerButton>
+          </View>
+
           <LinearGradient
             colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 0.7 }}
             style={styles.gradientButton}
-            activeOpacity={0.8}
           >
             <TouchableOpacity
               onPress={handlePostStory}
               style={styles.button}
+              activeOpacity={0.8}
             >
               <Text style={styles.textButton}>Publier</Text>
             </TouchableOpacity>
@@ -493,14 +538,25 @@ const styles = StyleSheet.create({
     width: '100%',
   },
 
+  spinner: {
+    maxHeight: "5%",
+    maxWidth: "50%",
+    borderRadius: 15,
+    padding: '5%',
+    margin: 5,
+    borderWidth: 1,
+    borderColor: 'red',
+  },
+
   gradientButton: {
     borderRadius: 15,
-    width: '40%',
+    alignItems: 'center',
   },
 
   button: {
     padding: 5,
     margin: 10,
+    width: '45%',
   },
 
   textButton: {

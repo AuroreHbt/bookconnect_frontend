@@ -70,7 +70,7 @@ export default function DashboardScreen({ navigation }) {
   }
 
   const handleMyEvents = () => {
-    navigation.navigate('NewEvent')
+    navigation.navigate('MyEvents')
   }
 
 
@@ -140,7 +140,7 @@ export default function DashboardScreen({ navigation }) {
               onPress={handleMyCurrentReadings}
               activeOpacity={0.8}
             >
-              <Icon name="arrow-right" size={20} color="rgba(216, 72, 21, 0.9)" />
+              <Icon name="chevron-circle-right" size={20} color="rgba(216, 72, 21, 0.9)" />
             </TouchableOpacity>
           </View>
 
@@ -190,7 +190,7 @@ export default function DashboardScreen({ navigation }) {
               onPress={handleMyEvents}
               activeOpacity={0.8}
             >
-              <Icon name="arrow-right" size={20} color="rgba(216, 72, 21, 0.9)" />
+              <Icon name="chevron-circle-right" size={20} color="rgba(216, 72, 21, 0.9)" />
             </TouchableOpacity>
           </View>
           {/* ScrollView horizontal des évènements*/}

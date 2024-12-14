@@ -23,13 +23,11 @@ import {
 } from "react-native";
 
 
-
-
 export default function EventsScreen({ navigation }) {
   const [searchText, setSearchText] = useState("");
 
   const addEvent = () => {
-    navigation.navigate('NewEvent', { screen: 'NewEventScreen' })
+    navigation.navigate('NewEvent')
   };
 
   const handleSearchPlace = async () => {

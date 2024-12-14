@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 
 
-export default function FindStoriesScreen() {
+export default function FindStoriesScreen({navigation}) {
 
     const handleStorySearch = () => {
         navigation.navigate('ResultResearchStories')
@@ -21,8 +21,9 @@ export default function FindStoriesScreen() {
             <TouchableOpacity
                 activeOpacity={0.8}
                 onPress={handleStorySearch}
+                style={styles.button}
             >
-                <Text>Résultats de ma recherche (stories)</Text>
+                <Text style={styles.textButton}>Résultats de ma recherche (stories)</Text>
             </TouchableOpacity>
 
         </KeyboardAvoidingView>
@@ -39,4 +40,22 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+
+    button: {
+        alignItems: 'center',
+        backgroundColor: 'purple',
+        borderRadius: 15,
+        width: '50%',
+        padding: 10,
+        margin: 10,
+    },
+
+    textButton: {
+        textAlign: 'center',
+        fontFamily: 'sans-serif',
+        fontWeight: 'bold',
+        fontSize: 18,
+        color: 'white', // 'rgba(55, 27, 12, 0.8)', // #371B0C
+    },
+
 });

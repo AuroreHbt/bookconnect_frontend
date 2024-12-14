@@ -17,7 +17,7 @@ import DashboardScreen from './screens/DashboardScreen';
 import EventsScreen from './screens/EventsScreen'; // accueil Events
 import MapScreen from './screens/MapScreen'; // Events > resultat de la recherche d'events par ville
 import MyEventsScreen from './screens/MyEventsScreen' // Events > Mes evenements
-import NewEventScreen from './screens/NewEventScreen'; // ? > ajout d'un newEvent
+import NewEventScreen from './screens/NewEventScreen'; // MyEvents ? > ajout d'un newEvent
 
 import StoriesScreen from './screens/StoriesScreen'; // accueil Stories
 import NewStoryScreen from './screens/NewStoryScreen'; // Stories > ajout d'une story
@@ -46,9 +46,27 @@ const store = configureStore({
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+const DashboardStack = createNativeStackNavigator();
 const EventsStack = createNativeStackNavigator();
 const StoriesStack = createNativeStackNavigator();
 const FavoritesStack = createNativeStackNavigator();
+
+
+function DashboardStackNavigator() {
+  return (
+    <DashboardStack.Navigator screenOptions={{ headerShown: false }}>
+      <DashboardStack.Screen name="UserProfile" component={DashboardScreen} />
+      <DashboardStack.Screen
+        name="MyCurrentReadings"
+        component={MyCurrentReadingsScreen}
+      />
+      <DashboardStack.Screen
+        name="MyEvents"
+        component={MyEventsScreen}
+      />
+    </DashboardStack.Navigator>
+  )
+}
 
 function EventsStackNavigator() {
   return (
@@ -151,7 +169,7 @@ function TabNavigator() {
     })}
 
     >
-      <Tab.Screen name="Dashboard" component={DashboardScreen} />
+      <Tab.Screen name="Dashboard" component={DashboardStackNavigator} />
       <Tab.Screen name="Evenements" component={EventsStackNavigator} />
       <Tab.Screen name="Histoires" component={StoriesStackNavigator} />
       <Tab.Screen name="Favoris" component={FavoritesStackNavigator} />

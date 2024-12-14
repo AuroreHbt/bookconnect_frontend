@@ -19,41 +19,51 @@ export default function MyPublishedStoriesScreen({ navigation }) {
 
   const user = useSelector((state) => state.user.value); // Informations recupérées depuis le store
 
-  const story = useSelector((state) => state.story.value)
+  const story = useSelector((state) => state.story.value) // story list = tableau d'objets
 
   const dispatch = useDispatch();
 
   // https://reactnavigation.org/docs/navigation-object/#goback
   const goBack = () => navigation.goBack();
 
-
-  useEffect(() => {
+  // Fonction pour récupérer les histoires publiées
+  const getMyPublishedStories = () => {
     fetch(`${BACKEND_ADDRESS}/stories/mypublishedstory/${user.username}`)
       .then((response) => response.json())
       .then((data) => setStories(data.stories)); // Mettre à jour l'etat avec les données des histoires
+  };
+
+  useEffect(() => {
+    getMyPublishedStories();
   }, [user.username]); // Actualisation sur l'utilisateur en cas de changement
 
 
   // Fonction pour supprimer une histoire que l'on a postée
-  const handleDeleteStory = () => {
-    console.log(user.username)
-    console.log(user)
-    console.log(story)
-    fetch(`${BACKEND_ADDRESS}/stories/deletepublishedstory/${user.username}/${story}`, {
+  const handleDeleteStory = (storyId) => {
+    // Debug ok
+    // console.log("ID de l'histoire sélectionnée : ", storyId) // ID de l'histoire sélectionnée
+    console.log("Type de storyId :", typeof storyId); // Vérifiez le type
+    console.log("Type de user.token :", typeof user.token); // Vérifiez le type
+
+    fetch(`${BACKEND_ADDRESS}/stories/deletepublishedstory`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
+      body: JSON.stringify({ token: user.token, id: storyId }),
+      // Envoi de l'ID de l'histoire à supprimer lié au token de l'author : sans cette ligne, la requete est vide (cf. console.log de req.body sur la route delete)
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data)
+        console.log("DATA: ", data)
+        console.log("ID: ", storyId)
+
         if (data.result) {
-          console.log('Réponse du serveur:', data)
-          dispatch(deleteStory(story._id))
-          setStory('')
-          console.log('story supprimée !');
-          navigation.navigate('MyPublishedStories')
+
+          console.log('Réponse du serveur (data.result): ', data.result)
+          dispatch(deleteStory(storyId)) // supprime l'histoire du store
+          console.log('story supprimée avec succès');
+          getMyPublishedStories(); // pour recharger la page avec les stories publiées
         }
       })
       .catch((error) => {
@@ -62,9 +72,9 @@ export default function MyPublishedStoriesScreen({ navigation }) {
   };
 
   // Fonction pour modifier une histoire postée : à définir
-  const handlePutStory = async () => {
+  // const handlePutStory = async () => {
 
-  }
+  // }
 
 
   return (
@@ -130,7 +140,7 @@ export default function MyPublishedStoriesScreen({ navigation }) {
                   {/* bouton pour delete */}
                   <TouchableOpacity
                     style={styles.iconContainer}
-                    onPress={handleDeleteStory}
+                    onPress={() => handleDeleteStory(item._id)} // Passez l'ID de l'histoire ici
                   >
                     <Icon
                       name='trash-o'
