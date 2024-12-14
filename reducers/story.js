@@ -10,8 +10,6 @@ export const storySlice = createSlice({
     reducers: {
         addStory: (state, action) => {
             state.value.push(action.payload);
-            console.log(state.value);
-            console.log(action.payload);            
         },
         deleteStory: (state, action) => {
             state.value = state.value.filter(story => story.id !== action.payload); // comparaison par id de chaque story
