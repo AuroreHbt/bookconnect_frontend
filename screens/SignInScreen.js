@@ -123,6 +123,7 @@ export default function SignInScreen({ navigation }) {
               username: data.username,
               email: data.email,
               token: data.token,
+              _id: data._id,
             })
           );
           console.log("Connexion réussie");

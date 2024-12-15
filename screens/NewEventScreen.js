@@ -84,41 +84,52 @@ export default function NewEventScreen({ navigation }) {
   console.log("Heure de fin :", endTime);
   console.log("Adresse :", `${placeNumber} ${street}, ${code} ${city}`);
   console.log("Image de couverture :", eventImage);
+  console.log("Planner à envoyer :", user.username);
 
   if (!title || !placeNumber || !street || !code || !city || !category || !description || !day || !startTime || !endTime) {
     Alert.alert('Erreur', 'Tous les champs obligatoires doivent être remplis.');
     return;
   };
 
-    console.log("Planner (user.username) :", user.username);
-    if (!user.username) {
+    console.log("Contenu de user :", user);
+    if (!user ||!user.username) {
     Alert.alert('Erreur', 'Utilisateur non authentifié.');
     return;
     };
 
+
+    // Création de l'objet conforme au backend
+    const eventData = {
+      planner: user.username,
+      title,
+      category,
+      date: {
+        day: moment(day).format('YYYY-MM-DD'),
+        start: moment(`${moment(day).format('YYYY-MM-DD')}T${startTime}`).toISOString(),
+        end: moment(`${moment(day).format('YYYY-MM-DD')}T${endTime}`).toISOString(),
+      },
+      place: {
+        number: parseInt(placeNumber, 10),
+        street,
+        city,
+        code: parseInt(code, 10),
+      },
+      description,
+      url: url || '', // Fournir une valeur par défaut si `url` est facultatif
+      isLiked: false, // Ajout d'une valeur par défaut
+    };
+
+    console.log("Données envoyées :", eventData);
+
+    // Ajout de l'image si elle existe
     const formData = new FormData();
-    formData.append('planner', user.username)
-    formData.append('title', title);
-
-    formData.append('date[day]', moment(day).format('YYYY-MM-DD'));
-    formData.append('date[start]', startTime);
-    formData.append('date[end]', endTime);
-
-    formData.append('place[number]', placeNumber);
-    formData.append('place[street]', street);
-    formData.append('place[code]', code);
-    formData.append('place[city]', city);
-
-    formData.append('category', category);
-    formData.append('description', description);
-    formData.append('url', url);
-
+    formData.append('eventData', JSON.stringify(eventData));
     if (eventImage) {
-      formData.append('eventImage', {
-        uri: eventImage.uri,
-        name: eventImage.fileName,
-        type: eventImage.type,
-      });
+    formData.append('eventImage', {
+      uri: eventImage.uri,
+      name: eventImage.fileName || 'event_image.jpg',
+      type: eventImage.type || 'image/jpeg',
+    });
     }
       fetch(`${BACKEND_ADDRESS}/events/addevent`, {
         method: "POST",
