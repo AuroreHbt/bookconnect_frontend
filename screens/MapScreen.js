@@ -1,67 +1,43 @@
 import { useRef, useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, Platform, Alert } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, SafeAreaProvider, SafeAreaView } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
 export default function MapScreen({ route, navigation }) {
-  const { latitude, longitude, events = {} } = route.params || {};
-  const eventsData = Array.isArray(events.data) ? events.data : [];
+  const { latitude, longitude, events = {} } = route.params;
+  const eventsData = events.data || [];
   const mapRef = useRef(null);
-
-  // État de la région initiale
   const [region, setRegion] = useState({
     latitude: latitude || 48.8566,
     longitude: longitude || 2.3522,
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
-
-  // État pour la position utilisateur
   const [currentPosition, setCurrentPosition] = useState(null);
-  const [isLocationLoaded, setIsLocationLoaded] = useState(false); // Pour éviter le re-rendu infini
 
-  // Obtenir la permission et la localisation utilisateur
+  // Gestion de la localisation utilisateur
   useEffect(() => {
-    const getLocation = async () => {
-      try {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status === 'granted') {
-          const location = await Location.getCurrentPositionAsync({
-            accuracy: Location.Accuracy.BestForNavigation,
-          });
-          setCurrentPosition({
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-          });
-          setIsLocationLoaded(true);
-        } else {
-          Alert.alert('Permission refusée', 'Impossible d’accéder à votre position.');
-          setIsLocationLoaded(true); // Éviter la boucle infinie même en cas d'échec
-        }
-      } catch (error) {
-        console.error('Erreur de localisation :', error);
-        setIsLocationLoaded(true);
+    const requestLocationPermission = async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status === 'granted') {
+        Location.watchPositionAsync({ distanceInterval: 10 }, (location) => {
+          const { latitude, longitude } = location.coords;
+          console.log('location.coords: ', location.coords);
+          setCurrentPosition({ latitude, longitude });
+        });
+      } else {
+        console.log('Location permission not granted');
       }
     };
+    requestLocationPermission();
+  }, []);
 
-    if (!isLocationLoaded) getLocation();
-  }, [isLocationLoaded]);
-
-  // Ajustement automatique de la carte pour les événements
+  // Ajustement de la carte aux événements
   useEffect(() => {
     if (mapRef.current && eventsData.length > 0) {
       const validCoordinates = eventsData
-        .filter(
-          (event) =>
-            event.latitude !== null &&
-            event.longitude !== null &&
-            !isNaN(event.latitude) &&
-            !isNaN(event.longitude)
-        )
-        .map((event) => ({
-          latitude: Number(event.latitude),
-          longitude: Number(event.longitude),
-        }));
+        .map(event => ({ latitude: event.latitude, longitude: event.longitude }))
+        .filter(coord => coord.latitude && coord.longitude);
 
       if (validCoordinates.length > 0) {
         mapRef.current.fitToCoordinates(validCoordinates, {
@@ -72,17 +48,26 @@ export default function MapScreen({ route, navigation }) {
     }
   }, [eventsData]);
 
-  // Retour à l'écran précédent
+  // Bouton "Retour"
   const goBack = () => navigation.goBack();
 
   return (
     <>
+      {/* Bouton "Retour" */}
+      <TouchableOpacity
+        onPress={goBack}
+        style={styles.returnContainer}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.textReturn}>Retour</Text>
+      </TouchableOpacity>
+
       <MapView
-        provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : null}
+        provider={PROVIDER_GOOGLE}
         style={styles.map}
-        initialRegion={region}
-        ref={mapRef}
+        region={region}
         onRegionChangeComplete={setRegion}
+        ref={mapRef}
       >
         {/* Marqueur de la position actuelle */}
         {currentPosition && (
@@ -93,65 +78,38 @@ export default function MapScreen({ route, navigation }) {
           />
         )}
 
-        {/* Marqueurs pour les événements */}
+        {/* Marqueurs des événements */}
         {eventsData.map((event, index) => {
-          const validLatitude = Number(event.latitude);
-          const validLongitude = Number(event.longitude);
-
-          if (
-            !isNaN(validLatitude) &&
-            !isNaN(validLongitude) &&
-            event.latitude &&
-            event.longitude
-          ) {
+          const { latitude, longitude, title, description } = event;
+          if (latitude && longitude) {
             return (
               <Marker
                 key={index}
-                coordinate={{
-                  latitude: validLatitude,
-                  longitude: validLongitude,
-                }}
-                title={event.title || 'Événement'}
-                description={event.description || ''}
+                coordinate={{ latitude, longitude }}
+                title={title}
+                description={description}
                 pinColor="#FF4525"
-              />
+              >
+              </Marker>
             );
-          } else {
-            console.warn(`Coordonnées invalides pour l'événement ${index}`);
-            return null;
           }
+          return null;
         })}
       </MapView>
 
-      {/* Bouton Retour */}
-      <TouchableOpacity
-        onPress={goBack}
-        style={styles.returnContainer}
-        activeOpacity={0.8}
-      >
-        <Text style={styles.textReturn}>Retour</Text>
-      </TouchableOpacity>
     </>
   );
 }
 
 const styles = StyleSheet.create({
   map: {
-    flex: 1,
+    flex: 0.95,
   },
+
   returnContainer: {
-    position: 'absolute',
-    bottom: 30,
-    alignSelf: 'center',
-    backgroundColor: '#FFF',
-    padding: 10,
-    borderRadius: 5,
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
+    paddingTop: 20,
   },
+
   textReturn: {
     textAlign: 'center',
     fontWeight: 'bold',
