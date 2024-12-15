@@ -198,6 +198,7 @@ export default function DashboardScreen({ navigation }) {
             </View>
           </ScrollView>
         </View>
+        
       </ScrollView>
     </SafeAreaView>
   );
