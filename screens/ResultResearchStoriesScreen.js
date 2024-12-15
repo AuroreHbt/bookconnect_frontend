@@ -1,6 +1,14 @@
-import { StyleSheet, KeyboardAvoidingView, Platform, Text, View } from 'react-native';
+import {
+    TouchableOpacity,
+    StyleSheet,
+    KeyboardAvoidingView,
+    Platform,
+    Text,
+    View
+} from 'react-native';
 
-export default function ResultResearchStoriesScreen () {
+
+export default function ResultResearchStoriesScreen() {
 
     return (
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
@@ -14,7 +22,7 @@ export default function ResultResearchStoriesScreen () {
 const styles = StyleSheet.create({
 
     container: {
-        flex: 1,
+        flex: 0.95,
         backgroundColor: 'pink',
         alignItems: 'center',
         justifyContent: 'center',

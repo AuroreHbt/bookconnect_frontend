@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
     View,
     Text,
@@ -9,28 +10,10 @@ import {
     Image
 } from 'react-native';
 
-// https://docs.expo.dev/versions/latest/sdk/font/
-// https://docs.expo.dev/develop/user-interface/fonts/
-// import pour utliser le hook useFonts pour charger la police
-import { useFonts } from 'expo-font';
-
 import { LinearGradient } from 'expo-linear-gradient';
 
 
 export default function HomeScreen({ navigation }) {
-
-    // utilisation google fonts
-    const [fontsLoaded] = useFonts({
-        'Girassol-Regular': require('../assets/fonts/Girassol-Regular.ttf'),
-        'Poppins-Medium': require('../assets/fonts/Poppins-Medium.ttf'),
-        'Poppins-Regular': require('../assets/fonts/Poppins-Regular.ttf'),
-        'Poppins-Light': require('../assets/fonts/Poppins-Light.ttf'),
-    });
-
-    // vérification du chargement de la font
-    if (!fontsLoaded) {
-        return null;
-    };
 
     // Navigation par lien vers SignUpScreen, déclaré dans App.js, via la prop naviagtion
     const handleSubmitSignUp = () => {
@@ -130,7 +113,7 @@ const styles = StyleSheet.create({
     },
 
     gradientButton: {
-        borderRadius: 10,
+        borderRadius: 15,
         marginVertical: 10,
         width: '75%',
     },

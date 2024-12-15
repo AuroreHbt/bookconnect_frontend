@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
 import { LinearGradient } from 'expo-linear-gradient';
+
+// import de la bibliothèque d'icône Fontawsome via react-native-vector-icons
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 import {
   SafeAreaView,
   ScrollView,
@@ -13,34 +17,12 @@ import {
   Image,
   TouchableWithoutFeedback,
 } from 'react-native';
+
 import { useDispatch } from "react-redux";
 import { logout } from "../reducers/user";
 
-// import de la bibliothèque d'icône Fontawsome via react-native-vector-icons
-import Icon from 'react-native-vector-icons/FontAwesome';
-
-// https://docs.expo.dev/versions/latest/sdk/font/
-// https://docs.expo.dev/develop/user-interface/fonts/
-// import pour utliser le hook useFonts pour charger la police
-import { useFonts } from 'expo-font';
-
-
 
 export default function DashboardScreen({ navigation }) {
-
-  // utilisation google fonts
-  const [fontsLoaded] = useFonts({
-    'Girassol-Regular': require('../assets/fonts/Girassol-Regular.ttf'),
-    'Poppins-Medium': require('../assets/fonts/Poppins-Medium.ttf'),
-    'Poppins-Regular': require('../assets/fonts/Poppins-Regular.ttf'),
-    'Poppins-Light': require('../assets/fonts/Poppins-Light.ttf'),
-  });
-
-  // vérification du chargement de la font
-  if (!fontsLoaded) {
-    return null;
-  };
-
 
   /*  const data = [
      { id: '1', image: require('../assets/avatar.png') },
@@ -48,6 +30,7 @@ export default function DashboardScreen({ navigation }) {
      { id: '3', image: require('../assets/avatar.png') },
    ]; */
 
+  // utiliser .map sur les reducer pour affichage dynamique
 
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user.value);
@@ -61,11 +44,19 @@ export default function DashboardScreen({ navigation }) {
   // Déconnexion
   const handleLogout = () => {
     dispatch(logout());
-    navigation.navigate('Home', { screen: 'HomeScreen' })
+    navigation.navigate('Home')
   };
 
-  return (
+  const handleMyCurrentReadings = () => {
+    navigation.navigate('MyCurrentReadings')
+  }
 
+  const handleMyEvents = () => {
+    navigation.navigate('MyEvents')
+  }
+
+
+  return (
     <SafeAreaView style={styles.container} >
       <ScrollView contentContainerStyle={styles.scrollContent}>
 
@@ -86,7 +77,7 @@ export default function DashboardScreen({ navigation }) {
             {/* Icône Paramètre */}
           </View>
           <TouchableOpacity onPress={toggleParameter} style={styles.ParameterButton}>
-            <FontAwesome name="gear" size={30} color="white" />
+            <Icon name="gear" size={36} color="white" />
           </TouchableOpacity>
         </View>
 
@@ -105,7 +96,7 @@ export default function DashboardScreen({ navigation }) {
                 {/* Options de paramètres */}
                 <TouchableOpacity style={styles.optionButton}>
                   <Text style={styles.optionText} onPress={() => handleLogout()}>Déconnexion</Text>
-                  <FontAwesome name='sign-out' size={20} color='black' style={styles.logoutIcon} />
+                  <Icon name='sign-out' size={20} color='rgba(216, 72, 21, 0.9)' style={styles.logoutIcon} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -126,8 +117,14 @@ export default function DashboardScreen({ navigation }) {
           {/* Titre de la section */}
           <View style={styles.sectionHeader}>
             <Text style={styles.textSection}>Mes lectures en cours</Text>
-            <FontAwesome name="arrow-right" size={20} color="rgba(216, 72, 21, 0.9)" />
+            <TouchableOpacity
+              onPress={handleMyCurrentReadings}
+              activeOpacity={0.8}
+            >
+              <Icon name="chevron-circle-right" size={20} color="rgba(216, 72, 21, 0.9)" />
+            </TouchableOpacity>
           </View>
+
           {/* ScrollView horizontal */}
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.booksContainer}>
             <View style={styles.bookCard}>
@@ -170,7 +167,12 @@ export default function DashboardScreen({ navigation }) {
           {/* Titre de la section */}
           <View style={styles.sectionHeader}>
             <Text style={styles.textSection}>Mes évènements</Text>
-            <FontAwesome name="arrow-right" size={20} color="rgba(216, 72, 21, 0.9)" />
+            <TouchableOpacity
+              onPress={handleMyEvents}
+              activeOpacity={0.8}
+            >
+              <Icon name="chevron-circle-right" size={20} color="rgba(216, 72, 21, 0.9)" />
+            </TouchableOpacity>
           </View>
           {/* ScrollView horizontal des évènements*/}
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.eventsContainer}>
@@ -207,9 +209,11 @@ export default function DashboardScreen({ navigation }) {
 const styles = StyleSheet.create({
 
   container: {
-    flex: 1,
-    backgroundColor: 'white',
+    flex: 0.95,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
+
   gradientContainer: {
     position: 'absolute',
     top: 0,
@@ -221,11 +225,12 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 150, // Arrondi en bas à droite
     overflow: 'hidden', // Nécessaire pour l'arrondi
   },
+
   gradient: {
     flex: 1, // Remplit tout l'espace du conteneur
   },
 
-  scrollConetnt: {
+  scrollContent: {
     paddingVertical: 20,
   },
 
@@ -371,7 +376,7 @@ const styles = StyleSheet.create({
   },
   optionText: {
     fontSize: 16,
-    color: 'black',
+    color: 'rgba(216, 72, 21, 0.9)',
     fontWeight: 'bold',
     textAlign: 'left',
     fontFamily: 'Poppins',

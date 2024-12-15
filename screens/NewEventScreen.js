@@ -1,29 +1,31 @@
 import React, { useState } from 'react';
-import { View, Image, Text, TextInput, Button, StyleSheet, Platform, Alert, KeyboardAvoidingView, TouchableOpacity, ScrollView } from 'react-native';
+
+import {
+  View,
+  Image,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  Platform,
+  Alert,
+  KeyboardAvoidingView,
+  TouchableOpacity,
+  ScrollView
+} from 'react-native';
+
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
 import { Picker } from '@react-native-picker/picker';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
-import { useFonts } from 'expo-font';
 import { LinearGradient } from 'expo-linear-gradient';
+
 
 const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS
 
+
 export default function NewEventScreen({ navigation }) {
-
-  // utilisation google fonts
-  const [fontsLoaded] = useFonts({
-    'Girassol-Regular': require('../assets/fonts/Girassol-Regular.ttf'),
-    'Poppins-Medium': require('../assets/fonts/Poppins-Medium.ttf'),
-    'Poppins-Regular': require('../assets/fonts/Poppins-Regular.ttf'),
-    'Poppins-Light': require('../assets/fonts/Poppins-Light.ttf'),
-  });
-
-  // vérification du chargement de la font
-  if (!fontsLoaded) {
-    return null;
-  };
 
   // https://reactnavigation.org/docs/navigation-object/#goback
   const goBack = () => navigation.goBack();
@@ -39,7 +41,7 @@ export default function NewEventScreen({ navigation }) {
   const [placeNumber, setPlaceNumber] = useState('');
   const [street, setStreet] = useState('');
   const [code, setCode] = useState('');
-  const [city, setCity] = useState('');  
+  const [city, setCity] = useState('');
 
   const [category, setCategory] = useState('');
   const [description, setDescription] = useState('');
@@ -76,24 +78,24 @@ export default function NewEventScreen({ navigation }) {
   };
 
   const handleSubmit = async () => {
-  console.log("Titre :", title);
-  console.log("Catégorie :", category);
-  console.log("Description :", description);
-  console.log("Jour :", day);
-  console.log("Heure de début :", startTime);
-  console.log("Heure de fin :", endTime);
-  console.log("Adresse :", `${placeNumber} ${street}, ${code} ${city}`);
-  console.log("Image de couverture :", eventImage);
+    console.log("Titre :", title);
+    console.log("Catégorie :", category);
+    console.log("Description :", description);
+    console.log("Jour :", day);
+    console.log("Heure de début :", startTime);
+    console.log("Heure de fin :", endTime);
+    console.log("Adresse :", `${placeNumber} ${street}, ${code} ${city}`);
+    console.log("Image de couverture :", eventImage);
 
-  if (!title || !placeNumber || !street || !code || !city || !category || !description || !day || !startTime || !endTime) {
-    Alert.alert('Erreur', 'Tous les champs obligatoires doivent être remplis.');
-    return;
-  };
+    if (!title || !placeNumber || !street || !code || !city || !category || !description || !day || !startTime || !endTime) {
+      Alert.alert('Erreur', 'Tous les champs obligatoires doivent être remplis.');
+      return;
+    };
 
     console.log("Planner (user.username) :", user.username);
     if (!user.username) {
-    Alert.alert('Erreur', 'Utilisateur non authentifié.');
-    return;
+      Alert.alert('Erreur', 'Utilisateur non authentifié.');
+      return;
     };
 
     const formData = new FormData();
@@ -120,128 +122,128 @@ export default function NewEventScreen({ navigation }) {
         type: eventImage.type,
       });
     }
-      fetch(`${BACKEND_ADDRESS}/events/addevent`, {
-        method: "POST",
-        body: formData,
-      }).then((response) => response.json())
-        .then((data) => {
-          console.log("réponse du serveur", data)
-          if (data.result) {
-            console.log('Evènement créée');
-          } else {
-            console.log('erreur lors de la création', data.error);
-          }
-        });
+    fetch(`${BACKEND_ADDRESS}/events/addevent`, {
+      method: "POST",
+      body: formData,
+    }).then((response) => response.json())
+      .then((data) => {
+        console.log("réponse du serveur", data)
+        if (data.result) {
+          console.log('Evènement créée');
+        } else {
+          console.log('erreur lors de la création', data.error);
+        }
+      });
   };
 
   return (
-  <KeyboardAvoidingView style={styles.container}
-  behavior={Platform.OS === "ios" ? "padding" : "height"}>
-  <ScrollView>
-    <View style={styles.container}>
-      <Text style={styles.label}>Titre</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Titre de l'évènement"
-        value={title}
-        onChangeText={setTitle}
-      />
+    <KeyboardAvoidingView style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}>
+      <ScrollView>
+        <View style={styles.container}>
+          <Text style={styles.label}>Titre</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Titre de l'évènement"
+            value={title}
+            onChangeText={setTitle}
+          />
 
-<Text style={styles.label}>Jour</Text>
-<TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.dateButton}>
-  <Text>{day.toDateString()}</Text>
-</TouchableOpacity>
-{showDatePicker && (
-  <DateTimePicker
-    value={day}
-    mode="date"
-    display="default"
-    onChange={(event, selectedDate) => {
-      setShowDatePicker(false);
-      if (selectedDate) setDay(selectedDate);
-    }}
-  />
-)}
+          <Text style={styles.label}>Jour</Text>
+          <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.dateButton}>
+            <Text>{day.toDateString()}</Text>
+          </TouchableOpacity>
+          {showDatePicker && (
+            <DateTimePicker
+              value={day}
+              mode="date"
+              display="default"
+              onChange={(event, selectedDate) => {
+                setShowDatePicker(false);
+                if (selectedDate) setDay(selectedDate);
+              }}
+            />
+          )}
 
-<Text style={styles.label}>Heure de début</Text>
-<TextInput
-  style={styles.input}
-  placeholder="Heure de début (HH:mm)"
-  value={startTime}
-  onChangeText={setStartTime}
-/>
+          <Text style={styles.label}>Heure de début</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Heure de début (HH:mm)"
+            value={startTime}
+            onChangeText={setStartTime}
+          />
 
-<Text style={styles.label}>Heure de fin</Text>
-<TextInput
-  style={styles.input}
-  placeholder="Heure de fin (HH:mm)"
-  value={endTime}
-  onChangeText={setEndTime}
-/>
+          <Text style={styles.label}>Heure de fin</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Heure de fin (HH:mm)"
+            value={endTime}
+            onChangeText={setEndTime}
+          />
 
-<Text style={styles.label}>Numéro</Text>
-<TextInput
-  style={styles.input}
-  placeholder="Numéro de rue"
-  value={placeNumber}
-  onChangeText={setPlaceNumber}
-/>
-<Text style={styles.label}>Rue</Text>
-<TextInput
-  style={styles.input}
-  placeholder="Nom de la rue"
-  value={street}
-  onChangeText={setStreet}
-/>
-<Text style={styles.label}>Code Postal</Text>
-<TextInput
-  style={styles.input}
-  placeholder="Code postal"
-  value={code}
-  onChangeText={setCode}
-/>
-<Text style={styles.label}>Ville</Text>
-<TextInput
-  style={styles.input}
-  placeholder="Ville"
-  value={city}
-  onChangeText={setCity}
-/>
+          <Text style={styles.label}>Numéro</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Numéro de rue"
+            value={placeNumber}
+            onChangeText={setPlaceNumber}
+          />
+          <Text style={styles.label}>Rue</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Nom de la rue"
+            value={street}
+            onChangeText={setStreet}
+          />
+          <Text style={styles.label}>Code Postal</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Code postal"
+            value={code}
+            onChangeText={setCode}
+          />
+          <Text style={styles.label}>Ville</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Ville"
+            value={city}
+            onChangeText={setCity}
+          />
 
-      <Text style={styles.label}>Catégorie</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Catégorie de l'évènement"
-        value={category}
-        onChangeText={setCategory}
-      />
+          <Text style={styles.label}>Catégorie</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Catégorie de l'évènement"
+            value={category}
+            onChangeText={setCategory}
+          />
 
-      <Text style={styles.label}>Description</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Description"
-        value={description}
-        onChangeText={setDescription}
-        multiline
-      />
+          <Text style={styles.label}>Description</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Description"
+            value={description}
+            onChangeText={setDescription}
+            multiline
+          />
 
-      <Text style={styles.label}>URL</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Lien associé (facultatif)"
-        value={url}
-        onChangeText={setUrl}
-      />
+          <Text style={styles.label}>URL</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Lien associé (facultatif)"
+            value={url}
+            onChangeText={setUrl}
+          />
 
-      <Text style={styles.label}>Image</Text>
-      <TouchableOpacity onPress={handleImagePick} style={styles.imageButton}>
-        <Text>Sélectionner une image</Text>
-      </TouchableOpacity>
-      {eventImage && <Image source={{ uri: eventImage }} style={styles.imagePreview} />}
+          <Text style={styles.label}>Image</Text>
+          <TouchableOpacity onPress={handleImagePick} style={styles.imageButton}>
+            <Text>Sélectionner une image</Text>
+          </TouchableOpacity>
+          {eventImage && <Image source={{ uri: eventImage }} style={styles.imagePreview} />}
 
-      <Button title="Créer l'évènement" onPress={handleSubmit} />
-    </View>
-    <View>
+          <Button title="Créer l'évènement" onPress={handleSubmit} />
+        </View>
+        <View>
           <TouchableOpacity
             onPress={goBack}
             style={styles.returnContainer}
@@ -250,13 +252,14 @@ export default function NewEventScreen({ navigation }) {
             <Text style={styles.textReturn}>Retour</Text>
           </TouchableOpacity>
         </View>
-    </ScrollView>
-  </KeyboardAvoidingView>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 0.95,
     padding: 20,
   },
   label: {
@@ -360,19 +363,19 @@ const styles = StyleSheet.create({
   }; */
 
 
-  /* return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
-       <View style={styles.container}> */
-      {/* Titre de l'événement */}
-      {/* <View>
+/* return (
+  <KeyboardAvoidingView
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    style={styles.container}
+  >
+     <View style={styles.container}> */
+{/* Titre de l'événement */ }
+{/* <View>
         <Text>Création de mon évènement</Text>
       </View> */}
 
-      {/* Catégorie de l'événement */}
-      {/* <View>
+{/* Catégorie de l'événement */ }
+{/* <View>
         <Text style={styles.label}>Catégorie de l'événement</Text>
         <Picker
           selectedValue={category}
@@ -383,12 +386,12 @@ const styles = StyleSheet.create({
           <Picker.Item label="Salon" value="salon" />
           <Picker.Item label="Atelier" value="atelier" />
           <Picker.Item label="Conférence" value="conference" /> */}
-          {/* Ajouter d'autres catégories ici */}
-     /*    </Picker>
-      </View> */
+{/* Ajouter d'autres catégories ici */ }
+/*    </Picker>
+ </View> */
 
-      {/* Titre de l'événement */}
-      {/* <View>
+{/* Titre de l'événement */ }
+{/* <View>
         <Text style={styles.label}>Description</Text>
         <TextInput
           style={styles.input}
@@ -400,8 +403,8 @@ const styles = StyleSheet.create({
         />
       </View> */}
 
-      {/* Date de l'événement */}
-      {/* <View>
+{/* Date de l'événement */ }
+{/* <View>
         <Text style={styles.label}>Date de l'événement</Text>
         <Button title="Sélectionner la date" onPress={showDatepicker} />
         {showDatePicker && (
@@ -412,10 +415,10 @@ const styles = StyleSheet.create({
             onChange={onDateChange}
           />
         )} */}
-      /* </View> */
+/* </View> */
 
-      {/* Lieu de l'événement */}
-      {/* <View>
+{/* Lieu de l'événement */ }
+{/* <View>
         <Text style={styles.label}>Lieu de l'événement</Text>
         <TextInput
           style={styles.input}
@@ -425,14 +428,14 @@ const styles = StyleSheet.create({
         />
       </View> */}
 
-      {/* Affichage de la latitude et longitude */}
-      {/* <View>
+{/* Affichage de la latitude et longitude */ }
+{/* <View>
         <Text>Latitude: {latitude}</Text>
         <Text>Longitude: {longitude}</Text>
       </View> */}
 
-      {/* Bouton pour soumettre le formulaire */}
-      {/* <View>
+{/* Bouton pour soumettre le formulaire */ }
+{/* <View>
         <Button title="Soumettre" onPress={handleSubmit} />
       </View>
     </View>

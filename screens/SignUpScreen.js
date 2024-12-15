@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 
+// import du style global commun avec SignInScreen
+import { signPageStyles } from '../styles/signPageStyles';
+
 // import de la bibliothèque d'icône Fontawsome via react-native-vector-icons
 import Icon from 'react-native-vector-icons/FontAwesome';
-
-// https://docs.expo.dev/versions/latest/sdk/font/
-// https://docs.expo.dev/develop/user-interface/fonts/
-// import pour utliser le hook useFonts pour charger la police
-import { useFonts } from 'expo-font';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -14,7 +12,6 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -38,19 +35,6 @@ const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8
 const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
 
 export default function SignUpScreen({ navigation }) {
-
-  // utilisation google fonts
-  const [fontsLoaded] = useFonts({
-    'Girassol-Regular': require('../assets/fonts/Girassol-Regular.ttf'),
-    'Poppins-Medium': require('../assets/fonts/Poppins-Medium.ttf'),
-    'Poppins-Regular': require('../assets/fonts/Poppins-Regular.ttf'),
-    'Poppins-Light': require('../assets/fonts/Poppins-Light.ttf'),
-  });
-
-  // vérification du chargement de la font
-  if (!fontsLoaded) {
-    return null;
-  };
 
   const dispatch = useDispatch();
 
@@ -147,25 +131,25 @@ export default function SignUpScreen({ navigation }) {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={signPageStyles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <Image style={styles.logo} source={require("../assets/LogoBc.png")} />
+      <Image style={signPageStyles.logo} source={require("../assets/LogoBc.png")} />
       <View>
-        <Text style={styles.title}>BookConnect</Text>
+        <Text style={signPageStyles.title}>BookConnect</Text>
       </View>
 
-      <View style={styles.separator} />
+      <View style={signPageStyles.separator} />
 
-      <View style={styles.inputContainer}>
+      <View style={signPageStyles.inputContainer}>
         <TextInput
           placeholder="Nom d'utilisateur"
           onChangeText={(value) => setUsername(value)}
           value={username}
-          style={styles.input}
+          style={signPageStyles.input}
         />
         {usernameError ? (
-          <Text style={styles.errorText}>{usernameError}</Text>
+          <Text style={signPageStyles.errorText}>{usernameError}</Text>
         ) : null}
         <TextInput
           placeholder="E-mail"
@@ -175,20 +159,20 @@ export default function SignUpScreen({ navigation }) {
           textContentType="emailAddress"
           onChangeText={(value) => setEmail(value)}
           value={email}
-          style={styles.input}
+          style={signPageStyles.input}
         />
-        {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+        {emailError ? <Text style={signPageStyles.errorText}>{emailError}</Text> : null}
 
-        <View style={styles.inputPwd}>
+        <View style={signPageStyles.inputPwd}>
           <TextInput
             placeholder="Mot de passe"
             secureTextEntry={!showPassword}
             onChangeText={(value) => setPassword(value)}
             value={password}
-            style={styles.input}
+            style={signPageStyles.input}
           />
           <TouchableOpacity
-            style={styles.iconContainer}
+            style={signPageStyles.iconContainer}
             onPress={toggleShowPassword}
           >
             <Icon
@@ -200,142 +184,36 @@ export default function SignUpScreen({ navigation }) {
         </View>
 
         {passwordError ? (
-          <Text style={styles.errorText}>{passwordError}</Text>
+          <Text style={signPageStyles.errorText}>{passwordError}</Text>
         ) : null}
 
-        <View style={styles.buttonContainer}>
+        <View style={signPageStyles.buttonContainer}>
           <LinearGradient
             colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 0.7 }}
-            style={styles.gradientButton}
+            style={signPageStyles.gradientButton}
             activeOpacity={0.8}
           >
             <TouchableOpacity
               onPress={() => handleSubmitSignUp()}
-              style={styles.button}
+              style={signPageStyles.button}
             >
-              <Text style={styles.textButton}>S'inscrire</Text>
+              <Text style={signPageStyles.textButton}>S'inscrire</Text>
             </TouchableOpacity>
           </LinearGradient>
         </View>
 
-        <View style={styles.returnContainer}>
+        <View style={signPageStyles.returnContainer}>
           <TouchableOpacity
             onPress={goBack}
-            style={styles.returnButton}
+            style={signPageStyles.returnButton}
             activeOpacity={0.8}
           >
-            <Text style={styles.textReturn}>J'ai déjà un compte</Text>
+            <Text style={signPageStyles.textReturn}>J'ai déjà un compte</Text>
           </TouchableOpacity>
         </View>
       </View>
     </KeyboardAvoidingView>
   );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: 'space-evenly',
-    marginTop: 75,
-    marginBottom: 100,
-  },
-
-  logo: {
-    flex: 0.5,
-    width: "50%",
-    height: "50%",
-  },
-
-  title: {
-    fontFamily: 'Girassol-Regular',
-    fontWeight: '400',
-    fontSize: 36,
-    marginBottom: 10,
-    color: 'rgba(55, 27, 12, 0.9)', // #371B0C
-  },
-
-  separator: {
-    width: '25%',
-    borderColor: 'rgba(55, 27, 12, 0.8)', // #371B0C
-    borderTopWidth: 2.5,
-    marginBottom: 35,
-    marginTop: 10,
-  },
-
-  inputPwd: {
-    flexDirection: 'row',
-    justifyContent: "center",
-    alignItems: 'center',
-    width: '100%' // 100% de la largeur de inputContainer
-  },
-
-  iconContainer: {
-    position: 'absolute', // position absolue pour superposer l'icone sur l'input
-    justifyContent: 'center',
-    top: 0,
-    bottom: 0,
-    right: 60,
-  },
-
-  inputContainer: {
-    alignItems: 'center',
-    width: '90%'
-  },
-
-  input: {
-    backgroundColor: "#EEECE8",
-    paddingVertical: 15,
-    borderRadius: 5,
-    borderBottomWidth: 0.7,
-    borderBottomColor: "rgba(55, 27, 12, 0.50)",
-    width: "75%",
-    paddingLeft: 15,
-    margin: 10,
-  },
-
-  buttonContainer: {
-    marginTop: 15,
-    marginBottom: 10,
-    width: '75%',
-    alignItems: 'center',
-  },
-
-  gradientButton: {
-    borderRadius: 10,
-    marginVertical: 10,
-    width: '65%',
-  },
-
-  button: {
-    padding: 5,
-    margin: 10,
-  },
-
-  textButton: {
-    textAlign: 'center',
-    fontFamily: 'sans-serif',
-    fontWeight: 'bold',
-    fontSize: 18,
-    color: 'white', // 'rgba(55, 27, 12, 0.8)', // #371B0C
-  },
-
-  textReturn: {
-    fontFamily: 'Poppins-Regular',
-    fontWeight: '300',
-    fontSize: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(55, 27, 12, 0.80)",
-    color: "rgba(55, 27, 12, 0.80)",
-  },
-
-  errorText: {
-    textAlign: 'left',
-    fontFamily: 'sans-serif',
-    fontSize: 16,
-    color: 'red',
-  },
-
-});
+};

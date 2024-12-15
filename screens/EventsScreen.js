@@ -72,7 +72,7 @@ export default function EventsScreen({ navigation }) {
       setEvents(eventData); // Assuming eventData is the correct array of events
 
       // Navigation vers la carte avec les coordonnées et les événements
-      navigation.navigate("MapScreen", {
+      navigation.navigate("Map", {
         latitude: parseFloat(lat),
         longitude: parseFloat(lng),
         events: eventData, // Passing the actual events array
