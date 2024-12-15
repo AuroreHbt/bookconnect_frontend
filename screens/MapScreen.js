@@ -1,42 +1,67 @@
 import { useRef, useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, Platform, Alert } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
 export default function MapScreen({ route, navigation }) {
-  const { latitude, longitude, events = {} } = route.params;
-  const eventsData = events.data || [];
+  const { latitude, longitude, events = {} } = route.params || {};
+  const eventsData = Array.isArray(events.data) ? events.data : [];
   const mapRef = useRef(null);
+
+  // État de la région initiale
   const [region, setRegion] = useState({
     latitude: latitude || 48.8566,
     longitude: longitude || 2.3522,
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
-  const [currentPosition, setCurrentPosition] = useState(null);
 
-  // Gestion de la localisation utilisateur
+  // État pour la position utilisateur
+  const [currentPosition, setCurrentPosition] = useState(null);
+  const [isLocationLoaded, setIsLocationLoaded] = useState(false); // Pour éviter le re-rendu infini
+
+  // Obtenir la permission et la localisation utilisateur
   useEffect(() => {
-    const requestLocationPermission = async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status === 'granted') {
-        Location.watchPositionAsync({ distanceInterval: 10 }, (location) => {
-          const { latitude, longitude } = location.coords;
-          setCurrentPosition({ latitude, longitude });
-        });
-      } else {
-        console.log('Location permission not granted');
+    const getLocation = async () => {
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status === 'granted') {
+          const location = await Location.getCurrentPositionAsync({
+            accuracy: Location.Accuracy.BestForNavigation,
+          });
+          setCurrentPosition({
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+          });
+          setIsLocationLoaded(true);
+        } else {
+          Alert.alert('Permission refusée', 'Impossible d’accéder à votre position.');
+          setIsLocationLoaded(true); // Éviter la boucle infinie même en cas d'échec
+        }
+      } catch (error) {
+        console.error('Erreur de localisation :', error);
+        setIsLocationLoaded(true);
       }
     };
-    requestLocationPermission();
-  }, []);
 
-  // Ajustement de la carte aux événements
+    if (!isLocationLoaded) getLocation();
+  }, [isLocationLoaded]);
+
+  // Ajustement automatique de la carte pour les événements
   useEffect(() => {
     if (mapRef.current && eventsData.length > 0) {
       const validCoordinates = eventsData
-        .map(event => ({ latitude: event.latitude, longitude: event.longitude }))
-        .filter(coord => coord.latitude && coord.longitude);
+        .filter(
+          (event) =>
+            event.latitude !== null &&
+            event.longitude !== null &&
+            !isNaN(event.latitude) &&
+            !isNaN(event.longitude)
+        )
+        .map((event) => ({
+          latitude: Number(event.latitude),
+          longitude: Number(event.longitude),
+        }));
 
       if (validCoordinates.length > 0) {
         mapRef.current.fitToCoordinates(validCoordinates, {
@@ -45,19 +70,19 @@ export default function MapScreen({ route, navigation }) {
         });
       }
     }
-  }, [eventsData]); 
+  }, [eventsData]);
 
-  // Bouton "Retour"
+  // Retour à l'écran précédent
   const goBack = () => navigation.goBack();
 
   return (
     <>
       <MapView
-        provider={PROVIDER_GOOGLE}
+        provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : null}
         style={styles.map}
-        region={region}
-        onRegionChangeComplete={setRegion}
+        initialRegion={region}
         ref={mapRef}
+        onRegionChangeComplete={setRegion}
       >
         {/* Marqueur de la position actuelle */}
         {currentPosition && (
@@ -68,26 +93,37 @@ export default function MapScreen({ route, navigation }) {
           />
         )}
 
-        {/* Marqueurs des événements */}
+        {/* Marqueurs pour les événements */}
         {eventsData.map((event, index) => {
-          const { latitude, longitude, title, description } = event;
-          if (latitude && longitude) {
+          const validLatitude = Number(event.latitude);
+          const validLongitude = Number(event.longitude);
+
+          if (
+            !isNaN(validLatitude) &&
+            !isNaN(validLongitude) &&
+            event.latitude &&
+            event.longitude
+          ) {
             return (
               <Marker
                 key={index}
-                coordinate={{ latitude, longitude }}
-                title={title}
-                description={description}
+                coordinate={{
+                  latitude: validLatitude,
+                  longitude: validLongitude,
+                }}
+                title={event.title || 'Événement'}
+                description={event.description || ''}
                 pinColor="#FF4525"
-              >
-            </Marker>
+              />
             );
+          } else {
+            console.warn(`Coordonnées invalides pour l'événement ${index}`);
+            return null;
           }
-          return null;
         })}
       </MapView>
 
-      {/* Bouton "Retour" */}
+      {/* Bouton Retour */}
       <TouchableOpacity
         onPress={goBack}
         style={styles.returnContainer}
@@ -101,9 +137,21 @@ export default function MapScreen({ route, navigation }) {
 
 const styles = StyleSheet.create({
   map: {
-    flex: 0.95,
+    flex: 1,
   },
-  
+  returnContainer: {
+    position: 'absolute',
+    bottom: 30,
+    alignSelf: 'center',
+    backgroundColor: '#FFF',
+    padding: 10,
+    borderRadius: 5,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+  },
   textReturn: {
     textAlign: 'center',
     fontWeight: 'bold',
