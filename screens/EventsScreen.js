@@ -5,7 +5,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
-  View,
   Text,
   TextInput,
   TouchableOpacity,
@@ -73,7 +72,7 @@ export default function EventsScreen({ navigation }) {
       setEvents(eventData); // Assuming eventData is the correct array of events
 
       // Navigation vers la carte avec les coordonnées et les événements
-      navigation.navigate("MapScreen", {
+      navigation.navigate("Map", {
         latitude: parseFloat(lat),
         longitude: parseFloat(lng),
         events: eventData, // Passing the actual events array
@@ -85,16 +84,10 @@ export default function EventsScreen({ navigation }) {
   };
 
   return (
-
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={bottomTabStyles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
     >
-      <Image
-        source={require('../assets/LogoBc.png')}
-        style={bottomTabStyles.logo}
-      />
-
       <View style={styles.inputContainer}>
         <View>
           <View>
@@ -144,24 +137,24 @@ export default function EventsScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-
+  container: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   inputContainer: {
     justifyContent: "center",
     width: "80%",
   },
-
   input: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#EEECE8",
     padding: 10,
-    marginTop: 50,
-    marginBottom: 20,
+    marginTop: 20,
     borderRadius: 10,
-    borderBottomWidth: 0.7,
-    borderBottomColor: "rgba(55, 27, 12, 0.50)",
   },
-
   inputField: {
     flex: 1,
     marginLeft: 10,

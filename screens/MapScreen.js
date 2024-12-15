@@ -45,7 +45,7 @@ export default function MapScreen({ route, navigation }) {
         });
       }
     }
-  }, [eventsData]);
+  }, [eventsData]); 
 
   // Bouton "Retour"
   const goBack = () => navigation.goBack();
@@ -101,7 +101,7 @@ export default function MapScreen({ route, navigation }) {
 
 const styles = StyleSheet.create({
   map: {
-    flex: 1,
+    flex: 0.95,
   },
   
   textReturn: {
