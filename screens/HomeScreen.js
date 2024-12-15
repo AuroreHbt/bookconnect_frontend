@@ -91,17 +91,17 @@ const styles = StyleSheet.create({
     },
 
     title: {
-        fontFamily: 'Girassol-Regular', // ou GermaniaOne-Regular
-        fontWeight: '400',
-        fontSize: 48,
-        marginBottom: 10,
+        fontFamily: 'Asul-Bold', // ou GermaniaOne-Regular
+        fontWeight: '700',
+        fontSize: 40,
+        marginBottom: 15,
         color: 'rgba(55, 27, 12, 0.9)', // #371B0C
     },
 
     text: {
         fontFamily: 'Poppins-Medium',
         fontWeight: '500',
-        fontSize: 22,
+        fontSize: 20,
         marginBottom: 50,
         color: '#371B0C',
     },
