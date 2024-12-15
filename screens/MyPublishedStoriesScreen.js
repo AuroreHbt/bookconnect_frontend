@@ -1,5 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from "react-native";
+
+// BottomTab visible sur les Screens => globalStyles
+import { globalStyles } from '../styles/globalStyles';
+
+import {
+  KeyboardAvoidingView,
+  Platform,
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Image,
+  TouchableOpacity
+} from "react-native";
+
 import { useSelector, useDispatch } from "react-redux";
 
 import { deleteStory } from "../reducers/story";
@@ -15,16 +29,17 @@ const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
 
 export default function MyPublishedStoriesScreen({ navigation }) {
 
+  // https://reactnavigation.org/docs/navigation-object/#goback
+  const goBack = () => navigation.goBack();
+
   const [stories, setStories] = useState([]); //hook d'état pour stocker les histoires publiées
+
 
   const user = useSelector((state) => state.user.value); // Informations recupérées depuis le store
 
   const story = useSelector((state) => state.story.value) // story list = tableau d'objets
 
   const dispatch = useDispatch();
-
-  // https://reactnavigation.org/docs/navigation-object/#goback
-  const goBack = () => navigation.goBack();
 
   // Fonction pour récupérer les histoires publiées
   const getMyPublishedStories = () => {
@@ -78,123 +93,103 @@ export default function MyPublishedStoriesScreen({ navigation }) {
 
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={globalStyles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <View>
 
-      {/* Bouton retour (goBack) */}
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>Mes oeuvres</Text>
-        <TouchableOpacity
-          onPress={goBack}
-          activeOpacity={0.8}
-        >
-          <Icon
-            style={styles.returnContainer}
-            name="chevron-circle-left"
-            size={32}
-            color='rgba(55, 27, 12, 0.3)'
-          />
-        </TouchableOpacity>
-      </View>
-
-      {/* Affichage des histoires publiées */}
-      <FlatList
-        initialScrollIndex={0}
-        keyExtractor={(item) => item._id}
-        data={stories}
-        //data={stories.reverse()} // pour inverser l'affichage des story postées sans gérer un tri par date
-        renderItem={({ item }) => (
+        {/* Titre + Bouton retour (goBack) */}
+        <View style={globalStyles.titleContainer}>
+          <Text style={globalStyles.title}>Mes oeuvres</Text>
           <TouchableOpacity
-            onPress={() => navigation.navigate("ReadStory", { story: item })} // Navigation avec paramètres
+            onPress={goBack}
+            activeOpacity={0.8}
           >
-            <View style={styles.storyCard}>
-
-              <View style={styles.leftRectangle}>
-
-                {/* affichage des infos venant de addNewStory */}
-                <View>
-                  <Text style={styles.storyTitle}>{item.title}</Text>
-                </View>
-                <View>
-                  <Text style={styles.storyCategory}>{item.category}</Text>
-                  <Text style={styles.storyDescription}>{item.description}</Text>
-                </View>
-
-                <View style={styles.buttonCard}>
-
-                  {/* bouton pour modifier (route PUT à définir) */}
-                  <LinearGradient
-                    colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 0, y: 0.7 }}
-                    style={styles.gradientButton}
-                    activeOpacity={0.8}
-                  >
-                    <TouchableOpacity
-                      // onPress={handlePutStory} : à définir
-                      style={styles.button}
-                    >
-                      <Text style={styles.textButton}>Modifier</Text>
-                    </TouchableOpacity>
-                  </LinearGradient>
-
-                  {/* bouton pour delete */}
-                  <TouchableOpacity
-                    style={styles.iconContainer}
-                    onPress={() => handleDeleteStory(item._id)} // Passez l'ID de l'histoire ici
-                  >
-                    <Icon
-                      name='trash-o'
-                      size={28}
-                      color='rgba(55, 27, 12, 0.7)'
-                    />
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              <View style={styles.imageContainer}>
-                {/* affichage du fichier image téléchargé */}
-                {item.coverImage && (
-                  <Image
-                    style={styles.coverImage}
-                    source={{ uri: item.coverImage }}
-                  />
-                )}
-              </View>
-            </ View>
+            <Icon
+              style={globalStyles.returnContainer}
+              name="chevron-circle-left"
+              size={32}
+              color='rgba(55, 27, 12, 0.3)'
+            />
           </TouchableOpacity>
-        )}
-      />
-    </View >
+        </View>
+
+        {/* Affichage des histoires publiées */}
+        <FlatList
+          initialScrollIndex={0}
+          keyExtractor={(item) => item._id}
+          data={stories}
+          //data={stories.reverse()} // pour inverser l'affichage des story postées sans gérer un tri par date
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate("ReadStory", { story: item })} // Navigation avec paramètres
+            >
+              <View style={styles.storyCard}>
+
+                <View style={styles.contentCard}>
+
+                  {/* affichage des infos venant de addNewStory */}
+                  <View>
+                    <Text style={styles.storyTitle}>{item.title}</Text>
+                  </View>
+                  <View>
+                    <Text style={styles.storyCategory}>{item.category}</Text>
+                    <Text style={styles.storyDescription}>{item.description}</Text>
+                  </View>
+
+                  <View style={styles.buttonCard}>
+
+                    {/* bouton pour modifier (route PUT à définir) */}
+                    <LinearGradient
+                      colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 0, y: 0.7 }}
+                      style={styles.gradientButton}
+                      activeOpacity={0.8}
+                    >
+                      <TouchableOpacity
+                        // onPress={handlePutStory} : à définir
+                        style={styles.button}
+                      >
+                        <Text style={styles.textButton}>Modifier</Text>
+                      </TouchableOpacity>
+                    </LinearGradient>
+
+                    {/* bouton pour delete */}
+                    <TouchableOpacity
+                      style={styles.iconContainer}
+                      onPress={() => handleDeleteStory(item._id)} // Passez l'ID de l'histoire ici
+                    >
+                      <Icon
+                        name='trash-o'
+                        size={28}
+                        color='rgba(55, 27, 12, 0.7)'
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                <View style={styles.imageContainer}>
+                  {/* affichage du fichier image téléchargé */}
+                  {item.coverImage && (
+                    <Image
+                      style={styles.coverImage}
+                      source={{ uri: item.coverImage }}
+                    />
+                  )}
+                </View>
+              </ View>
+            </TouchableOpacity>
+          )}
+        />
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 
+
 const styles = StyleSheet.create({
-  // CSS du "header"
-  container: {
-    flex: 0.95,
-    justifyContent: 'center',
-  },
-
-  titleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 20,
-    marginTop: 20,
-  },
-
-  title: {
-    fontFamily: 'Poppins-Medium',
-    fontWeight: '500',
-    fontSize: 28,
-    padding: 5,
-    color: 'rgba(55, 27, 12, 0.9)', // #371B0C
-  },
-
-  returnContainer: {
-    position: 'absolute',
-    top: 10,
-    right: 0,
-  },
 
   // CSS des cards Story
   storyCard: {
@@ -206,10 +201,10 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderRadius: 8,
     width: '95%',
-    marginLeft: 10,
+    // marginLeft: 10,
   },
 
-  leftRectangle: {
+  contentCard: {
     width: '60%',
     padding: 5,
     // borderWidth: 1,

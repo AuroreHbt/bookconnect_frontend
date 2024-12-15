@@ -1,29 +1,31 @@
 import React, { useState } from 'react';
-import { View, Image, Text, TextInput, Button, StyleSheet, Platform, Alert, KeyboardAvoidingView, TouchableOpacity, ScrollView } from 'react-native';
+
+import {
+  View,
+  Image,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  Platform,
+  Alert,
+  KeyboardAvoidingView,
+  TouchableOpacity,
+  ScrollView
+} from 'react-native';
+
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
 import { Picker } from '@react-native-picker/picker';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
-import { useFonts } from 'expo-font';
 import { LinearGradient } from 'expo-linear-gradient';
+
 
 const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS
 
+
 export default function NewEventScreen({ navigation }) {
-
-  // utilisation google fonts
-  const [fontsLoaded] = useFonts({
-    'Girassol-Regular': require('../assets/fonts/Girassol-Regular.ttf'),
-    'Poppins-Medium': require('../assets/fonts/Poppins-Medium.ttf'),
-    'Poppins-Regular': require('../assets/fonts/Poppins-Regular.ttf'),
-    'Poppins-Light': require('../assets/fonts/Poppins-Light.ttf'),
-  });
-
-  // vérification du chargement de la font
-  if (!fontsLoaded) {
-    return null;
-  };
 
   // https://reactnavigation.org/docs/navigation-object/#goback
   const goBack = () => navigation.goBack();

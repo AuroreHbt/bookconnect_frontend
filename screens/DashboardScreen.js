@@ -21,27 +21,8 @@ import {
 import { useDispatch } from "react-redux";
 import { logout } from "../reducers/user";
 
-// https://docs.expo.dev/versions/latest/sdk/font/
-// https://docs.expo.dev/develop/user-interface/fonts/
-// import pour utliser le hook useFonts pour charger la police
-import { useFonts } from 'expo-font';
-
 
 export default function DashboardScreen({ navigation }) {
-
-  // utilisation google fonts
-  const [fontsLoaded] = useFonts({
-    'Girassol-Regular': require('../assets/fonts/Girassol-Regular.ttf'),
-    'Poppins-Medium': require('../assets/fonts/Poppins-Medium.ttf'),
-    'Poppins-Regular': require('../assets/fonts/Poppins-Regular.ttf'),
-    'Poppins-Light': require('../assets/fonts/Poppins-Light.ttf'),
-  });
-
-  // vérification du chargement de la font
-  if (!fontsLoaded) {
-    return null;
-  };
-
 
   /*  const data = [
      { id: '1', image: require('../assets/avatar.png') },
@@ -49,6 +30,7 @@ export default function DashboardScreen({ navigation }) {
      { id: '3', image: require('../assets/avatar.png') },
    ]; */
 
+  // utiliser .map sur les reducer pour affichage dynamique
 
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user.value);
@@ -75,7 +57,6 @@ export default function DashboardScreen({ navigation }) {
 
 
   return (
-
     <SafeAreaView style={styles.container} >
       <ScrollView contentContainerStyle={styles.scrollContent}>
 
@@ -228,8 +209,10 @@ const styles = StyleSheet.create({
 
   container: {
     flex: 0.95,
-    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
+
   gradientContainer: {
     position: 'absolute',
     top: 0,
@@ -241,11 +224,12 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 150, // Arrondi en bas à droite
     overflow: 'hidden', // Nécessaire pour l'arrondi
   },
+
   gradient: {
     flex: 1, // Remplit tout l'espace du conteneur
   },
 
-  scrollConetnt: {
+  scrollContent: {
     paddingVertical: 20,
   },
 

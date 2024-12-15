@@ -1,26 +1,33 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+
+import { bottomTabStyles } from "../styles/bottomTabStyles";
+
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+
+import { LinearGradient } from 'expo-linear-gradient';
+
 import {
+  SafeAreaProvider,
   SafeAreaView,
   feAreaView,
   ScrollView,
-  StyleSheet,
-  Text,
   KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  View,
+  Text,
   TextInput,
   TouchableOpacity,
-  View,
-  Platform,
+  Alert,
   Modal,
-  SafeAreaProvider,
   Image,
   GreySeparator,
   FlatList,
   Dimensions,
   Icon,
-  Alert
 } from "react-native";
+
+import { useDispatch, useSelector } from "react-redux";
 
 
 export default function EventsScreen({ navigation }) {
@@ -28,6 +35,10 @@ export default function EventsScreen({ navigation }) {
 
   const addEvent = () => {
     navigation.navigate('NewEvent')
+  };
+
+  const myEvents = () => {
+    navigation.navigate('MyEvents')
   };
 
   const handleSearchPlace = async () => {
@@ -66,10 +77,16 @@ export default function EventsScreen({ navigation }) {
     }
   };
   return (
+
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={bottomTabStyles.container}
     >
+      <Image
+        source={require('../assets/LogoBc.png')}
+        style={bottomTabStyles.logo}
+      />
+
       <View style={styles.inputContainer}>
         <View style={styles.input}>
           <FontAwesome name="map-marker" size={30} color="#D84815" />
@@ -81,55 +98,83 @@ export default function EventsScreen({ navigation }) {
           />
         </View>
       </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={handleSearchPlace} style={styles.button}>
-          <Text style={styles.textButton}>Rechercher</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={addEvent} style={styles.button}>
-          <Text style={styles.textButton}>Mes événements</Text>
-        </TouchableOpacity>
+
+      <View style={bottomTabStyles.buttonContainer}>
+        <LinearGradient
+          colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 0.7 }}
+          style={bottomTabStyles.gradientButton}
+          activeOpacity={0.8}
+        >
+          <TouchableOpacity
+            onPress={handleSearchPlace}
+            style={bottomTabStyles.button}
+          >
+            <Text style={bottomTabStyles.textButton}>Rechercher</Text>
+          </TouchableOpacity>
+        </LinearGradient>
+      </View>
+
+      <View style={bottomTabStyles.buttonContainer}>
+        <LinearGradient
+          colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 0.7 }}
+          style={bottomTabStyles.gradientButton}
+          activeOpacity={0.8}
+        >
+          <TouchableOpacity
+            onPress={addEvent}
+            style={bottomTabStyles.button}
+          >
+            <Text style={bottomTabStyles.textButton}>Ajouter un évènement</Text>
+          </TouchableOpacity>
+        </LinearGradient>
+      </View>
+
+      <View style={bottomTabStyles.buttonContainer}>
+        <LinearGradient
+          colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 0.7 }}
+          style={bottomTabStyles.gradientButton}
+          activeOpacity={0.8}
+        >
+          <TouchableOpacity
+            onPress={myEvents}
+            style={bottomTabStyles.button}
+          >
+            <Text style={bottomTabStyles.textButton}>Mes événements</Text>
+          </TouchableOpacity>
+        </LinearGradient>
       </View>
     </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 0.95,
-    backgroundColor: "#ffffff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
+
   inputContainer: {
     justifyContent: "center",
     width: "80%",
   },
+
   input: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#EEECE8",
     padding: 10,
-    marginTop: 20,
+    marginTop: 50,
+    marginBottom: 20,
     borderRadius: 10,
+    borderBottomWidth: 0.7,
+    borderBottomColor: "rgba(55, 27, 12, 0.50)",
   },
+
   inputField: {
     flex: 1,
     marginLeft: 10,
   },
-  buttonContainer: {
-    marginTop: 25,
-  },
-  button: {
-    backgroundColor: "#D84815",
-    borderRadius: 10,
-    paddingVertical: 15,
-    paddingHorizontal: 35,
-    margin: 15,
-  },
-  textButton: {
-    color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
+
 });

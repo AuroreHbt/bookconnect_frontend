@@ -1,4 +1,11 @@
+import React from 'react';
+
 import { StyleSheet, View } from 'react-native';
+
+// https://docs.expo.dev/versions/latest/sdk/font/
+// https://docs.expo.dev/develop/user-interface/fonts/
+// import pour utliser le hook useFonts pour charger la police
+import { useFonts } from 'expo-font';
 
 // Imports pour la nested navigation (stack + tab)
 import { NavigationContainer } from '@react-navigation/native';
@@ -55,7 +62,7 @@ const FavoritesStack = createNativeStackNavigator();
 function DashboardStackNavigator() {
   return (
     <DashboardStack.Navigator screenOptions={{ headerShown: false }}>
-      <DashboardStack.Screen name="UserProfile" component={DashboardScreen} />
+      <DashboardStack.Screen name="Profile" component={DashboardScreen} />
       <DashboardStack.Screen
         name="MyCurrentReadings"
         component={MyCurrentReadingsScreen}
@@ -178,6 +185,21 @@ function TabNavigator() {
 };
 
 export default function App() {
+
+  // utilisation google fonts
+  const [fontsLoaded] = useFonts({
+    'Girassol-Regular': require('./assets/fonts/Girassol-Regular.ttf'),
+    'Poppins-Medium': require('./assets/fonts/Poppins-Medium.ttf'),
+    'Poppins-Regular': require('./assets/fonts/Poppins-Regular.ttf'),
+    'Poppins-Light': require('./assets/fonts/Poppins-Light.ttf'),
+  });
+
+  // vérification du chargement de la font
+  if (!fontsLoaded) {
+    return null;
+  };
+
+
   return (
     <Provider store={store}>
       <NavigationContainer>
