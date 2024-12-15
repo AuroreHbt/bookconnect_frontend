@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, SafeAreaProvider, SafeAreaView } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
@@ -22,6 +22,7 @@ export default function MapScreen({ route, navigation }) {
       if (status === 'granted') {
         Location.watchPositionAsync({ distanceInterval: 10 }, (location) => {
           const { latitude, longitude } = location.coords;
+          console.log('location.coords: ', location.coords);
           setCurrentPosition({ latitude, longitude });
         });
       } else {
@@ -45,13 +46,22 @@ export default function MapScreen({ route, navigation }) {
         });
       }
     }
-  }, [eventsData]); 
+  }, [eventsData]);
 
   // Bouton "Retour"
   const goBack = () => navigation.goBack();
 
   return (
     <>
+      {/* Bouton "Retour" */}
+      <TouchableOpacity
+        onPress={goBack}
+        style={styles.returnContainer}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.textReturn}>Retour</Text>
+      </TouchableOpacity>
+
       <MapView
         provider={PROVIDER_GOOGLE}
         style={styles.map}
@@ -80,21 +90,13 @@ export default function MapScreen({ route, navigation }) {
                 description={description}
                 pinColor="#FF4525"
               >
-            </Marker>
+              </Marker>
             );
           }
           return null;
         })}
       </MapView>
 
-      {/* Bouton "Retour" */}
-      <TouchableOpacity
-        onPress={goBack}
-        style={styles.returnContainer}
-        activeOpacity={0.8}
-      >
-        <Text style={styles.textReturn}>Retour</Text>
-      </TouchableOpacity>
     </>
   );
 }
@@ -103,7 +105,11 @@ const styles = StyleSheet.create({
   map: {
     flex: 0.95,
   },
-  
+
+  returnContainer: {
+    paddingTop: 20,
+  },
+
   textReturn: {
     textAlign: 'center',
     fontWeight: 'bold',

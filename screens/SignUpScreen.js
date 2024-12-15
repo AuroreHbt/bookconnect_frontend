@@ -119,6 +119,7 @@ export default function SignUpScreen({ navigation }) {
               token: data.token,
               username: data.username,
               email: data.email,
+              _id: data._id,
             })
           );
           console.log("Inscription réussie");
