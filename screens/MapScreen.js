@@ -1,112 +1,113 @@
-import { useEffect, useState } from 'react';
-import { Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useRef, useEffect, useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
-export default function MapScreen({ route }) {
-  const { latitude, longitude, events =[] } = route.params; 
-  console.log(latitude, longitude, events)// Récupérer les événements passés via la navigation
+export default function MapScreen({ route, navigation }) {
+  const { latitude, longitude, events = {} } = route.params;
+  const eventsData = events.data || [];
+  const mapRef = useRef(null);
+  const [region, setRegion] = useState({
+    latitude: latitude || 48.8566,
+    longitude: longitude || 2.3522,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  });
   const [currentPosition, setCurrentPosition] = useState(null);
 
+  // Gestion de la localisation utilisateur
   useEffect(() => {
-    (async () => {
-      const result = await Location.requestForegroundPermissionsAsync();
-      const status = result?.status;
-
+    const requestLocationPermission = async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
       if (status === 'granted') {
-        Location.watchPositionAsync({ distanceInterval: 10 },
-          (location) => {
-            setCurrentPosition(location.coords);
-          });
+        Location.watchPositionAsync({ distanceInterval: 10 }, (location) => {
+          const { latitude, longitude } = location.coords;
+          setCurrentPosition({ latitude, longitude });
+        });
+      } else {
+        console.log('Location permission not granted');
       }
-    })();
+    };
+    requestLocationPermission();
   }, []);
 
-  return (
-    <MapView 
-      provider={PROVIDER_GOOGLE} 
-      style={styles.map}
-      initialRegion={{
-        latitude: latitude || currentPosition?.latitude || 37.7749, // Utiliser la latitude de la ville ou la position actuelle
-        longitude: longitude || currentPosition?.longitude || -122.4194, // Utiliser la longitude de la ville ou la position actuelle
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      }}
-    >
-    
-      {/* Affichage de la position actuelle */}
-      {currentPosition && (
-        <Marker
-          coordinate={currentPosition}
-          title="My position"
-          pinColor="#fecb2d"
-        />
-      )}
+  // Ajustement de la carte aux événements
+  useEffect(() => {
+    if (mapRef.current && eventsData.length > 0) {
+      const validCoordinates = eventsData
+        .map(event => ({ latitude: event.latitude, longitude: event.longitude }))
+        .filter(coord => coord.latitude && coord.longitude);
 
-      {/* Affichage des marqueurs des événements */}
-      {events && events.map((event, index) => {
-        const { location } = event;  // Extraction de location de l'événement
-        if (location && location.coordinates) {
-          const [longitude, latitude] = location.coordinates;  // Les coordonnées sont sous la forme [longitude, latitude]
-          return (
-            <Marker
-              key={index}
-              coordinates={{ latitude, longitude }}
-              title={event.title}
-              description={event.description}
-            />
-          );
-        }
-        return null;  // Si la location ou les coordonnées sont manquantes, ne rien afficher
-      })}
-    </MapView>
+      if (validCoordinates.length > 0) {
+        mapRef.current.fitToCoordinates(validCoordinates, {
+          edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
+          animated: true,
+        });
+      }
+    }
+  }, [eventsData]);
+
+  // Bouton "Retour"
+  const goBack = () => navigation.goBack();
+
+  return (
+    <>
+      <MapView
+        provider={PROVIDER_GOOGLE}
+        style={styles.map}
+        region={region}
+        onRegionChangeComplete={setRegion}
+        ref={mapRef}
+      >
+        {/* Marqueur de la position actuelle */}
+        {currentPosition && (
+          <Marker
+            coordinate={currentPosition}
+            title="Ma position"
+            pinColor="#fecb2d"
+          />
+        )}
+
+        {/* Marqueurs des événements */}
+        {eventsData.map((event, index) => {
+          const { latitude, longitude, title, description } = event;
+          if (latitude && longitude) {
+            return (
+              <Marker
+                key={index}
+                coordinate={{ latitude, longitude }}
+                title={title}
+                description={description}
+                pinColor="#FF4525"
+              >
+            </Marker>
+            );
+          }
+          return null;
+        })}
+      </MapView>
+
+      {/* Bouton "Retour" */}
+      <TouchableOpacity
+        onPress={goBack}
+        style={styles.returnContainer}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.textReturn}>Retour</Text>
+      </TouchableOpacity>
+    </>
   );
 }
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   map: {
     flex: 1,
   },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalView: {
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 30,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  input: {
-    width: 150,
-    borderBottomColor: '#ec6e5b',
-    borderBottomWidth: 1,
+  
+  textReturn: {
+    textAlign: 'center',
+    fontWeight: 'bold',
     fontSize: 16,
-  },
-  button: {
-    width: 150,
-    alignItems: 'center',
-    marginTop: 20,
-    paddingTop: 8,
-    backgroundColor: '#ec6e5b',
-    borderRadius: 10,
-  },
-  textButton: {
-    color: '#ffffff',
-    height: 24,
-    fontWeight: '600',
-    fontSize: 15,
+    color: 'rgba(55, 27, 12, 0.7)',
   },
 });
