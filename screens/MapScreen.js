@@ -1,3 +1,4 @@
+import { useRef, useEffect, useState, useCallback } from "react";
 import {
   StyleSheet,
   Text,
@@ -9,13 +10,10 @@ import MapView, { PROVIDER_DEFAULT, Marker } from "react-native-maps";
 import * as Location from "expo-location";
 
 export default function MapScreen({ route, navigation }) {
-
   const { latitude, longitude, events = {} } = route.params;
-
   const eventsData = events.data || [];
 
   const mapRef = useRef(null);
-
   const [region, setRegion] = useState({
     latitude: latitude || 48.8566, // Si aucune latitude n'est fournie, par défaut Paris
     longitude: longitude || 2.3522, // Si aucune longitude n'est fournie, par défaut Paris
@@ -33,7 +31,6 @@ export default function MapScreen({ route, navigation }) {
       if (status === "granted") {
         Location.watchPositionAsync({ distanceInterval: 10 }, (location) => {
           const { latitude, longitude } = location.coords;
-          console.log('location.coords: ', location.coords);
           setCurrentPosition({ latitude, longitude });
         });
       } else {
@@ -93,15 +90,6 @@ export default function MapScreen({ route, navigation }) {
 
   return (
     <>
-      {/* Bouton "Retour" */}
-      <TouchableOpacity
-        onPress={goBack}
-        style={styles.returnContainer}
-        activeOpacity={0.8}
-      >
-        <Text style={styles.textReturn}>Retour</Text>
-      </TouchableOpacity>
-
       <MapView
         provider={PROVIDER_DEFAULT}
         style={styles.map}
@@ -120,7 +108,10 @@ export default function MapScreen({ route, navigation }) {
 
         {/* Marqueurs des événements */}
         {eventsData.map((event, index) => {
-          const { latitude, longitude, title, description } = event;
+          const { coordinates } = event.location; // Extraction des coordonnées
+          const latitude = coordinates[1]; // latitude est en 2ème position
+          const longitude = coordinates[0]; // longitude est en 1ère position
+
           if (latitude && longitude) {
             return (
               <Marker
@@ -132,22 +123,12 @@ export default function MapScreen({ route, navigation }) {
                 title={event.title}
                 description={event.description}
                 pinColor="#FF4525"
-              >
-            </Marker>
+              />
             );
           }
           return null;
         })}
       </MapView>
-
-      {/* Bouton "Retour" */}
-      <TouchableOpacity
-        onPress={goBack}
-        style={styles.returnContainer}
-        activeOpacity={0.8}
-      >
-        <Text style={styles.textReturn}>Retour</Text>
-      </TouchableOpacity>
     </>
   );
 }
@@ -155,8 +136,11 @@ export default function MapScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   map: {
     flex: 0.95,
+    marginTop: 35,
   },
-  
+  returnContainer: {
+    paddingTop: 20,
+  },
   textReturn: {
     textAlign: "center",
     fontWeight: "bold",
