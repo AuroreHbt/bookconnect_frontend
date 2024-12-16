@@ -80,20 +80,24 @@ export default function MapScreen({ route, navigation }) {
 
         {/* Marqueurs des événements */}
         {eventsData.map((event, index) => {
-          const { latitude, longitude, title, description } = event;
-          if (latitude && longitude) {
-            return (
-              <Marker
-                key={index}
-                coordinate={{ latitude, longitude }}
-                title={title}
-                description={description}
-                pinColor="#FF4525"
-              >
-              </Marker>
-            );
-          }
-          return null;
+         const { coordinates } = event.location; // Extraction des coordonnées
+         const latitude = coordinates[1]; // latitude est en 2ème position
+         const longitude = coordinates[0]; // longitude est en 1ère position
+       
+         console.log(`Rendering marker ${index}:`, event); // Vérifie la sortie des logs
+       
+         return (
+           <Marker
+             key={index}
+             coordinate={{
+               latitude: parseFloat(latitude), // Conversion en nombre pour IOS trop capriceux
+               longitude: parseFloat(longitude),
+             }}
+             title={event.title}
+             description={event.description}
+             pinColor="#FF4525"
+           />
+         );
         })}
       </MapView>
 
