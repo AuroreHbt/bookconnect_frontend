@@ -1,10 +1,18 @@
-import { StyleSheet, KeyboardAvoidingView, Platform, Text, View } from 'react-native';
+import {
+    TouchableOpacity,
+    StyleSheet,
+    KeyboardAvoidingView,
+    Platform,
+    Text,
+    View
+} from 'react-native';
 
-export default function MyCurrentReadingsScreen() {
+
+export default function FavEventScreen() {
 
     return (
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-            <Text>My Current Readings Screen</Text>
+            <Text>Mes Events : créés et enregistrés</Text>
         </KeyboardAvoidingView>
     );
 };
@@ -19,4 +27,5 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+
 });

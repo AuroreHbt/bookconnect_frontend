@@ -18,6 +18,13 @@ export default function ReadStoryScreen({ route }) {
 }
 
 const styles = StyleSheet.create({
+
+    container: {
+        flex: 0.95,
+        backgroundColor: 'pink',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
   
     container: { flex: 1,
     padding: 10,
