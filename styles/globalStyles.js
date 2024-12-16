@@ -21,12 +21,11 @@ import { StyleSheet } from 'react-native';
 export const globalStyles = StyleSheet.create({
 
     container: {
-        flexDirection: 'column',
         flex: 0.95, // l'écran prend 95% + 5% de barre de nav
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
-        padding: 10,
+        padding: 20,
         // overflow: 'hidden'
     },
 
@@ -37,6 +36,9 @@ export const globalStyles = StyleSheet.create({
         padding: 40,
         marginTop: 10,
         marginBottom: 15,
+        width: '100%',
+
+        // borderWidth: 1,
     },
 
     title: {
@@ -47,6 +49,8 @@ export const globalStyles = StyleSheet.create({
         color: 'rgba(55, 27, 12, 0.9)', // #371B0C
         flexWrap: 'wrap',
         width: '90%',
+
+        // borderWidth: 1,
     },
 
     // CSS du chevron pour le goBack
@@ -54,6 +58,8 @@ export const globalStyles = StyleSheet.create({
         position: 'absolute',
         top: 10,
         right: 0,
+
+        // borderWidth: 1,
     },
 
 
