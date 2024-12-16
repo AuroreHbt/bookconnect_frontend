@@ -135,7 +135,7 @@ export default function MyPublishedStoriesScreen({ navigation }) {
 
                   <View>
                     <Text style={styles.storyCategory}>{"Catégorie: " + item.category}</Text>
-                    <Text style={styles.storyPublic}>{item.isAdult ? 'Contenu 18+' : "Tout publique"}</Text>
+                    <Text style={styles.storyPublic}>{item.isAdult ? 'Contenu 18+' : "Tout public"}</Text>
                     <Text style={styles.storyDescription}>{"Résumé: " + item.description}</Text>
                   </View>
 

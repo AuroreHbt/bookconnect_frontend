@@ -139,8 +139,6 @@ export default function NewStoryScreen({ navigation }) {
     console.log("Fichier texte :", storyFile);
     console.log("Image de couverture :", coverImage);
 
-    setIsLoading(true); // Activer le spinner
-
     // validation des champs :
     let hasError = false
 
@@ -177,6 +175,8 @@ export default function NewStoryScreen({ navigation }) {
       setIsLoading(false); // Désactiver le spinner si erreur
       return;
     }
+
+    setIsLoading(true); // Activer le spinner
 
     // création de l'objet formData pour l'envoi de fichiers et de données
     const formData = new FormData();
