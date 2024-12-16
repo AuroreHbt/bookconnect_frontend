@@ -1,18 +1,23 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 import { StyleSheet, Text, TouchableOpacity, SafeAreaProvider, SafeAreaView } from 'react-native';
-import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
+import MapView, { PROVIDER_DEFAULT, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
 export default function MapScreen({ route, navigation }) {
+
   const { latitude, longitude, events = {} } = route.params;
+
   const eventsData = events.data || [];
+
   const mapRef = useRef(null);
+
   const [region, setRegion] = useState({
     latitude: latitude || 48.8566,
     longitude: longitude || 2.3522,
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
+
   const [currentPosition, setCurrentPosition] = useState(null);
 
   // Gestion de la localisation utilisateur
@@ -63,7 +68,7 @@ export default function MapScreen({ route, navigation }) {
       </TouchableOpacity>
 
       <MapView
-        provider={PROVIDER_GOOGLE}
+        provider={PROVIDER_DEFAULT}
         style={styles.map}
         region={region}
         onRegionChangeComplete={setRegion}
@@ -80,24 +85,28 @@ export default function MapScreen({ route, navigation }) {
 
         {/* Marqueurs des événements */}
         {eventsData.map((event, index) => {
-         const { coordinates } = event.location; // Extraction des coordonnées
-         const latitude = coordinates[1]; // latitude est en 2ème position
-         const longitude = coordinates[0]; // longitude est en 1ère position
-       
-         console.log(`Rendering marker ${index}:`, event); // Vérifie la sortie des logs
-       
-         return (
-           <Marker
-             key={index}
-             coordinate={{
-               latitude: parseFloat(latitude), // Conversion en nombre pour IOS trop capriceux
-               longitude: parseFloat(longitude),
-             }}
-             title={event.title}
-             description={event.description}
-             pinColor="#FF4525"
-           />
-         );
+          const { coordinates } = event.location; // Extraction des coordonnées
+          const latitude = coordinates[1]; // latitude est en 2ème position
+          const longitude = coordinates[0]; // longitude est en 1ère position
+
+          console.log(`Rendering marker ${index}:`, event); // Vérifie la sortie des logs
+
+          if (latitude && longitude) {
+            return (
+              <Marker
+                key={index}
+                coordinate={{
+                  latitude: parseFloat(latitude), // Conversion en nombre pour IOS trop capriceux
+                  longitude: parseFloat(longitude),
+                }}
+                title={event.title}
+                description={event.description}
+                pinColor="#FF4525"
+              >
+              </Marker>
+            );
+          }
+          return null;
         })}
       </MapView>
 
