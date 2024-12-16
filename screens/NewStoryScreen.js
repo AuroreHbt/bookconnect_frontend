@@ -188,7 +188,7 @@ export default function NewStoryScreen({ navigation }) {
     formData.append('storyFile', {
       uri: storyFile.uri,
       name: storyFile.name,
-      type: storyFile.mimeType
+      type: storyFile.mimeType || "application/pdf"
     });
 
     // ajout de la cover (optionnel)
@@ -265,17 +265,14 @@ export default function NewStoryScreen({ navigation }) {
 
           {/* Catégorie : liste de choix */}
           <View style={styles.pickerContainer}>
-            <Text style={styles.pickerText} >Choisir une catégorie (obligatoire) :</Text>
+            {/* <Text style={styles.pickerText} >Choisir une catégorie (obligatoire) :</Text> */}
             <Pressable
-              style={[
-                styles.picker,
-                categorySelected ? styles.categorySelected : styles.picker
-              ]}
-            // styles.picker est le style de base toujours appiqué. Si categorySelected est vrai (true=category sélectionné/pressé), styles.categorySelected sera appliqué, sinon retour au styles.picker => null sera ajouté (donc pas de style supplémentaire)
+              style={styles.picker}
             >
               <Picker
                 selectedValue={category}
                 onValueChange={(value) => { setCategory(value); setCategorySelected(value) }}
+                prompt="Catégorie (obligatoire)"
               >
                 <Picker.Item label="Autre" value="autre" />
                 <Picker.Item label="Autobiographie / Biographie" value="bio" />
@@ -288,6 +285,12 @@ export default function NewStoryScreen({ navigation }) {
                 {/* Ajouter d'autres catégories ici */}
               </Picker>
             </Pressable>
+            <Icon
+              style={styles.iconPicker}
+              name="check"
+              size={28}
+              color={categorySelected ? styles.iconPickerChecked : null}
+            />
           </View>
           {categoryError ? <Text style={styles.errorText}>{categoryError}</Text> : null}
 
@@ -298,7 +301,7 @@ export default function NewStoryScreen({ navigation }) {
             <Checkbox
               value={isAdult}
               onValueChange={(value) => setIsAdult(value)}
-              color={isAdult ? '#rgba(216, 72, 21, 0.8)' : undefined}
+              color={isAdult ? '#rgba(13, 173, 72, 0.9)' : undefined}
             />
           </View>
 
@@ -326,7 +329,7 @@ export default function NewStoryScreen({ navigation }) {
                 style={styles.iconContainer}
                 name="file-text"
                 size={24}
-                color={storyFile ? 'rgba(216, 72, 21, 0.9)' : 'rgba(211, 211, 211, 1)'}
+                color={storyFile ? 'rgba(13, 173, 72, 0.8)' : 'rgba(211, 211, 211, 1)'}
               />
             </TouchableOpacity>
           </View>
@@ -346,7 +349,7 @@ export default function NewStoryScreen({ navigation }) {
                 style={styles.iconContainer}
                 name="image"
                 size={24}
-                color={coverImage ? 'rgba(216, 72, 21, 0.9)' : '#D3D3D3'}
+                color={coverImage ? 'rgba(13, 173, 72, 0.8)' : 'rgba(211, 211, 211, 1)'}
               />
             </TouchableOpacity>
           </View>
@@ -386,43 +389,70 @@ const styles = StyleSheet.create({
 
   // CSS du container du formulaire
   inputContainer: {
-    width: '95%',
-    // borderWidth:1,
+    maxWidth: '100%',
+
+    // borderWidth: 1,
   },
 
-  // CSS de l'input title
+  // CSS de l'input title de l'histoire
   titleInputContainer: {
     backgroundColor: "rgba(238, 236, 232, 0.9)",
-    paddingVertical: 5,
+    paddingTop: 5,
     borderRadius: 5,
     borderBottomWidth: 0.7,
     borderBottomColor: "rgba(55, 27, 12, 0.50)",
-    maxWidth: "85%",
-    paddingLeft: 5,
+
+    maxWidth: "90%",
+    paddingLeft: 15,
     margin: 10,
+
+    // borderWidth: 1,
+    // borderColor: "purple",
   },
 
   // CSS du formulaire : choix de la catégorie
   pickerContainer: {
-    maxWidth: "85%",
+    flexDirection: 'row',
+    backgroundColor: "rgba(238, 236, 232, 0.9)",
+    borderRadius: 5,
+
+    maxWidth: "90%",
+    margin: 10,
+
+    // borderWidth: 1,
+    // borderColor: "red",
   },
 
   picker: {
-    backgroundColor: 'rgba(238, 236, 232, 0.9)',
+    backgroundColor: "rgba(238, 236, 232, 0.9)",
     borderRadius: 5,
+
+    width: "85%",
+    paddingLeft: 5,
+
+    // borderWidth: 1,
+    // borderColor: "blue",
   },
 
   pickerText: {
-    textAlign: 'left',
     fontFamily: 'sans-serif',
     fontSize: 16,
-    paddingLeft: 10,
-    marginBottom: 5,
   },
 
-  categorySelected: {
-    backgroundColor: "rgba(255, 123, 0, 0.3)",
-    borderRadius: 5,
+  iconPicker: {
+    position: 'absolute',
+    color: 'rgba(211, 211, 211, 1)',
+    height: '55%',
+    width: '10%',
+    top: 10,
+    right: 5,
+
+    // borderWidth: 1,
+    // borderColor: "yellow",
+  },
+
+  iconPickerChecked: {
+    color: 'rgba(13, 173, 72, 0.9)',
   },
 
   // CSS pour contenu 18+
@@ -432,9 +462,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: "rgba(238, 236, 232, 0.9)",
     paddingVertical: 5,
-    paddingHorizontal: 10,
+    paddingRight: 15,
     borderRadius: 5,
-    maxWidth: "85%",
+    maxWidth: "90%",
     margin: 10,
   },
 
@@ -442,24 +472,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: "rgba(255, 123, 0, 0.3)",
+    // backgroundColor: "rgba(34, 179, 89, 0.1)",
+    backgroundColor: "rgba(253,255,0, 0.1)",
     paddingVertical: 5,
-    paddingHorizontal: 10,
+    paddingRight: 10,
     borderRadius: 5,
-    maxWidth: "85%",
+    maxWidth: "90%",
     margin: 10,
   },
 
   textCheckbox: {
     fontFamily: 'sans-serif',
-    fontSize: 15,
-    paddingLeft: 10,
+    fontSize: 16,
+    paddingLeft: 15,
+    color: 'grey',
   },
 
   checkBox: {
     paddingRight: 10,
     marginRight: 10,
-    width: '60%',
+    width: '10%',
   },
 
   // CSS de l'input multilignes description
@@ -469,8 +501,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderBottomWidth: 0.7,
     borderBottomColor: "rgba(55, 27, 12, 0.50)",
-    maxWidth: "85%",
-    paddingLeft: 5,
+    maxWidth: "90%",
+    paddingLeft: 15,
     margin: 10,
   },
 
@@ -480,9 +512,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(238, 236, 232, 0.9)", //  #EEECE8
     paddingVertical: 5,
     borderRadius: 5,
-    paddingLeft: 5,
+    paddingLeft: 15,
     margin: 10,
-    maxWidth: "85%",
+    maxWidth: "90%",
   },
 
   fileInput: {
@@ -495,7 +527,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     position: 'absolute', // position absolue pour superposer l'icone sur l'input
     top: 3,
-    right: 10,
+    right: 15,
   },
 
   // CSS des messages d'erreur
@@ -505,14 +537,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'red',
     maxWidth: "85%",
-    paddingLeft: 10,
+    paddingLeft: 20,
   },
 
   // CSS du bouton publier avec spinner-button pour le temps de chargement
   buttonContainer: {
+    justifyContent: 'center', // Centrer le contenu horizontalement
     alignItems: 'center',
     // width: '50%',
-    justifyContent: 'center', // Centrer le contenu horizontalement
     marginVertical: 20, // Ajoutez un peu d'espace vertical si nécessaire    borderWidth: 1,
     // borderColor: 'blue',
   },
@@ -528,9 +560,9 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    paddingVertical: 10, // Ajustez le padding pour un meilleur espacement
     justifyContent: 'center',
     alignItems: 'center',
+    paddingVertical: 10, // Ajustez le padding pour un meilleur espacement
     width: '50%', // Largeur du bouton
     // backgroundColor: 'transparent', // Laissez le fond transparent pour voir le gradient
     position: 'relative', // Position relative pour superposer le spinner

@@ -22,10 +22,10 @@ export const signPageStyles = StyleSheet.create({
     },
 
     title: {
-        fontFamily: 'Girassol-Regular',
+        fontFamily: 'Asul.-Regular',
         fontWeight: '400',
-        fontSize: 40,
-        marginBottom: 10,
+        fontSize: 38,
+        marginBottom: 5,
         color: 'rgba(55, 27, 12, 0.9)', // #371B0C
     },
 

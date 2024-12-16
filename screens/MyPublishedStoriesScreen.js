@@ -126,60 +126,64 @@ export default function MyPublishedStoriesScreen({ navigation }) {
               onPress={() => navigation.navigate("ReadStory", { story: item })} // Navigation avec paramètres
             >
               <View style={styles.storyCard}>
+                {/* affichage des infos venant de addNewStory */}
+                <View>
+                  <Text style={styles.storyTitle}>{item.title}</Text>
+                </View>
 
                 <View style={styles.contentCard}>
 
-                  {/* affichage des infos venant de addNewStory */}
                   <View>
-                    <Text style={styles.storyTitle}>{item.title}</Text>
-                  </View>
-                  <View>
-                    <Text style={styles.storyCategory}>{item.category}</Text>
-                    <Text style={styles.storyDescription}>{item.description}</Text>
+                    <Text style={styles.storyCategory}>{"Catégorie: " + item.category}</Text>
+                    <Text style={styles.storyPublic}>{item.isAdult ? 'Contenu 18+' : "Tout publique"}</Text>
+                    <Text style={styles.storyDescription}>{"Résumé: " + item.description}</Text>
                   </View>
 
-                  <View style={styles.buttonCard}>
-
-                    {/* bouton pour modifier (route PUT à définir) */}
-                    <LinearGradient
-                      colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 0, y: 0.7 }}
-                      style={styles.gradientButton}
-                      activeOpacity={0.8}
-                    >
-                      <TouchableOpacity
-                        // onPress={handlePutStory} : à définir
-                        style={styles.button}
-                      >
-                        <Text style={styles.textButton}>Modifier</Text>
-                      </TouchableOpacity>
-                    </LinearGradient>
-
-                    {/* bouton pour delete */}
-                    <TouchableOpacity
-                      style={styles.iconContainer}
-                      onPress={() => handleDeleteStory(item._id)} // Passez l'ID de l'histoire ici
-                    >
-                      <Icon
-                        name='trash-o'
-                        size={28}
-                        color='rgba(55, 27, 12, 0.7)'
+                  <View style={styles.imageContainer}>
+                    {/* affichage du fichier image téléchargé */}
+                    {item.coverImage && (
+                      <Image
+                        source={{ uri: item.coverImage }}
+                        style={story.isAdult ? styles.coverImage : styles.coverImageAdult}
+                        blurRadius={story.isAdult ? 10 : 0}
                       />
-                    </TouchableOpacity>
+                    )}
                   </View>
                 </View>
 
-                <View style={styles.imageContainer}>
-                  {/* affichage du fichier image téléchargé */}
-                  {item.coverImage && (
-                    <Image
-                      style={styles.coverImage}
-                      source={{ uri: item.coverImage }}
+                <View style={styles.buttonCard}>
+
+                  {/* bouton pour modifier (route PUT à définir) */}
+                  <LinearGradient
+                    colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 0, y: 0.7 }}
+                    style={styles.gradientButton}
+                    activeOpacity={0.8}
+                  >
+                    <TouchableOpacity
+                      // onPress={handlePutStory} : à définir
+                      style={styles.button}
+                    >
+                      <Text style={styles.textButton}>Modifier</Text>
+                    </TouchableOpacity>
+                  </LinearGradient>
+
+                  {/* bouton pour delete */}
+                  <TouchableOpacity
+                    style={styles.iconContainer}
+                    onPress={() => handleDeleteStory(item._id)} // Passez l'ID de l'histoire ici
+                  >
+                    <Icon
+                      name='trash-o'
+                      size={28}
+                      color='rgba(55, 27, 12, 0.7)'
                     />
-                  )}
-                </View>
-              </ View>
+                  </TouchableOpacity>
+
+                </ View>
+              </View>
+
             </TouchableOpacity>
           )}
         />
@@ -191,36 +195,46 @@ export default function MyPublishedStoriesScreen({ navigation }) {
 
 const styles = StyleSheet.create({
 
-  // CSS des cards Story
+  // CSS global des cards Story
   storyCard: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: 'rgba(238, 236, 232, 1)', // "#EEECE8",
     padding: 10,
     marginBottom: 15,
     borderRadius: 8,
-    width: '95%',
+    width: '100%',
     // marginLeft: 10,
-  },
 
-  contentCard: {
-    width: '60%',
-    padding: 5,
-    // borderWidth: 1,
-    // borderColor: 'red',
+    borderWidth: 1,
+    borderColor: 'rgba(55, 27, 12, 0.1)',
   },
 
   storyTitle: {
     fontFamily: 'Poppins-Regular',
     fontWeight: '400',
     fontSize: 18,
-    marginBottom: 5,
+    padding: 5,
+    margin: 5,
+    flexWrap: 'wrap',
+  },
+
+  // CSS infos story + cover
+  contentCard: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    padding: 10,
+
     // borderWidth: 1,
-    // borderColor: 'orange',
+    // borderColor: 'red',
   },
 
   storyCategory: {
+    fontSize: 18,
+    marginBottom: 10,
+  },
+
+  storyPublic: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 10,
@@ -231,11 +245,35 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 
+  // CSS des couvertures
+  imageContainer: {
+    width: '40%',
+    padding: 5,
+    // borderWidth: 1,
+    // borderColor: 'blue',
+  },
+
+  coverImage: {
+    height: 150,
+    borderRadius: 10
+  },
+
+  coverImageAdult: {
+    height: 150,
+    borderRadius: 10,
+    borderWidth: 0.5,
+    borderColor: 'rgba(55, 27, 12, 0.5)',
+  },
+
   // CSS du bouton Modifier + poubelle pour suppr
   buttonCard: {
     flexDirection: 'row',
-    width: '50%',
+    justifyContent: 'space-between',
+    width: '100%',
     marginTop: 10,
+
+    // borderWidth: 1,
+    // borderColor: 'rgba(238, 236, 232, 1)',
   },
 
   gradientButton: {
@@ -258,19 +296,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     top: 5,
     left: 15,
-  },
-
-  // CSS des couvertures
-  imageContainer: {
-    width: '40%',
-    padding: 5,
-    // borderWidth: 1,
-    // borderColor: 'blue',
-  },
-
-  coverImage: {
-    height: 170,
-    borderRadius: 10
+    marginRight: 30,
   },
 
 });

@@ -188,10 +188,12 @@ export default function App() {
 
   // utilisation google fonts
   const [fontsLoaded] = useFonts({
-    'Girassol-Regular': require('./assets/fonts/Girassol-Regular.ttf'),
-    'Poppins-Medium': require('./assets/fonts/Poppins-Medium.ttf'),
-    'Poppins-Regular': require('./assets/fonts/Poppins-Regular.ttf'),
-    'Poppins-Light': require('./assets/fonts/Poppins-Light.ttf'),
+    'Girassol-Regular': require('./assets/fonts/Girassol-Regular.ttf'), // fontWeight: '400',
+    'Asul-Regular': require('./assets/fonts/Asul-Regular.ttf'), // fontWeight: '400',
+    'Asul-Bold': require('./assets/fonts/Asul-Bold.ttf'), // fontWeight: '700',
+    'Poppins-Medium': require('./assets/fonts/Poppins-Medium.ttf'), // fontWeight: '500',
+    'Poppins-Regular': require('./assets/fonts/Poppins-Regular.ttf'), // fontWeight: '400',
+    'Poppins-Light': require('./assets/fonts/Poppins-Light.ttf'), // fontWeight: '300',
   });
 
   // vérification du chargement de la font
