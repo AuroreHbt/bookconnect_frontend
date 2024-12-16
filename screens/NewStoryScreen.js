@@ -68,7 +68,7 @@ export default function NewStoryScreen({ navigation }) {
   const [descError, setDescError] = useState('');
   const [fileError, setFileError] = useState('');
 
-  const [categorySelected, setCategorySelected] = useState('');
+  const [categorySelected, setCategorySelected] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const user = useSelector((state) => state.user.value)
@@ -271,17 +271,23 @@ export default function NewStoryScreen({ navigation }) {
             >
               <Picker
                 selectedValue={category}
-                onValueChange={(value) => { setCategory(value); setCategorySelected(value) }}
+                // useNativeAndroidPickerStyle={false}
+                onValueChange={(value) => {
+                  setCategory(value);
+                  setCategorySelected(true);
+                  console.log("Catégorie sélectionnée:", value); // Pour debug
+                }}
                 prompt="Catégorie (obligatoire)"
+                mode="dialog"
               >
-                <Picker.Item label="Autre" value="autre" />
-                <Picker.Item label="Autobiographie / Biographie" value="bio" />
-                <Picker.Item label="Essai" value="essai" />
-                <Picker.Item label="Poésie" value="poesie" />
-                <Picker.Item label="Science-Fiction" value="sci-fi" />
-                <Picker.Item label="Fantasy" value="fantasy" />
-                <Picker.Item label="Romance" value="romance" />
-                <Picker.Item label="Policier" value="policier" />
+                <Picker.Item label="Autre" value="Autre" />
+                <Picker.Item label="Autobiographie / Biographie" value="Autobiographie / Biographie" />
+                <Picker.Item label="Essai" value="Essai" />
+                <Picker.Item label="Poésie" value="Poésie" />
+                <Picker.Item label="Science-Fiction" value="Science-Fiction" />
+                <Picker.Item label="Fantasy" value="Fantasy" />
+                <Picker.Item label="Romance" value="Romance" />
+                <Picker.Item label="Policier" value="Policier" />
                 {/* Ajouter d'autres catégories ici */}
               </Picker>
             </Pressable>
@@ -289,14 +295,14 @@ export default function NewStoryScreen({ navigation }) {
               style={styles.iconPicker}
               name="check"
               size={28}
-              color={categorySelected ? styles.iconPickerChecked : null}
+              color={Picker.selectedValue ? 'rgba(13, 173, 72, 0.8)' : 'rgba(211, 211, 211, 1)'}
             />
           </View>
           {categoryError ? <Text style={styles.errorText}>{categoryError}</Text> : null}
 
           <View style={isAdult ? styles.checkBoxTrue : styles.checkBoxContainer}>
             <Text style={styles.textCheckbox}>
-              Contenu 18+ (par défaut : tout public)
+              Contenu 18+
             </Text>
             <Checkbox
               value={isAdult}
@@ -307,8 +313,8 @@ export default function NewStoryScreen({ navigation }) {
 
           <View style={styles.inputMultiline} >
             <TextInput
-              placeholder="Description (obligatoire), 300 caractères max"
-              maxLength={300}
+              placeholder="Description (obligatoire), 250 caractères max"
+              length={250}
               multiline
               numberOfLines={7}
               onChangeText={(value) => setDescription(value)}
@@ -475,7 +481,7 @@ const styles = StyleSheet.create({
     // backgroundColor: "rgba(34, 179, 89, 0.1)",
     backgroundColor: "rgba(253,255,0, 0.1)",
     paddingVertical: 5,
-    paddingRight: 10,
+    paddingRight: 15,
     borderRadius: 5,
     maxWidth: "90%",
     margin: 10,

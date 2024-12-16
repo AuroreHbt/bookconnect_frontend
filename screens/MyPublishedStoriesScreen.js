@@ -213,8 +213,10 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     fontSize: 18,
     padding: 5,
-    margin: 5,
+    marginBottom: 15,
     flexWrap: 'wrap',
+    borderBottomWidth: 0.5,
+    borderBottomColor: "rgba(55, 27, 12, 0.5)"
   },
 
   // CSS infos story + cover
@@ -226,27 +228,48 @@ const styles = StyleSheet.create({
     padding: 10,
 
     // borderWidth: 1,
-    // borderColor: 'red',
   },
 
   storyCategory: {
     fontSize: 18,
+    marginTop: 5,
     marginBottom: 10,
+    flexWrap: 'wrap',
+    // width: '55%',
+    maxWidth: '55%',
+    height: 60,
+
+    // borderWidth: 1,
+    // borderColor: 'red',
   },
 
   storyPublic: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 30,
+    flexWrap: 'wrap',
+    width: '50%',
+
+    // borderWidth: 1,
+    // borderColor: 'purple',
   },
 
   storyDescription: {
     fontSize: 16,
-    marginBottom: 10,
+    marginTop: 10,
+    textAlign: 'justify',
+    flexWrap: 'wrap',
+    maxWidth: '100%',
+
+    // borderWidth: 1,
+    // borderColor: 'purple',
   },
 
   // CSS des couvertures
   imageContainer: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
     width: '40%',
     padding: 5,
     // borderWidth: 1,
@@ -254,15 +277,17 @@ const styles = StyleSheet.create({
   },
 
   coverImage: {
-    height: 150,
-    borderRadius: 10
-  },
-
-  coverImageAdult: {
-    height: 150,
+    height: 100,
     borderRadius: 10,
     borderWidth: 0.5,
     borderColor: 'rgba(55, 27, 12, 0.5)',
+  },
+
+  coverImageAdult: {
+    height: 100,
+    borderRadius: 10,
+    borderWidth: 0.6,
+    borderColor: 'rgba(255, 123, 0, 0.5)',
   },
 
   // CSS du bouton Modifier + poubelle pour suppr
