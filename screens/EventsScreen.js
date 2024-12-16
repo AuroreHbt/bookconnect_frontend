@@ -10,23 +10,15 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { LinearGradient } from "expo-linear-gradient";
-import { useFonts } from "expo-font";
+import FontAwesome from "react-native-vector-icons/FontAwesome"
+import { bottomTabStyles } from "../styles/bottomTabStyles";
+import { LinearGradient } from 'expo-linear-gradient';
+
 
 export default function EventsScreen({ navigation }) {
   const [city, setCity] = useState("");
   const [events, setEvents] = useState([]);
-  const [fontsLoaded] = useFonts({
-    "Girassol-Regular": require("../assets/fonts/Girassol-Regular.ttf"),
-    "Poppins-Medium": require("../assets/fonts/Poppins-Medium.ttf"),
-    "Poppins-Regular": require("../assets/fonts/Poppins-Regular.ttf"),
-    "Poppins-Light": require("../assets/fonts/Poppins-Light.ttf"),
-  });
 
-  if (!fontsLoaded) {
-    return null;
-  }
 
   const addEvent = () => {
     navigation.navigate("NewEvent", { screen: "NewEventScreen" });
@@ -86,7 +78,7 @@ export default function EventsScreen({ navigation }) {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
+      style={bottomTabStyles.container}
     >
       <View style={styles.inputContainer}>
         <View>
@@ -108,27 +100,29 @@ export default function EventsScreen({ navigation }) {
           />
         </View>
       </View>
-      <View style={styles.buttonContainer}>
+      <View style={bottomTabStyles.buttonContainer}>
         <LinearGradient
           colors={["rgba(255, 123, 0, 0.9)", "rgba(216, 72, 21, 1)"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 0.7 }}
-          style={styles.gradientButton}
+          style={bottomTabStyles.gradientButton}
           activeOpacity={0.8}
         >
-          <TouchableOpacity onPress={handleSearchPlace} style={styles.button}>
-            <Text style={styles.textButton}>Rechercher</Text>
+          <TouchableOpacity onPress={handleSearchPlace} style={bottomTabStyles.button}>
+            <Text style={bottomTabStyles.textButton}>Rechercher</Text>
           </TouchableOpacity>
         </LinearGradient>
+        </View>
+        <View style={bottomTabStyles.buttonContainer}>
         <LinearGradient
           colors={["rgba(255, 123, 0, 0.9)", "rgba(216, 72, 21, 1)"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 0.7 }}
-          style={styles.gradientButton}
+          style={bottomTabStyles.gradientButton}
           activeOpacity={0.8}
         >
-          <TouchableOpacity onPress={addEvent} style={styles.button}>
-            <Text style={styles.textButton}>Ajouter un évènement</Text>
+          <TouchableOpacity onPress={addEvent} style={bottomTabStyles.button}>
+            <Text style={bottomTabStyles.textButton}>Ajouter un évènement</Text>
           </TouchableOpacity>
         </LinearGradient>
       </View>
@@ -137,12 +131,7 @@ export default function EventsScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#ffffff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
+ 
   inputContainer: {
     justifyContent: "center",
     width: "80%",
@@ -159,44 +148,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
   },
-  buttonContainer: {
-    marginTop: 30,
-  },
-  gradientButton: {
-    borderRadius: 10,
-    marginVertical: 10,
-    width: "50%",
-  },
-  button: {
-    padding: 10,
-    margin: 10,
-  },
-  textButton: {
-    color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  eventItem: {
-    backgroundColor: "#f9f9f9",
-    padding: 15,
-    marginVertical: 10,
-    borderRadius: 8,
-    width: "80%",
-  },
-  eventTitle: {
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-  eventDescription: {
-    marginTop: 5,
-    fontSize: 14,
-  },
-  eventLocation: {
-    marginTop: 5,
-    fontSize: 12,
-    color: "#777",
-  },
+
   noEventsText: {
     marginTop: 20,
     fontSize: 16,
@@ -204,9 +156,9 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontFamily: 'Girassol-Regular', // ou GermaniaOne-Regular
-    fontWeight: '400',
-    fontSize: 48,
+    fontFamily: 'Asul-bold', // ou GermaniaOne-Regular
+    fontWeight: '700',
+    fontSize: 40,
     marginBottom: 10,
     color: 'rgba(55, 27, 12, 0.9)', // #371B0C
     textAlign: "center",
@@ -215,7 +167,7 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: "Poppins-Medium", // ou GermaniaOne-Regular
     fontWeight: "500",
-    fontSize: 22,
+    fontSize: 18,
     marginBottom: 50,
     color: "#371B0C",
     textAlign: "center",
