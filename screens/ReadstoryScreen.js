@@ -1,25 +1,31 @@
-import { StyleSheet, KeyboardAvoidingView, Platform, Text, View } from 'react-native';
+import React from "react";
+import { StyleSheet, Text, View,} from "react-native";
+import { WebView } from "react-native-webview";
 
-export default function ReadStoryScreen() {
+export default function ReadStoryScreen({ route }) {
+  const { story } = route.params;
 
-    return (
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-            <Text>Read Story Screen</Text>
-            <Text>attention à la MAJUSCULE!!!</Text>
-        </KeyboardAvoidingView>
-    );
-};
+  console.log("Histoire reçue :", story);
 
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>{story.title}</Text>
+      <Text style={styles.category}>{story.category}</Text>
+      <Text style={styles.description}>{story.description}</Text>
+      <WebView source={{ uri: story.storyFile }} style={styles.webView} />
+    </View>
+  );
+}
 
-// attention : le StyleSheet doit bien être en dehors de la fonction!
 const styles = StyleSheet.create({
+  
+    container: { flex: 1,
+    padding: 10,
+    backgroundColor: "pink" },
 
-    container: {
-        flex: 1,
-        backgroundColor: 'pink',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
+    title: { fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 10 },
 
-
+  webView: { flex: 1 },
 });

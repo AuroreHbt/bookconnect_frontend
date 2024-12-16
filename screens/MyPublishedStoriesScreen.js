@@ -12,8 +12,12 @@ export default function MyPublishedStoriesScreen({navigation}) {
   useEffect(() => {
     fetch(`${BACKEND_ADDRESS}/stories/mypublishedstory/${user.username}`)
       .then((response) => response.json())
-      .then((data) => setStories(data.stories)); // Mettre à jour l'etat avec les données des histoires
+      .then((data) =>
+        { console.log("Histoires recues :", data.stories)
+          setStories(data.stories)
+  }); // Mettre à jour l'etat avec les données des histoires
   }, [user.username]); // Actualisation sur l'utilisateur en cas de changement
+
 
   return (
     <View style={styles.container}>
@@ -23,7 +27,10 @@ export default function MyPublishedStoriesScreen({navigation}) {
         data={stories}
         renderItem={({ item }) => (
           <TouchableOpacity
-            onPress={() => navigation.navigate("ReadStory", { story: item })} // Navigation avec paramètres
+          onPress={() => {
+            console.log("Histoire sélectionnée :", item);
+            navigation.navigate("ReadStory", { story: item });
+          }}
           >
           <View style={styles.storyCard}>
             <View style={styles.leftRectangle}>
