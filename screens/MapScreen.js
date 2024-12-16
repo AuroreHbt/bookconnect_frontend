@@ -108,10 +108,7 @@ export default function MapScreen({ route, navigation }) {
 
         {/* Marqueurs des événements */}
         {eventsData.map((event, index) => {
-          const { coordinates } = event.location; // Extraction des coordonnées
-          const latitude = coordinates[1]; // latitude est en 2ème position
-          const longitude = coordinates[0]; // longitude est en 1ère position
-
+          const { latitude, longitude, title, description } = event;
           if (latitude && longitude) {
             return (
               <Marker
@@ -123,12 +120,22 @@ export default function MapScreen({ route, navigation }) {
                 title={event.title}
                 description={event.description}
                 pinColor="#FF4525"
-              />
+              >
+            </Marker>
             );
           }
           return null;
         })}
       </MapView>
+
+      {/* Bouton "Retour" */}
+      <TouchableOpacity
+        onPress={goBack}
+        style={styles.returnContainer}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.textReturn}>Retour</Text>
+      </TouchableOpacity>
     </>
   );
 }
@@ -138,9 +145,7 @@ const styles = StyleSheet.create({
     flex: 0.95,
     marginTop: 35,
   },
-  returnContainer: {
-    paddingTop: 20,
-  },
+  
   textReturn: {
     textAlign: "center",
     fontWeight: "bold",
@@ -148,4 +153,3 @@ const styles = StyleSheet.create({
     color: "rgba(55, 27, 12, 0.7)",
   },
 });
-
