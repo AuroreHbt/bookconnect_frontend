@@ -40,10 +40,15 @@ export default function MapScreen({ route, navigation }) {
   // Ajustement de la carte aux événements
   useEffect(() => {
     if (mapRef.current && eventsData.length > 0) {
+      // Filtrer les coordonnées valides
       const validCoordinates = eventsData
-        .map(event => ({ latitude: event.latitude, longitude: event.longitude }))
+        .map(event => ({
+          latitude: event.location?.coordinates[1],
+          longitude: event.location?.coordinates[0],
+        }))
         .filter(coord => coord.latitude && coord.longitude);
-
+  
+      // Ajuster la vue de la carte uniquement si des coordonnées valides existent
       if (validCoordinates.length > 0) {
         mapRef.current.fitToCoordinates(validCoordinates, {
           edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
@@ -51,7 +56,7 @@ export default function MapScreen({ route, navigation }) {
         });
       }
     }
-  }, [eventsData]);
+  }, [eventsData]); 
 
   // Bouton "Retour"
   const goBack = () => navigation.goBack();
