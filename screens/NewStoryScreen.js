@@ -188,7 +188,7 @@ export default function NewStoryScreen({ navigation }) {
     formData.append('storyFile', {
       uri: storyFile.uri,
       name: storyFile.name,
-      type: storyFile.mimeType
+      type: storyFile.mimeType || "application/pdf"
     });
 
     // ajout de la cover (optionnel)
