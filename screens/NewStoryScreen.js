@@ -270,6 +270,8 @@ export default function NewStoryScreen({ navigation }) {
               style={styles.picker}
             >
               <Picker
+                prompt="Catégorie (obligatoire)"
+
                 selectedValue={category}
                 // useNativeAndroidPickerStyle={false}
                 onValueChange={(value) => {
@@ -277,9 +279,9 @@ export default function NewStoryScreen({ navigation }) {
                   setCategorySelected(true);
                   console.log("Catégorie sélectionnée:", value); // Pour debug
                 }}
-                prompt="Catégorie (obligatoire)"
                 mode="dialog"
               >
+                <Picker.Item label="Sélectionnez une catégorie" value="" />
                 <Picker.Item label="Autre" value="Autre" />
                 <Picker.Item label="Autobiographie / Biographie" value="Autobiographie / Biographie" />
                 <Picker.Item label="Essai" value="Essai" />
@@ -295,7 +297,7 @@ export default function NewStoryScreen({ navigation }) {
               style={styles.iconPicker}
               name="check"
               size={28}
-              color={Picker.selectedValue ? 'rgba(13, 173, 72, 0.8)' : 'rgba(211, 211, 211, 1)'}
+              color={ categorySelected ? 'rgba(13, 173, 72, 0.8)' : 'rgba(211, 211, 211, 1)' }
             />
           </View>
           {categoryError ? <Text style={styles.errorText}>{categoryError}</Text> : null}
@@ -447,7 +449,6 @@ const styles = StyleSheet.create({
 
   iconPicker: {
     position: 'absolute',
-    color: 'rgba(211, 211, 211, 1)',
     height: '55%',
     width: '10%',
     top: 10,

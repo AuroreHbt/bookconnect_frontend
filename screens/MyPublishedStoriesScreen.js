@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     // width: '55%',
     maxWidth: '55%',
-    height: 60,
+    height: 70,
 
     // borderWidth: 1,
     // borderColor: 'red',
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
   storyPublic: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 30,
+    marginBottom: 20,
     flexWrap: 'wrap',
     width: '50%',
 
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
 
   storyDescription: {
     fontSize: 16,
-    marginTop: 10,
+    marginTop: 5,
     textAlign: 'justify',
     flexWrap: 'wrap',
     maxWidth: '100%',
@@ -270,21 +270,21 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     right: 0,
-    width: '40%',
+    width: '45%',
     padding: 5,
     // borderWidth: 1,
     // borderColor: 'blue',
   },
 
   coverImage: {
-    height: 100,
+    height: 120,
     borderRadius: 10,
     borderWidth: 0.5,
     borderColor: 'rgba(55, 27, 12, 0.5)',
   },
 
   coverImageAdult: {
-    height: 100,
+    height: 120,
     borderRadius: 10,
     borderWidth: 0.6,
     borderColor: 'rgba(255, 123, 0, 0.5)',

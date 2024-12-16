@@ -33,9 +33,9 @@ export const globalStyles = StyleSheet.create({
     titleContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        padding: 40,
+        padding: 20,
         marginTop: 10,
-        marginBottom: 15,
+        marginBottom: 5,
         width: '100%',
 
         // borderWidth: 1,
