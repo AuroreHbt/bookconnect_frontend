@@ -18,11 +18,14 @@ export default function MapScreen({ route, navigation }) {
   const [region, setRegion] = useState({
     latitude: latitude || 48.8566, // Si aucune latitude n'est fournie, par défaut Paris
     longitude: longitude || 2.3522, // Si aucune longitude n'est fournie, par défaut Paris
+    latitude: latitude || 48.8566, // Si aucune latitude n'est fournie, par défaut Paris
+    longitude: longitude || 2.3522, // Si aucune longitude n'est fournie, par défaut Paris
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
 
   const [currentPosition, setCurrentPosition] = useState(null);
+  const [cityProvided, setCityProvided] = useState(!!latitude && !!longitude); // On vérifie si une ville a été fournie
   const [cityProvided, setCityProvided] = useState(!!latitude && !!longitude); // On vérifie si une ville a été fournie
 
   // Gestion de la localisation utilisateur
@@ -30,11 +33,13 @@ export default function MapScreen({ route, navigation }) {
     const requestLocationPermission = async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status === "granted") {
+      if (status === "granted") {
         Location.watchPositionAsync({ distanceInterval: 10 }, (location) => {
           const { latitude, longitude } = location.coords;
           setCurrentPosition({ latitude, longitude });
         });
       } else {
+        console.log("Location permission not granted");
         console.log("Location permission not granted");
       }
     };
@@ -45,6 +50,11 @@ export default function MapScreen({ route, navigation }) {
   useEffect(() => {
     if (mapRef.current && eventsData.length > 0) {
       const validCoordinates = eventsData
+        .map((event) => ({
+          latitude: event.location?.coordinates[1],
+          longitude: event.location?.coordinates[0],
+        }))
+        .filter((coord) => coord.latitude && coord.longitude);
         .map((event) => ({
           latitude: event.location?.coordinates[1],
           longitude: event.location?.coordinates[0],
@@ -88,6 +98,34 @@ export default function MapScreen({ route, navigation }) {
       });
     }
   }, [currentPosition, region, updateRegion, cityProvided]); // On évite de mettre à jour si une ville a été fournie
+  // Eviter les boucles infinies en contrôlant les mises à jour du region
+  const updateRegion = useCallback(
+    (newRegion) => {
+      setRegion((prevRegion) => {
+        // On compare la nouvelle région avec l'ancienne pour éviter une mise à jour inutile
+        if (
+          prevRegion.latitude !== newRegion.latitude ||
+          prevRegion.longitude !== newRegion.longitude
+        ) {
+          return newRegion;
+        }
+        return prevRegion; // Ne pas mettre à jour si les valeurs sont identiques
+      });
+    },
+    [] // Nous n'avons pas de dépendances ici, donc la fonction sera stable
+  );
+
+  // Si la position actuelle change, mettre à jour la région de la carte
+  useEffect(() => {
+    if (currentPosition && !cityProvided) {
+      updateRegion({
+        latitude: currentPosition.latitude,
+        longitude: currentPosition.longitude,
+        latitudeDelta: region.latitudeDelta,
+        longitudeDelta: region.longitudeDelta,
+      });
+    }
+  }, [currentPosition, region, updateRegion, cityProvided]); // On évite de mettre à jour si une ville a été fournie
 
   return (
     <>
@@ -99,6 +137,7 @@ export default function MapScreen({ route, navigation }) {
         ref={mapRef}
       >
         {/* Marqueur de la position actuelle */}
+        {currentPosition && !cityProvided && ( // Afficher la position uniquement si la ville n'est pas fournie
         {currentPosition && !cityProvided && ( // Afficher la position uniquement si la ville n'est pas fournie
           <Marker
             coordinate={currentPosition}
@@ -145,7 +184,11 @@ const styles = StyleSheet.create({
   textReturn: {
     textAlign: "center",
     fontWeight: "bold",
+    textAlign: "center",
+    fontWeight: "bold",
     fontSize: 16,
+    color: "rgba(55, 27, 12, 0.7)",
     color: "rgba(55, 27, 12, 0.7)",
   },
 });
+

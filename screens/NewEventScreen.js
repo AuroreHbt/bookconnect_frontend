@@ -92,8 +92,8 @@ export default function NewEventScreen({ navigation }) {
       return;
     };
 
-    console.log("Planner (user.username) :", user.username);
-    if (!user.username) {
+    console.log("Planner (user._id) :", user._id);
+    if (!user._id) {
       Alert.alert('Erreur', 'Utilisateur non authentifié.');
       return;
     };
@@ -101,7 +101,7 @@ export default function NewEventScreen({ navigation }) {
 
     // Création de l'objet conforme au backend
     const eventData = {
-      planner: user.username,
+      planner: user._id,
       title,
       category,
       date: {
