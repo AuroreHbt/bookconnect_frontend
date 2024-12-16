@@ -136,6 +136,7 @@ export default function MapScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   map: {
     flex: 0.95,
+    marginTop: 35,
   },
   returnContainer: {
     paddingTop: 20,
