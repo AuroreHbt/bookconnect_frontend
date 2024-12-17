@@ -3,7 +3,7 @@
 //   Barre de nav => bottomTabStyles
 //   import { bottomTabStyles } from '../styles/bottomTabStyles';
 // TAB = Events
-// TAB = Storis
+// TAB = Stories
 // TAB = Favorites
 
 import { StyleSheet } from 'react-native';

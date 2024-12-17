@@ -22,9 +22,6 @@
       },
       "package": "com.dorin34.bookconnect_frontend"
     },
-
-    
-    
     "web": {
       "favicon": "./assets/favicon.png"
     },
@@ -32,8 +29,7 @@
       "expo-font"
     ],
     "extra": {
-      "eas": {
-      }
+      "eas": {}
     }
   }
 }
