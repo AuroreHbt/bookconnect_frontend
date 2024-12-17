@@ -9,7 +9,7 @@ import {
   Text,
   View,
   Image,
-} from "react-native";
+} from "react-native"; 
 
 // pour afficher les fichiers PDF hébergés en ligne
 import { WebView } from "react-native-webview";
