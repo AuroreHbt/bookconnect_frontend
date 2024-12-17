@@ -179,17 +179,27 @@ export default function MyPublishedStoriesScreen({ navigation }) {
 
                   <View style={styles.imageContainer}>
                     {/* affichage du fichier image téléchargé */}
-                    {item.coverImage && (
+                    {item.coverImage
+                      ?
                       <Image
-                        source={{ uri: item.coverImage }}
-                        style={item.isAdult ? styles.coverImageAdult : styles.coverImage}
+                        source={{ uri: story.coverImage }}
+                        style={
+                          item.isAdult
+                            ? styles.coverImageAdult
+                            : styles.coverImage
+                        }
                         blurRadius={item.isAdult ? 10 : 0}
                       />
-                    )}
+                      :
+                      <Image
+                        source={require('../assets/bookCover-placeholder.png')}
+                        style={styles.coverImage}
+                      />
+                    }
                     <TouchableOpacity
                       onPress={handleShowContent}
                     >
-                      {item.coverImage && (
+                      {item.isAdult && (
                         <Text style={item.isAdult ? styles.showContent : null} >Contenu sensible</Text>
                       )}
                     </TouchableOpacity>
@@ -272,7 +282,7 @@ const styles = StyleSheet.create({
     width: '100%',
     padding: 10,
 
-    // borderWidth: 1,
+    borderWidth: 1,
   },
 
   storyCategory: {
@@ -284,8 +294,8 @@ const styles = StyleSheet.create({
     width: '60%',
     height: 70,
 
-    // borderWidth: 1,
-    // borderColor: 'red',
+    borderWidth: 1,
+    borderColor: 'red',
   },
 
   storyPublic: {
@@ -296,8 +306,8 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     width: '60%',
 
-    // borderWidth: 1,
-    // borderColor: 'purple',
+    borderWidth: 1,
+    borderColor: 'purple',
   },
 
   storyDescription: {
@@ -307,8 +317,8 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     maxWidth: '100%',
 
-    // borderWidth: 1,
-    // borderColor: 'purple',
+    borderWidth: 1,
+    borderColor: 'purple',
   },
 
   // CSS des couvertures
@@ -318,19 +328,19 @@ const styles = StyleSheet.create({
     right: 0,
     width: '40%',
     padding: 5,
-    // borderWidth: 1,
-    // borderColor: 'blue',
+    borderWidth: 1,
+    borderColor: 'blue',
   },
 
   coverImage: {
-    height: 110,
+    height: 115,
     borderRadius: 10,
     borderWidth: 0.5,
     borderColor: 'rgba(55, 27, 12, 0.5)',
   },
 
   coverImageAdult: {
-    height: 110,
+    height: 115,
     borderRadius: 10,
     borderWidth: 0.6,
     borderColor: 'rgba(255, 123, 0, 0.5)',

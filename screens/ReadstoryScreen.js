@@ -62,14 +62,11 @@ export default function ReadStoryScreen({ route, navigation }) {
 
           <View style={styles.imageContainer}>
             {/* affichage du fichier image téléchargé */}
-            {story.coverImage
-              ? <Image
+            {story.coverImage && (
+              <Image
                 source={{ uri: story.coverImage }}
               />
-              : <Image
-                source={ './assets/bookCover-placeholder.png' }
-              />
-            }
+            )}
           </View>
         </View>
         <Text style={styles.storyDescription}>{story.description}</Text>
