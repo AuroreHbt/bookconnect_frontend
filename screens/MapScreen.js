@@ -1,30 +1,31 @@
 import { useRef, useEffect, useState, useCallback } from "react";
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  SafeAreaProvider,
-  SafeAreaView,
-} from "react-native";
+import { StyleSheet, Text, View, Modal, TouchableWithoutFeedback, FlatList } from "react-native";
 import MapView, { PROVIDER_DEFAULT, Marker } from "react-native-maps";
 import * as Location from "expo-location";
 
 export default function MapScreen({ route, navigation }) {
+
   const { latitude, longitude, events = {} } = route.params;
   const eventsData = events.data || [];
 
   const mapRef = useRef(null);
   const [region, setRegion] = useState({
-    latitude: latitude || 48.8566, // Si aucune latitude n'est fournie, par défaut Paris
-    longitude: longitude || 2.3522, // Si aucune longitude n'est fournie, par défaut Paris
+    latitude: latitude || 48.8566, 
+    longitude: longitude || 2.3522, 
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
 
   const [currentPosition, setCurrentPosition] = useState(null);
-  const [cityProvided, setCityProvided] = useState(!!latitude && !!longitude); // On vérifie si une ville a été fournie
+  const [cityProvided, setCityProvided] = useState(!!latitude && !!longitude);
 
-  // Gestion de la localisation utilisateur
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  };
+
   useEffect(() => {
     const requestLocationPermission = async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
@@ -40,7 +41,6 @@ export default function MapScreen({ route, navigation }) {
     requestLocationPermission();
   }, []);
 
-  // Ajustement de la carte aux événements
   useEffect(() => {
     if (mapRef.current && eventsData.length > 0) {
       const validCoordinates = eventsData
@@ -59,24 +59,18 @@ export default function MapScreen({ route, navigation }) {
     }
   }, [eventsData]);
 
-  // Eviter les boucles infinies en contrôlant les mises à jour du region
-  const updateRegion = useCallback(
-    (newRegion) => {
-      setRegion((prevRegion) => {
-        // On compare la nouvelle région avec l'ancienne pour éviter une mise à jour inutile
-        if (
-          prevRegion.latitude !== newRegion.latitude ||
-          prevRegion.longitude !== newRegion.longitude
-        ) {
-          return newRegion;
-        }
-        return prevRegion; // Ne pas mettre à jour si les valeurs sont identiques
-      });
-    },
-    [] // Nous n'avons pas de dépendances ici, donc la fonction sera stable
-  );
+  const updateRegion = useCallback((newRegion) => {
+    setRegion((prevRegion) => {
+      if (
+        prevRegion.latitude !== newRegion.latitude ||
+        prevRegion.longitude !== newRegion.longitude
+      ) {
+        return newRegion;
+      }
+      return prevRegion;
+    });
+  }, []);
 
-  // Si la position actuelle change, mettre à jour la région de la carte
   useEffect(() => {
     if (currentPosition && !cityProvided) {
       updateRegion({
@@ -86,7 +80,30 @@ export default function MapScreen({ route, navigation }) {
         longitudeDelta: region.longitudeDelta,
       });
     }
-  }, [currentPosition, region, updateRegion, cityProvided]); // On évite de mettre à jour si une ville a été fournie
+  }, [currentPosition, region, updateRegion, cityProvided]);
+
+  const renderEventModalItem = ({ item }) => (
+    <View style={styles.modalItem}>
+      <Text style={styles.modalTitle}>
+        {item.category || "Catégorie non renseignée"} -{" "}
+        {item.title || "Titre non renseigné"}
+      </Text>
+      <Text style={styles.modalDescription}>
+        {item.description || "Aucune description disponible"}
+      </Text>
+      <Text style={styles.modalDetails}>
+        Lieu : {item.place?.street || "Rue non renseignée"}, {item.place?.city || "Ville non renseignée"}
+      </Text>
+      <Text style={styles.eventDate}>
+        Date : {item.date?.day ? new Date(item.date.day).toLocaleDateString() : "Date non renseignée"}
+      </Text>
+      <Text style={styles.eventTime}>
+        Heure : {item.date?.start && item.date?.end
+          ? `${new Date(item.date.start).toLocaleTimeString()} - ${new Date(item.date.end).toLocaleTimeString()}`
+          : "Heure non renseignée"}
+      </Text>
+    </View>
+  );
 
   return (
     <>
@@ -97,8 +114,7 @@ export default function MapScreen({ route, navigation }) {
         onRegionChangeComplete={setRegion}
         ref={mapRef}
       >
-        {/* Marqueur de la position actuelle */}
-        {currentPosition && !cityProvided && ( // Afficher la position uniquement si la ville n'est pas fournie
+        {currentPosition && !cityProvided && (
           <Marker
             coordinate={currentPosition}
             title="Ma position"
@@ -106,45 +122,74 @@ export default function MapScreen({ route, navigation }) {
           />
         )}
 
-        {/* Marqueurs des événements */}
         {eventsData.map((event, index) => {
-          const { coordinates } = event.location; // Extraction des coordonnées
-          const latitude = coordinates[1]; // latitude est en 2ème position
-          const longitude = coordinates[0]; // longitude est en 1ère position
-
+          const { latitude, longitude, title, description } = event;
           if (latitude && longitude) {
             return (
               <Marker
                 key={index}
                 coordinate={{
-                  latitude: parseFloat(latitude), // Conversion en nombre pour IOS trop capriceux
+                  latitude: parseFloat(latitude),
                   longitude: parseFloat(longitude),
                 }}
                 title={event.title}
-                description={event.description}
                 pinColor="#FF4525"
-              />
+              >
+            </Marker>
             );
           }
           return null;
         })}
       </MapView>
+
+      {/* Bouton "Retour" */}
+      <TouchableOpacity
+        onPress={goBack}
+        style={styles.returnContainer}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.textReturn}>Retour</Text>
+      </TouchableOpacity>
     </>
   );
 }
 
 const styles = StyleSheet.create({
   map: {
-    flex: 0.95,
+    flex: 1,
     marginTop: 35,
   },
-  returnContainer: {
-    paddingTop: 20,
-  },
+  
   textReturn: {
     textAlign: "center",
     fontWeight: "bold",
-    fontSize: 16,
-    color: "rgba(55, 27, 12, 0.7)",
+    marginBottom: 10,
+    textAlign: "center", // Center title
+  },
+  modalDescription: {
+    fontSize: 14,
+    textAlign: "center", // Center description
+    marginBottom: 10,
+  },
+  modalDetails: {
+    fontSize: 12,
+    textAlign: "center", // Center details (place)
+    marginBottom: 5,
+  },
+  eventDate: {
+    fontSize: 14,
+    color: "#555",
+    marginTop: 5,
+    textAlign: "center", // Center date
+  },
+  eventTime: {
+    fontSize: 14,
+    color: "#555",
+    textAlign: "center", // Center time
+  },
+  separator: {
+    height: 2,
+    backgroundColor: "rgba(216, 72, 21, 1)",
+    marginVertical: 6,
   },
 });

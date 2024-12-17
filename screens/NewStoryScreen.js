@@ -271,7 +271,7 @@ export default function NewStoryScreen({ navigation }) {
 
               {/* Catégorie : liste de choix */}
               <View style={styles.pickerContainer}>
-                {/* <Text style={styles.pickerText} >Choisir une catégorie (obligatoire) :</Text> */}
+
                 <Pressable
                   style={styles.picker}
                 >
