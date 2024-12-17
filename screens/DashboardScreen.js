@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { LinearGradient } from 'expo-linear-gradient';
@@ -16,6 +16,7 @@ import {
   Modal,
   Image,
   TouchableWithoutFeedback,
+  Keyboard
 } from 'react-native';
 
 import { useDispatch } from "react-redux";
@@ -23,6 +24,10 @@ import { logout } from "../reducers/user";
 
 
 export default function DashboardScreen({ navigation }) {
+
+  useEffect(() => {
+    Keyboard.dismiss();
+  }, []);
 
   /*  const data = [
      { id: '1', image: require('../assets/avatar.png') },
@@ -198,7 +203,7 @@ export default function DashboardScreen({ navigation }) {
             </View>
           </ScrollView>
         </View>
-        
+
       </ScrollView>
     </SafeAreaView>
   );
