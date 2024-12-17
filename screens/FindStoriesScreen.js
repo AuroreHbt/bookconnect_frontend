@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
+
 import {
     TouchableOpacity,
     StyleSheet,
     KeyboardAvoidingView,
+    TouchableWithoutFeedback,
+    Keyboard,  
     Platform,
     Text,
     TextInput,
@@ -11,10 +14,10 @@ import {
     FlatList,
     Image
 } from 'react-native';
+
 import { Picker } from '@react-native-picker/picker';
 
 import { LinearGradient } from 'expo-linear-gradient';
-
 
 
 const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
@@ -39,37 +42,37 @@ export default function FindStoriesScreen({ navigation }) {
     // requête fetch vers le backend
     const handleStorySearch = () => {
         console.log('click');
-        
+
 
         const query = `?${title ? `title=${title}` : ''}${author ? `&author=${author}` : ''}${category ? `&category=${category}` : ''}`;
-    
+
         fetch(`${BACKEND_ADDRESS}/stories/search${query}`)
-            .then((response) => response.json()) 
+            .then((response) => response.json())
             .then((data) => {
                 console.log('api', data);
-                
+
                 // Si réponse positive du backend
                 if (data.result) {
-                    setStories(data.stories); 
+                    setStories(data.stories);
                     console.log('donnée', data.stories);
-                    
+
                     // Navigation vers l'écran ResultResearchStories et affichage des résultats
-                    navigation.navigate('ResultResearchStories', { stories: data.stories }); 
+                    navigation.navigate('ResultResearchStories', { stories: data.stories });
                 }
             });
     };
 
     useEffect(() => {
         fetch(`${BACKEND_ADDRESS}/stories/allstories`)
-        .then ((response) => response.json())
-        .then ((data) => {
-            if (data.result) {
-                setAllStories(data.stories)
-            }
-        })
- }, []);
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.result) {
+                    setAllStories(data.stories)
+                }
+            })
+    }, []);
 
-    const handleRandomStory  = () => {
+    const handleRandomStory = () => {
         console.log('click')
         if (allStories.length > 1) {
             let randomIndex = Math.floor(Math.random() * allStories.length);
@@ -80,121 +83,129 @@ export default function FindStoriesScreen({ navigation }) {
             console.log("histoire", newRandomStory);
             setRandomStory(newRandomStory);
             setLastStoryId(newRandomStory._id)
-            navigation.navigate("ReadStory", {story: newRandomStory})
-            
-            
+            navigation.navigate("ReadStory", { story: newRandomStory })
         }
     }
 
     useEffect(() => {
         fetch(`${BACKEND_ADDRESS}/stories/laststories`)
-        .then ((response) => response.json())
-        .then ((data) => {
-            if (data.result) {
-                setAllStories(data.stories)
-            }
-        })
- }, []);
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.result) {
+                    setAllStories(data.stories)
+                }
+            })
+    }, []);
 
-const renderStory = ({item}) => (<TouchableOpacity
-              onPress={() => navigation.navigate("ReadStory", { story: item })}
-    style={styles.storyCard}>
+    const renderStory = ({ item }) => (<TouchableOpacity
+        onPress={() => navigation.navigate("ReadStory", { story: item })}
+        style={styles.storyCard}>
         {item.coverImage && (
             <Image
-            source={{uri: item.coverImage}}
-            style={styles.coverImage}
+                source={{ uri: item.coverImage }}
+                style={styles.coverImage}
             />
         )}
-            <Text style={styles.storyTitle}>{item.title}</Text>
-            <Text style={styles.storyCategory}>{item.category}</Text>
+        <Text style={styles.storyTitle}>{item.title}</Text>
+        <Text style={styles.storyCategory}>{item.category}</Text>
     </TouchableOpacity>
-)
+    )
 
 
     return (
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-            <View style={styles.titlePageContainer}>
-            <Text style={styles.titlePage} >Rechercher une histoire</Text>
-            </View>
-            <View style={styles.inputContainer}>
-            
-                <View style={styles.input}>
-                    
-                    <TextInput
-                        placeholder="Titre de l'histoire"
-                        onChangeText={(value) => setTitle(value)}
-                        value={title}
-                    />
-                </View>
 
-                <View style={styles.input}>
-                    <TextInput
-                        placeholder="Nom de l'auteur"
-                        onChangeText={(value) => setAuthor(value)}
-                        value={author}
-                    />
-                </View>
-                <View style={styles.pickerContainer}>
-                <Pressable
-              style={styles.picker}
-            >
-              <Picker
-                selectedValue={category}
-                onValueChange={(value) => { setCategory(value); setCategorySelected(value) }}
-              >
-                <Picker.Item label="Autre" value="autre" />
-                <Picker.Item label="Autobiographie / Biographie" value="bio" />
-                <Picker.Item label="Essai" value="essai" />
-                <Picker.Item label="Poésie" value="poesie" />
-                <Picker.Item label="Science-Fiction" value="sci-fi" />
-                <Picker.Item label="Fantasy" value="fantasy" />
-                <Picker.Item label="Romance" value="romance" />
-                <Picker.Item label="Policier" value="policier" />
-                {/* Ajouter d'autres catégories ici */}
-              </Picker>
-            </Pressable>
-            </View>
-            </View>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={{ flex: 1, justifyContent: 'center', padding: 16 }}>
 
-            <View style={styles.buttonGroup}>
-                <LinearGradient
+                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+                    <View style={styles.titlePageContainer}>
+                        <Text style={styles.titlePage} >Rechercher une histoire</Text>
+                    </View>
+                    <View style={styles.inputContainer}>
+
+                        <View style={styles.input}>
+
+                            <TextInput
+                                placeholder="Titre de l'histoire"
+                                onChangeText={(value) => setTitle(value)}
+                                value={title}
+                            />
+                        </View>
+
+                        <View style={styles.input}>
+                            <TextInput
+                                placeholder="Nom de l'auteur"
+                                onChangeText={(value) => setAuthor(value)}
+                                value={author}
+                            />
+                        </View>
+                        <View style={styles.pickerContainer}>
+                            <Pressable
+                                style={styles.picker}
+                            >
+                                <Picker
+                                    prompt="Choisir une catégorie"
+
+                                    selectedValue={category}
+                                    onValueChange={(value) => { setCategory(value); setCategorySelected(value) }}
+                                    mode="dialog"
+                                >
+                                    <Picker.Item label="Sélectionnez une catégorie" value="" />
+                                    <Picker.Item label="Autre" value="Autre" />
+                                    <Picker.Item label="Autobiographie / Biographie" value="Autobiographie / Biographie" />
+                                    <Picker.Item label="Essai" value="Essai" />
+                                    <Picker.Item label="Poésie" value="Poésie" />
+                                    <Picker.Item label="Science Fiction" value="Science Fiction" />
+                                    <Picker.Item label="Fantasy" value="Fantasy" />
+                                    <Picker.Item label="Romance" value="Romance" />
+                                    <Picker.Item label="Policier" value="Policier" />
+                                    {/* Ajouter d'autres catégories ici */}
+                                </Picker>
+                            </Pressable>
+                        </View>
+                    </View>
+
+                    <View style={styles.buttonGroup}>
+                        <LinearGradient
                             colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 0, y: 0.7 }}
                             style={styles.gradientButton}
-                          >
-                <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={handleStorySearch}
-                    style={styles.button}
-                >
-                    <Text style={styles.textButton}>Rechercher</Text>
-                </TouchableOpacity>
-                </LinearGradient>
-                <LinearGradient
+                        >
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={handleStorySearch}
+                                style={styles.button}
+                            >
+                                <Text style={styles.textButton}>Rechercher</Text>
+                            </TouchableOpacity>
+                        </LinearGradient>
+                        <LinearGradient
                             colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 0, y: 0.7 }}
                             style={styles.gradientButton}
-                          >
-                <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={handleRandomStory}
-                    style={styles.button}
-                >
-                    <Text style={styles.textButton}>Histoire aléatoire</Text>
-                </TouchableOpacity>
-                </LinearGradient>
+                        >
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                onPress={handleRandomStory}
+                                style={styles.button}
+                            >
+                                <Text style={styles.textButton}>Histoire aléatoire</Text>
+                            </TouchableOpacity>
+                        </LinearGradient>
+                    </View>
+                    <FlatList
+                        data={allStories}
+                        keyExtractor={(item) => item._id}
+                        renderItem={renderStory}
+                        style={styles.flatList}
+                        horizontal
+                    />
+
+                </KeyboardAvoidingView>
             </View>
-            <FlatList
-            data={allStories}
-            keyExtractor={(item) => item._id}
-            renderItem={renderStory}
-            style={styles.flatList}
-            horizontal
-            />
-            
-        </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
     );
 };
 
@@ -208,15 +219,15 @@ const styles = StyleSheet.create({
     },
 
     titlePageContainer: {
-position: 'absolute',
-top: 50,
-alignItems: 'center'
+        position: 'absolute',
+        top: 50,
+        alignItems: 'center'
     },
 
-    titlePage : {
+    titlePage: {
         fontWeight: 'bold',
         fontSize: 20,
-        
+
     },
 
     inputContainer: {
@@ -240,7 +251,7 @@ alignItems: 'center'
         flexDirection: 'row',
         backgroundColor: "rgba(238, 236, 232, 0.9)",
         borderRadius: 5,
-    
+
         maxWidth: "90%",
         margin: 10,
     },
@@ -248,30 +259,30 @@ alignItems: 'center'
     picker: {
         backgroundColor: "rgba(238, 236, 232, 0.9)",
         borderRadius: 5,
-    
+
         width: "85%",
         paddingLeft: 5,
-    
+
         // borderWidth: 1,
         // borderColor: "blue",
-      },
-    
-      pickerText: {
+    },
+
+    pickerText: {
         fontFamily: 'sans-serif',
         fontSize: 16,
-      },
-    
-      iconPicker: {
+    },
+
+    iconPicker: {
         position: 'absolute',
         color: 'rgba(211, 211, 211, 1)',
         height: '55%',
         width: '10%',
         top: 10,
         right: 5,
-    
+
         // borderWidth: 1,
         // borderColor: "yellow",
-      },
+    },
 
     buttonGroup: {
         width: '100%',
@@ -300,7 +311,7 @@ alignItems: 'center'
     },
 
     flatList: {
-        marginTop : 20,
+        marginTop: 20,
         maxHeight: 250
     },
 
@@ -330,8 +341,8 @@ alignItems: 'center'
         color: 'rgba(55, 27, 12, 0.9)',
     },
 
-    storyCategory : {
-        fontSize : 10,
-        fontWeight : 'bold'
+    storyCategory: {
+        fontSize: 10,
+        fontWeight: 'bold'
     }
 });

@@ -55,6 +55,7 @@ export default function ReadStoryScreen({ route, navigation }) {
         <Text style={styles.storyTitle}>{story.title}</Text>
 
         <View style={styles.rowContainer}>
+
           <View style={styles.storyCard}>
             <Text style={styles.storyPublic}>{story.isAdult ? 'Contenu 18+' : "Tout public"}</Text>
             <Text style={styles.storyCategory}>{story.category}</Text>
@@ -69,7 +70,11 @@ export default function ReadStoryScreen({ route, navigation }) {
             )}
           </View>
         </View>
-        <Text style={styles.storyDescription}>{story.description}</Text>
+
+        <Text style={styles.storyDescription}>
+          {story.description}
+        </Text>
+
       </View>
 
       <View style={styles.webViewContainer}>
@@ -92,7 +97,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    paddingVertical: 25,
+    paddingTop: 25,
     paddingHorizontal: 15,
 
     // borderWidth: 2,
@@ -165,6 +170,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     textAlign: 'justify',
     width: '100%',
+    flexWrap: 'wrap',
 
     // borderWidth: 1,
     // borderColor: 'purple',
@@ -183,6 +189,7 @@ const styles = StyleSheet.create({
   },
 
   coverImage: {
+    height: 115,
     borderRadius: 10,
     borderWidth: 0.5,
     borderColor: 'rgba(55, 27, 12, 0.5)',

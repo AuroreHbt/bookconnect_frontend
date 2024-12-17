@@ -132,7 +132,7 @@ export default function MyPublishedStoriesScreen({ navigation }) {
 
   return (
     <KeyboardAvoidingView
-      style={globalStyles.container}
+      style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View>
@@ -157,24 +157,23 @@ export default function MyPublishedStoriesScreen({ navigation }) {
         <FlatList
           initialScrollIndex={0}
           keyExtractor={(item) => item._id}
-          // data={stories}
-          data={Array.isArray(stories) ? stories.reverse() : []} // Check if stories is an array pour inverser l'affichage des story postées sans gérer un tri par date
+          data={stories}
+          // data={Array.isArray(stories) ? stories.reverse() : []} // Check if stories is an array pour inverser l'affichage des story postées sans gérer un tri par date
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => navigation.navigate("ReadStory", { story: item })} // Navigation avec paramètres
             >
-              <View style={styles.storyCard}>
+              <View style={styles.storyContainer}>
                 {/* affichage des infos venant de addNewStory */}
                 <View>
                   <Text style={styles.storyTitle}>{item.title}</Text>
                 </View>
 
-                <View style={styles.contentCard}>
+                <View style={styles.rowContainer}>
 
-                  <View>
+                  <View style={styles.storyCard} >
                     <Text style={styles.storyPublic}>{item.isAdult ? 'Contenu 18+' : "Tout public"}</Text>
                     <Text style={styles.storyCategory}>{"Catégorie: " + item.category}</Text>
-                    <Text style={styles.storyDescription}>{"Résumé: " + item.description}</Text>
                   </View>
 
                   <View style={styles.imageContainer}>
@@ -205,6 +204,10 @@ export default function MyPublishedStoriesScreen({ navigation }) {
                     </TouchableOpacity>
                   </View>
                 </View>
+
+                <Text style={styles.storyDescription}>
+                  {"Résumé: " + item.description}
+                </Text>
 
                 <View style={styles.buttonCard}>
 
@@ -250,74 +253,88 @@ export default function MyPublishedStoriesScreen({ navigation }) {
 
 const styles = StyleSheet.create({
 
-  // CSS global des cards Story
-  storyCard: {
-    backgroundColor: 'rgba(238, 236, 232, 1)', // "#EEECE8",
-    padding: 10,
-    marginBottom: 15,
-    borderRadius: 8,
+  container: {
+    flex: 0.95, // l'écran prend 95% + 5% de barre de nav
+    justifyContent: 'center',
+    alignItems: 'center',
     width: '100%',
+    paddingTop: 25,
+    paddingHorizontal: 15,
 
-    borderWidth: 1,
-    borderColor: 'rgba(55, 27, 12, 0.1)',
+    // borderWidth: 2,
+    // borderColor: 'red',
+  },
+
+  storyContainer: {
+    width: '100%',
+    padding: 5,
+
+    // borderWidth: 2,
+    // borderColor: 'purple',
   },
 
   storyTitle: {
     fontFamily: 'Poppins-Regular',
     fontWeight: '400',
     fontSize: 18,
-    padding: 5,
-    marginBottom: 15,
-    flexWrap: 'wrap',
+    paddingHorizontal: 5,
+    marginBottom: 20,
     borderBottomWidth: 0.5,
-    borderBottomColor: "rgba(55, 27, 12, 0.5)"
+    borderBottomColor: "rgba(55, 27, 12, 0.5)",
+
+    // borderWidth: 1,
+    // borderColor: 'yellow',
   },
 
-  // CSS infos story + cover
-  contentCard: {
+  // bloc storyCard + cover
+  rowContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     width: '100%',
-    padding: 10,
 
-    borderWidth: 1,
+    // borderWidth: 1,
+    // borderColor: 'green',
   },
 
-  storyCategory: {
-    fontSize: 18,
-    marginTop: 5,
-    marginBottom: 10,
-    flexWrap: 'wrap',
-    // width: '55%',
+  // bloc des infos de l'histoire: public, category, description
+  storyCard: {
     width: '60%',
-    height: 70,
 
-    borderWidth: 1,
-    borderColor: 'red',
+    // borderWidth: 1,
+    // borderColor: 'darkorange',
   },
 
   storyPublic: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginTop: 5,
-    marginBottom: 10,
-    flexWrap: 'wrap',
-    width: '60%',
+    paddingHorizontal: 5,
+    marginTop: 10,
+    width: '100%',
 
-    borderWidth: 1,
-    borderColor: 'purple',
+    // borderWidth: 1,
+    // borderColor: 'pink',
+  },
+
+  storyCategory: {
+    fontSize: 18,
+    paddingHorizontal: 5,
+    marginVertical: 10,
+    width: '100%',
+    height: 60,
+
+    // borderWidth: 1,
+    // borderColor: 'red',
   },
 
   storyDescription: {
     fontSize: 16,
-    marginTop: 5,
-    textAlign: 'left',
+    paddingHorizontal: 5,
+    marginVertical: 5,
+    textAlign: 'justify',
+    width: '100%',
     flexWrap: 'wrap',
-    maxWidth: '100%',
 
-    borderWidth: 1,
-    borderColor: 'purple',
+    // borderWidth: 1,
+    // borderColor: 'purple',
   },
 
   // CSS des couvertures
@@ -326,7 +343,8 @@ const styles = StyleSheet.create({
     top: 0,
     right: 0,
     width: '40%',
-    padding: 5,
+    height: 115,
+
     borderWidth: 1,
     borderColor: 'blue',
   },
@@ -334,6 +352,7 @@ const styles = StyleSheet.create({
   coverImage: {
     height: 115,
     borderRadius: 10,
+
     borderWidth: 0.5,
     borderColor: 'rgba(55, 27, 12, 0.5)',
   },
@@ -341,10 +360,11 @@ const styles = StyleSheet.create({
   coverImageAdult: {
     height: 115,
     borderRadius: 10,
-    borderWidth: 0.6,
+    borderWidth: 0.5,
     borderColor: 'rgba(255, 123, 0, 0.5)',
+
     backgroundColor: 'rgba(0, 0, 0, 1)',
-    opacity: 0.1,
+    opacity: 0.5,
   },
 
   showContent: {

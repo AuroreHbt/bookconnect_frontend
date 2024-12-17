@@ -3,15 +3,14 @@ import { StyleSheet, Text, View, Modal, TouchableWithoutFeedback, FlatList } fro
 import MapView, { PROVIDER_DEFAULT, Marker } from "react-native-maps";
 import * as Location from "expo-location";
 
-export default function MapScreen({ route, navigation }) {
-
+export default function MapScreen({ route }) {
   const { latitude, longitude, events = {} } = route.params;
   const eventsData = events.data || [];
 
   const mapRef = useRef(null);
   const [region, setRegion] = useState({
-    latitude: latitude || 48.8566, 
-    longitude: longitude || 2.3522, 
+    latitude: latitude || 48.8566,
+    longitude: longitude || 2.3522,
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
@@ -123,7 +122,10 @@ export default function MapScreen({ route, navigation }) {
         )}
 
         {eventsData.map((event, index) => {
-          const { latitude, longitude, title, description } = event;
+          const { coordinates } = event.location;
+          const latitude = coordinates[1];
+          const longitude = coordinates[0];
+
           if (latitude && longitude) {
             return (
               <Marker
@@ -134,22 +136,38 @@ export default function MapScreen({ route, navigation }) {
                 }}
                 title={event.title}
                 pinColor="#FF4525"
-              >
-            </Marker>
+                onPress={() => {
+                  setSelectedEvent(event);
+                  setModalVisible(true);
+                }}
+              />
             );
           }
           return null;
         })}
       </MapView>
 
-      {/* Bouton "Retour" */}
-      <TouchableOpacity
-        onPress={goBack}
-        style={styles.returnContainer}
-        activeOpacity={0.8}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={toggleModal}
       >
-        <Text style={styles.textReturn}>Retour</Text>
-      </TouchableOpacity>
+        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+          <View style={styles.modalBackground}>
+            <View style={styles.modalContainer}>
+              <FlatList
+                data={[selectedEvent, ...eventsData.filter((e) => e !== selectedEvent)]}
+                renderItem={renderEventModalItem}
+                keyExtractor={(item, index) => index.toString()}
+                style={styles.modalFlatList}
+                ItemSeparatorComponent={() => <View style={styles.separator} />}
+                showsVerticalScrollIndicator={true}
+              />
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
     </>
   );
 }
@@ -159,9 +177,39 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 35,
   },
-  
-  textReturn: {
-    textAlign: "center",
+  modalBackground: {
+    flex: 1, // Takes the full space to ensure the background is tappable
+    backgroundColor: "transparent",
+    justifyContent: "flex-end",
+    alignItems: "center",
+  },
+  modalContainer: {
+    backgroundColor: "white",
+    width: "95%",
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    padding: 10,
+    height: "50%",
+    overflow: "hidden",
+  },
+  modalFlatList: {
+    width: "100%",
+    height: "100%",
+  },
+  modalItem: {
+    padding: 15,
+    backgroundColor: "white",
+    borderRadius: 10,
+    marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+    alignItems: "center", // Center all the text elements in the card
+  },
+  modalTitle: {
+    fontSize: 18,
     fontWeight: "bold",
     marginBottom: 10,
     textAlign: "center", // Center title
