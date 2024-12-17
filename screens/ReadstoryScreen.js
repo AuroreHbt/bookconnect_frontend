@@ -22,18 +22,10 @@ export default function ReadStoryScreen({ route, navigation }) {
   // https://reactnavigation.org/docs/navigation-object/#goback
   const goBack = () => navigation.goBack();
 
-  const CLOUDINARY_FILE = process.env.EXPO_PUBLIC_CLOUDINARY_FILE
-  console.log(CLOUDINARY_FILE);
 
-  const fileName = story.storyFile.split('/').pop()
-  console.log('fileName: ', fileName);
-  console.log('uri: ', story.storyFile);
-
-  const pdfUri = `${CLOUDINARY_FILE}/${fileName}`
-
-  const pdfEncoded = encodeURIComponent(pdfUri);
-  const googleDocsUrl = `https://docs.google.com/gview?embedded=true&url=${pdfEncoded}`;
-
+  const googleDocsUrl = `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(
+    story.storyFile
+  )}`;
 
   return (
 

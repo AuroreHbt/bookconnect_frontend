@@ -5,11 +5,22 @@ import {
     Platform,
     Text,
     View,
-    FlatList
+    FlatList,
+    Image
 } from 'react-native';
 
+import { globalStyles } from '../styles/globalStyles';
 
-export default function ResultResearchStoriesScreen({route}) {
+import Icon from 'react-native-vector-icons/FontAwesome';
+
+
+export default function ResultResearchStoriesScreen({route, navigation}) {
+
+  const goBack = () => navigation.goBack();
+
+  const handleShowContent = () => {
+    setIsVisible(!isVisible);
+  }
 
     const { stories } = route.params
 
@@ -19,32 +30,230 @@ export default function ResultResearchStoriesScreen({route}) {
       <View style={styles.storyContainer}>
         <Text style={styles.storyTitle}>{item.title}</Text>
         <Text style={styles.storyAuthor}>Auteur :{item.author.username}</Text>
-        <Text style={styles.storyDesc}>Description :{item.category.username}</Text>
+        <Text style={styles.storyCategory}>Description :{item.category.username}</Text>
+        <Text style={styles.storyDescription}>Description :{item.description.username}</Text>
       </View>
     );
 
   return (
-<View style={styles.container}>
-    <Text style={styles.title}>Résultat de la recherche</Text>
-    <FlatList
-              initialScrollIndex={0}
-              style={styles.flatlist}
-              keyExtractor={(item) => item._id}
-              data={stories}
-              renderItem={renderStory}
-/>
-</View>
-    )
-};
+  <KeyboardAvoidingView
+      style={globalStyles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <View>
+
+        {/* Titre + Bouton retour (goBack) */}
+        <View style={globalStyles.titleContainer}>
+          <Text style={globalStyles.title}>Résultat de ma recherche</Text>
+          <TouchableOpacity
+            onPress={goBack}
+            activeOpacity={0.8}
+          >
+            <Icon
+              style={globalStyles.returnContainer}
+              name="chevron-circle-left"
+              size={32}
+              color='rgba(55, 27, 12, 0.3)'
+            />
+          </TouchableOpacity>
+        </View>
+
+        {/* Affichage des histoires publiées */}
+        <FlatList
+          initialScrollIndex={0}
+          keyExtractor={(item) => item._id}
+          // data={stories}
+          data={Array.isArray(stories) ? stories.reverse() : []} // Check if stories is an array pour inverser l'affichage des story postées sans gérer un tri par date
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate("ReadStory", { story: item })} // Navigation avec paramètres
+            >
+              <View style={styles.storyCard}>
+                {/* affichage des infos venant de addNewStory */}
+                <View>
+                  <Text style={styles.storyTitle}>{item.title}</Text>
+                </View>
+
+                <View style={styles.contentCard}>
+
+                  <View>
+                    <Text style={styles.storyPublic}>{item.isAdult ? 'Contenu 18+' : "Tout public"}</Text>
+                    <Text style={styles.storyCategory}>{"Catégorie: " + item.category}</Text>
+                    <Text style={styles.storyDescription}>{"Résumé: " + item.description}</Text>
+                  </View>
+
+                  <View style={styles.imageContainer}>
+                    {/* affichage du fichier image téléchargé */}
+                    {item.coverImage && (
+                      <Image
+                        source={{ uri: item.coverImage }}
+                        style={item.isAdult ? styles.coverImageAdult : styles.coverImage}
+                        blurRadius={item.isAdult ? 10 : 0}
+                      />
+                    )}
+                    <TouchableOpacity
+                      onPress={handleShowContent}
+                    >
+                      {item.coverImage && (
+                        <Text style={item.isAdult ? styles.showContent : null} >Contenu sensible</Text>
+                      )}
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <View style={styles.buttonCard}>
+                </ View>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
+      </View>
+    </KeyboardAvoidingView>
+  );
+}
+    
+
 
 
 // attention : le StyleSheet doit bien être en dehors de la fonction!
 const styles = StyleSheet.create({
 
-    container: {
-        flex: 0.95,
-        backgroundColor: 'pink',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
+  storyCard: {
+    backgroundColor: 'rgba(238, 236, 232, 1)', // "#EEECE8",
+    padding: 10,
+    marginBottom: 15,
+    borderRadius: 8,
+    width: '100%',
+    // marginLeft: 10,
+
+    borderWidth: 1,
+    borderColor: 'rgba(55, 27, 12, 0.1)',
+  },
+
+  storyTitle: {
+    fontFamily: 'Poppins-Regular',
+    fontWeight: '400',
+    fontSize: 18,
+    padding: 5,
+    marginBottom: 15,
+    flexWrap: 'wrap',
+    borderBottomWidth: 0.5,
+    borderBottomColor: "rgba(55, 27, 12, 0.5)"
+  },
+
+  // CSS infos story + cover
+  contentCard: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    padding: 10,
+
+    // borderWidth: 1,
+  },
+
+  storyCategory: {
+    fontSize: 18,
+    marginTop: 5,
+    marginBottom: 10,
+    flexWrap: 'wrap',
+    // width: '55%',
+    width: '60%',
+    height: 70,
+
+    // borderWidth: 1,
+    // borderColor: 'red',
+  },
+
+  storyPublic: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginTop: 5,
+    marginBottom: 10,
+    flexWrap: 'wrap',
+    width: '60%',
+
+    // borderWidth: 1,
+    // borderColor: 'purple',
+  },
+
+  storyDescription: {
+    fontSize: 16,
+    marginTop: 5,
+    textAlign: 'left',
+    flexWrap: 'wrap',
+    maxWidth: '100%',
+
+    // borderWidth: 1,
+    // borderColor: 'purple',
+  },
+
+  // CSS des couvertures
+  imageContainer: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: '40%',
+    padding: 5,
+    // borderWidth: 1,
+    // borderColor: 'blue',
+  },
+
+  coverImage: {
+    height: 110,
+    borderRadius: 10,
+    borderWidth: 0.5,
+    borderColor: 'rgba(55, 27, 12, 0.5)',
+  },
+
+  coverImageAdult: {
+    height: 110,
+    borderRadius: 10,
+    borderWidth: 0.6,
+    borderColor: 'rgba(255, 123, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 1)',
+    opacity: 0.1,
+  },
+
+  showContent: {
+    position: 'absolute',
+    top: -65,
+    right: 7,
+    backgroundColor: 'rgba(253,255,0, 1)',
+    textAlign: 'center',
+  },
+
+  // CSS du bouton Modifier + poubelle pour suppr
+  buttonCard: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginTop: 10,
+
+    // borderWidth: 1,
+    // borderColor: 'rgba(238, 236, 232, 1)',
+  },
+
+  gradientButton: {
+    borderRadius: 10,
+  },
+
+  button: {
+    padding: 4,
+    margin: 4,
+  },
+
+  textButton: {
+    textAlign: 'center',
+    fontFamily: 'sans-serif',
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: 'white', // 'rgba(55, 27, 12, 0.8)', // #371B0C
+  },
+
+  iconContainer: {
+    top: 5,
+    left: 15,
+    marginRight: 30,
+  },
+
 });

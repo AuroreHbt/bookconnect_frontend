@@ -7,7 +7,9 @@ import {
     Text,
     TextInput,
     View,
-    Pressable
+    Pressable,
+    FlatList,
+    Image
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
@@ -28,6 +30,8 @@ export default function FindStoriesScreen({ navigation }) {
     const [allStories, setAllStories] = useState([]);
     const [randomStory, setRandomStory] = useState(null);
     const [lastStoryId, setLastStoryId] = useState([])
+
+    const [laststories, setLastStories] = useState([])
 
 
     // Fonction pour effectuer une recherche d'histoire
@@ -66,23 +70,56 @@ export default function FindStoriesScreen({ navigation }) {
  }, []);
 
     const handleRandomStory  = () => {
+        console.log('click')
         if (allStories.length > 1) {
             let randomIndex = Math.floor(Math.random() * allStories.length);
             while (allStories[randomIndex]._id === lastStoryId) {
                 randomIndex = Math.floor(Math.random() * allStories.length)
             }
             const newRandomStory = allStories[randomIndex];
+            console.log("histoire", newRandomStory);
             setRandomStory(newRandomStory);
             setLastStoryId(newRandomStory._id)
             navigation.navigate("ReadStory", {story: newRandomStory})
+            
+            
         }
     }
+
+    useEffect(() => {
+        fetch(`${BACKEND_ADDRESS}/stories/laststories`)
+        .then ((response) => response.json())
+        .then ((data) => {
+            if (data.result) {
+                setAllStories(data.stories)
+            }
+        })
+ }, []);
+
+const renderStory = ({item}) => (<TouchableOpacity
+              onPress={() => navigation.navigate("ReadStory", { story: item })}
+    style={styles.storyCard}>
+        {item.coverImage && (
+            <Image
+            source={{uri: item.coverImage}}
+            style={styles.coverImage}
+            />
+        )}
+            <Text style={styles.storyTitle}>{item.title}</Text>
+            <Text style={styles.storyCategory}>{item.category}</Text>
+    </TouchableOpacity>
+)
 
 
     return (
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+            <View style={styles.titlePageContainer}>
+            <Text style={styles.titlePage} >Rechercher une histoire</Text>
+            </View>
             <View style={styles.inputContainer}>
+            
                 <View style={styles.input}>
+                    
                     <TextInput
                         placeholder="Titre de l'histoire"
                         onChangeText={(value) => setTitle(value)}
@@ -149,7 +186,13 @@ export default function FindStoriesScreen({ navigation }) {
                 </TouchableOpacity>
                 </LinearGradient>
             </View>
-
+            <FlatList
+            data={allStories}
+            keyExtractor={(item) => item._id}
+            renderItem={renderStory}
+            style={styles.flatList}
+            horizontal
+            />
             
         </KeyboardAvoidingView>
     );
@@ -162,6 +205,18 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly',
         marginTop: 50,
         marginBottom: 50,
+    },
+
+    titlePageContainer: {
+position: 'absolute',
+top: 50,
+alignItems: 'center'
+    },
+
+    titlePage : {
+        fontWeight: 'bold',
+        fontSize: 20,
+        
     },
 
     inputContainer: {
@@ -227,11 +282,11 @@ const styles = StyleSheet.create({
     gradientButton: {
         borderRadius: 15,
         margin: 10,
-        width: '60%',
+        width: '55%',
     },
 
     button: {
-        padding: 15,
+        padding: 10,
         margin: 5,
     },
 
@@ -245,15 +300,23 @@ const styles = StyleSheet.create({
     },
 
     flatList: {
-        
+        marginTop : 20,
+        maxHeight: 250
     },
 
     flatListContainer: {
         alignItems: 'center',
     },
 
+    coverImage: {
+        width: 150,
+        height: 150,
+        borderRadius: 10
+
+    },
+
     storyCard: {
-        backgroundColor: '#EEECE8',
+
         padding: 10,
         borderRadius: 10,
         marginHorizontal: 10,
@@ -266,4 +329,9 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: 'rgba(55, 27, 12, 0.9)',
     },
+
+    storyCategory : {
+        fontSize : 10,
+        fontWeight : 'bold'
+    }
 });
