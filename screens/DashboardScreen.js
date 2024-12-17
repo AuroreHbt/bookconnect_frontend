@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+                                                                                                                                                                                           import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { LinearGradient } from 'expo-linear-gradient';
