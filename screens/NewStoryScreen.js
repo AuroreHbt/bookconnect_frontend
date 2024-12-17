@@ -6,6 +6,8 @@ import { globalStyles } from '../styles/globalStyles';
 // import de Pressable pour gérer les interactions tactiles (onPress, onLongPress etc)
 import {
   KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
   Platform,
   StyleSheet,
   Text,
@@ -229,164 +231,170 @@ export default function NewStoryScreen({ navigation }) {
 
 
   return (
-    <KeyboardAvoidingView
-      style={globalStyles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <View>
 
-        {/* Titre + Bouton retour (goBack) */}
-        <View style={globalStyles.titleContainer}>
-          <Text style={globalStyles.title}>Ma nouvelle histoire</Text>
-          <TouchableOpacity
-            onPress={goBack}
-            activeOpacity={0.8}
-          >
-            <Icon
-              style={globalStyles.returnContainer}
-              name="chevron-circle-left"
-              size={32}
-              color='rgba(55, 27, 12, 0.3)'
-            />
-          </TouchableOpacity>
-        </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={{ flex: 1, justifyContent: 'center', padding: 16 }}>
 
-        {/* formulaire pour publier une histoire */}
-        <View style={styles.inputContainer}>
+        <KeyboardAvoidingView
+          style={globalStyles.container}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
+          <View>
 
-          <View style={styles.titleInputContainer}>
-            <TextInput
-              placeholder="Titre de votre histoire (obligatoire)"
-              onChangeText={(value) => setTitle(value)}
-              value={title}
-            />
-          </View>
-          {titleError ? <Text style={styles.errorText}>{titleError}</Text> : null}
-
-          {/* Catégorie : liste de choix */}
-          <View style={styles.pickerContainer}>
-            {/* <Text style={styles.pickerText} >Choisir une catégorie (obligatoire) :</Text> */}
-            <Pressable
-              style={styles.picker}
-            >
-              <Picker
-                prompt="Catégorie (obligatoire)"
-
-                selectedValue={category}
-                // useNativeAndroidPickerStyle={false}
-                onValueChange={(value) => {
-                  setCategory(value);
-                  setCategorySelected(true);
-                  console.log("Catégorie sélectionnée:", value); // Pour debug
-                }}
-                mode="dialog"
+            {/* Titre + Bouton retour (goBack) */}
+            <View style={globalStyles.titleContainer}>
+              <Text style={globalStyles.title}>Ma nouvelle histoire</Text>
+              <TouchableOpacity
+                onPress={goBack}
+                activeOpacity={0.8}
               >
-                <Picker.Item label="Sélectionnez une catégorie" value="" />
-                <Picker.Item label="Autre" value="Autre" />
-                <Picker.Item label="Autobiographie / Biographie" value="Autobiographie / Biographie" />
-                <Picker.Item label="Essai" value="Essai" />
-                <Picker.Item label="Poésie" value="Poésie" />
-                <Picker.Item label="Science Fiction" value="Science Fiction" />
-                <Picker.Item label="Fantasy" value="Fantasy" />
-                <Picker.Item label="Romance" value="Romance" />
-                <Picker.Item label="Policier" value="Policier" />
-                {/* Ajouter d'autres catégories ici */}
-              </Picker>
-            </Pressable>
-            <Icon
-              style={styles.iconPicker}
-              name="check"
-              size={28}
-              color={categorySelected ? 'rgba(13, 173, 72, 0.8)' : 'rgba(211, 211, 211, 1)'}
-            />
-          </View>
-          {categoryError ? <Text style={styles.errorText}>{categoryError}</Text> : null}
+                <Icon
+                  style={globalStyles.returnContainer}
+                  name="chevron-circle-left"
+                  size={32}
+                  color='rgba(55, 27, 12, 0.3)'
+                />
+              </TouchableOpacity>
+            </View>
 
-          <View style={isAdult ? styles.checkBoxTrue : styles.checkBoxContainer}>
-            <Text style={styles.textCheckbox}>
-              Contenu 18+
-            </Text>
-            <Checkbox
-              value={isAdult}
-              onValueChange={(value) => setIsAdult(value)}
-              color={isAdult ? '#rgba(13, 173, 72, 0.9)' : undefined}
-            />
-          </View>
+            {/* formulaire pour publier une histoire */}
+            <View style={styles.inputContainer}>
 
-          <View style={styles.inputMultiline} >
-            <TextInput
-              placeholder="Description (obligatoire), 250 caractères max"
-              length={250}
-              multiline
-              numberOfLines={7}
-              onChangeText={(value) => setDescription(value)}
-              value={description}
-            />
-          </View>
-          {descError ? <Text style={styles.errorText}>{descError}</Text> : null}
+              <View style={styles.titleInputContainer}>
+                <TextInput
+                  placeholder="Titre de votre histoire (obligatoire)"
+                  onChangeText={(value) => setTitle(value)}
+                  value={title}
+                />
+              </View>
+              {titleError ? <Text style={styles.errorText}>{titleError}</Text> : null}
 
-          <View style={styles.fileContainer}>
-            <TouchableOpacity
-              onPress={handleSelectStoryFile}
-            >
-              <Text style={styles.fileInput}>
-                {storyFile ? storyFile.name : "Choisir un texte (obligatoire)"}
-              </Text>
+              {/* Catégorie : liste de choix */}
+              <View style={styles.pickerContainer}>
+                {/* <Text style={styles.pickerText} >Choisir une catégorie (obligatoire) :</Text> */}
+                <Pressable
+                  style={styles.picker}
+                >
+                  <Picker
+                    prompt="Catégorie (obligatoire)"
 
-              <Icon
-                style={styles.fileIconContainer}
-                name="file-text"
-                size={24}
-                color={storyFile ? 'rgba(13, 173, 72, 0.8)' : 'rgba(211, 211, 211, 1)'}
-              />
-            </TouchableOpacity>
-          </View>
+                    selectedValue={category}
+                    // useNativeAndroidPickerStyle={false}
+                    onValueChange={(value) => {
+                      setCategory(value);
+                      setCategorySelected(true);
+                      console.log("Catégorie sélectionnée:", value); // Pour debug
+                    }}
+                    mode="dialog"
+                  >
+                    <Picker.Item label="Sélectionnez une catégorie" value="" />
+                    <Picker.Item label="Autre" value="Autre" />
+                    <Picker.Item label="Autobiographie / Biographie" value="Autobiographie / Biographie" />
+                    <Picker.Item label="Essai" value="Essai" />
+                    <Picker.Item label="Poésie" value="Poésie" />
+                    <Picker.Item label="Science Fiction" value="Science Fiction" />
+                    <Picker.Item label="Fantasy" value="Fantasy" />
+                    <Picker.Item label="Romance" value="Romance" />
+                    <Picker.Item label="Policier" value="Policier" />
+                    {/* Ajouter d'autres catégories ici */}
+                  </Picker>
+                </Pressable>
+                <Icon
+                  style={styles.iconPicker}
+                  name="check"
+                  size={28}
+                  color={categorySelected ? 'rgba(13, 173, 72, 0.8)' : 'rgba(211, 211, 211, 1)'}
+                />
+              </View>
+              {categoryError ? <Text style={styles.errorText}>{categoryError}</Text> : null}
 
-          {fileError ? <Text style={styles.errorText}>{fileError}</Text> : null}
+              <View style={isAdult ? styles.checkBoxTrue : styles.checkBoxContainer}>
+                <Text style={styles.textCheckbox}>
+                  Contenu 18+
+                </Text>
+                <Checkbox
+                  value={isAdult}
+                  onValueChange={(value) => setIsAdult(value)}
+                  color={isAdult ? '#rgba(13, 173, 72, 0.9)' : undefined}
+                />
+              </View>
 
-          <View style={styles.fileContainer}>
+              <View style={styles.inputMultiline} >
+                <TextInput
+                  placeholder="Description (obligatoire), 250 caractères max"
+                  length={250}
+                  multiline
+                  numberOfLines={7}
+                  onChangeText={(value) => setDescription(value)}
+                  value={description}
+                />
+              </View>
+              {descError ? <Text style={styles.errorText}>{descError}</Text> : null}
 
-            <TouchableOpacity
-              onPress={handleSelectCoverImage}
-            >
-              <Text style={styles.fileInput}>
-                {coverImage ? coverImage.name : "Choisir une image (option)"}
-              </Text>
+              <View style={styles.fileContainer}>
+                <TouchableOpacity
+                  onPress={handleSelectStoryFile}
+                >
+                  <Text style={styles.fileInput}>
+                    {storyFile ? storyFile.name : "Choisir un texte (obligatoire)"}
+                  </Text>
 
-              <Icon
-                style={styles.imgIconContainer}
-                name="image"
-                size={24}
-                color={coverImage ? 'rgba(13, 173, 72, 0.8)' : 'rgba(211, 211, 211, 1)'}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
+                  <Icon
+                    style={styles.fileIconContainer}
+                    name="file-text"
+                    size={24}
+                    color={storyFile ? 'rgba(13, 173, 72, 0.8)' : 'rgba(211, 211, 211, 1)'}
+                  />
+                </TouchableOpacity>
+              </View>
 
-        {/* Bouton + spinner button */}
-        <View style={styles.buttonContainer}>
-          <LinearGradient
-            colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 0.7 }}
-            style={styles.gradientButton}
-          >
-            <SpinnerButton
-              isLoading={isLoading}
-              onPress={handlePostStory}
-              indicatorCount={10}
-              spinnerColor='rgba(253,255,0,1)' // "rgba(216, 72, 21, 0.9)"
-              spinnerType="PacmanIndicator"
-              buttonStyle={[styles.button]}
-              animateHeight={32}
-            >
-              <Text style={styles.textButton}>Publier</Text>
-            </SpinnerButton>
-          </LinearGradient>
-        </View>
+              {fileError ? <Text style={styles.errorText}>{fileError}</Text> : null}
 
-      </View >
-    </KeyboardAvoidingView >
+              <View style={styles.fileContainer}>
+
+                <TouchableOpacity
+                  onPress={handleSelectCoverImage}
+                >
+                  <Text style={styles.fileInput}>
+                    {coverImage ? coverImage.name : "Choisir une image (option)"}
+                  </Text>
+
+                  <Icon
+                    style={styles.imgIconContainer}
+                    name="image"
+                    size={24}
+                    color={coverImage ? 'rgba(13, 173, 72, 0.8)' : 'rgba(211, 211, 211, 1)'}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* Bouton + spinner button */}
+            <View style={styles.buttonContainer}>
+              <LinearGradient
+                colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 0, y: 0.7 }}
+                style={styles.gradientButton}
+              >
+                <SpinnerButton
+                  isLoading={isLoading}
+                  onPress={handlePostStory}
+                  indicatorCount={10}
+                  spinnerColor='rgba(253,255,0,1)' // "rgba(216, 72, 21, 0.9)"
+                  spinnerType="PacmanIndicator"
+                  buttonStyle={[styles.button]}
+                  animateHeight={32}
+                >
+                  <Text style={styles.textButton}>Publier</Text>
+                </SpinnerButton>
+              </LinearGradient>
+            </View>
+
+          </View >
+        </KeyboardAvoidingView >
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
