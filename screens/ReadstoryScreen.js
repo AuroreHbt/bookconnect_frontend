@@ -1,5 +1,8 @@
 import React from "react";
 
+import { globalStyles } from '../styles/globalStyles';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 import {
   TouchableOpacity,
   StyleSheet,
@@ -8,11 +11,8 @@ import {
   Image,
 } from "react-native";
 
+// pour afficher les fichiers PDF hébergés en ligne
 import { WebView } from "react-native-webview";
-
-import { globalStyles } from '../styles/globalStyles';
-import { LinearGradient } from "expo-linear-gradient";
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 export default function ReadStoryScreen({ route, navigation }) {
@@ -22,8 +22,21 @@ export default function ReadStoryScreen({ route, navigation }) {
   // https://reactnavigation.org/docs/navigation-object/#goback
   const goBack = () => navigation.goBack();
 
+  const CLOUDINARY_FILE = process.env.EXPO_PUBLIC_CLOUDINARY_FILE
+  console.log(CLOUDINARY_FILE);
+
+  const fileName = story.storyFile.split('/').pop()
+  console.log('fileName: ', fileName);
+  console.log('uri: ', story.storyFile);
+
+  const pdfUri = `${CLOUDINARY_FILE}/${fileName}`
+
+  const pdfEncoded = encodeURIComponent(pdfUri);
+  const googleDocsUrl = `https://docs.google.com/gview?embedded=true&url=${pdfEncoded}`;
+
 
   return (
+
     <View style={globalStyles.container}>
 
       {/* Titre + Bouton retour (goBack) */}
@@ -42,9 +55,7 @@ export default function ReadStoryScreen({ route, navigation }) {
         </TouchableOpacity>
       </View>
 
-      <View
-        style={styles.webView}
-      >
+      <View>
         {/* affichage d'une 'entete' pour lecture */}
         <Image src={story.coverImage} />
         <Text style={styles.storyTitle}>{story.title}</Text>
@@ -54,20 +65,28 @@ export default function ReadStoryScreen({ route, navigation }) {
 
         {/* affichage des fichiers pour lecture */}
         <WebView
-          source={{ uri: story.storyFile }}
-          // originWhitelist={['https://*']} pour contrôler les origines des URL
+          // app.json pour permission android, https://docs.expo.dev/guides/permissions/
+          source={{ uri: googleDocsUrl }}
+          style={styles.webview}
+          scalesPageToFit={true}
+        // originWhitelist={['*']}
+        // javaScriptEnabled={true}
+        // domStorageEnabled={true}
+        // startInLoadingState={true}
         />
       </View>
     </View>
   );
 }
 
+
 const styles = StyleSheet.create({
 
-  webView: {
-    flex: 0.7
+  webview: {
+    flex: 0.8,
+    maxWidth: '100%',
+    // height: '100%',
   },
-
 
   storyTitle: {
     fontFamily: 'Poppins-Regular',

@@ -286,7 +286,7 @@ export default function NewStoryScreen({ navigation }) {
                 <Picker.Item label="Autobiographie / Biographie" value="Autobiographie / Biographie" />
                 <Picker.Item label="Essai" value="Essai" />
                 <Picker.Item label="Poésie" value="Poésie" />
-                <Picker.Item label="Science-Fiction" value="Science-Fiction" />
+                <Picker.Item label="Science Fiction" value="Science Fiction" />
                 <Picker.Item label="Fantasy" value="Fantasy" />
                 <Picker.Item label="Romance" value="Romance" />
                 <Picker.Item label="Policier" value="Policier" />
@@ -297,7 +297,7 @@ export default function NewStoryScreen({ navigation }) {
               style={styles.iconPicker}
               name="check"
               size={28}
-              color={ categorySelected ? 'rgba(13, 173, 72, 0.8)' : 'rgba(211, 211, 211, 1)' }
+              color={categorySelected ? 'rgba(13, 173, 72, 0.8)' : 'rgba(211, 211, 211, 1)'}
             />
           </View>
           {categoryError ? <Text style={styles.errorText}>{categoryError}</Text> : null}
@@ -334,7 +334,7 @@ export default function NewStoryScreen({ navigation }) {
               </Text>
 
               <Icon
-                style={styles.iconContainer}
+                style={styles.fileIconContainer}
                 name="file-text"
                 size={24}
                 color={storyFile ? 'rgba(13, 173, 72, 0.8)' : 'rgba(211, 211, 211, 1)'}
@@ -354,7 +354,7 @@ export default function NewStoryScreen({ navigation }) {
               </Text>
 
               <Icon
-                style={styles.iconContainer}
+                style={styles.imgIconContainer}
                 name="image"
                 size={24}
                 color={coverImage ? 'rgba(13, 173, 72, 0.8)' : 'rgba(211, 211, 211, 1)'}
@@ -531,7 +531,13 @@ const styles = StyleSheet.create({
     height: 30,
   },
 
-  iconContainer: {
+  fileIconContainer: {
+    position: 'absolute', // position absolue pour superposer l'icone sur l'input
+    top: 3,
+    right: 18,
+  },
+
+  imgIconContainer: {
     position: 'absolute', // position absolue pour superposer l'icone sur l'input
     top: 3,
     right: 15,
@@ -573,6 +579,9 @@ const styles = StyleSheet.create({
     width: '50%', // Largeur du bouton
     // backgroundColor: 'transparent', // Laissez le fond transparent pour voir le gradient
     position: 'relative', // Position relative pour superposer le spinner
+    shadowColor: 'transparent', // Masquer l'ombre
+    elevation: 0, // Pour Android
+
     // borderWidth: 1,
     // borderColor: 'green',
   },

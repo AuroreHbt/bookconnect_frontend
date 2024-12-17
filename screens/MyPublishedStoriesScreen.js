@@ -16,7 +16,7 @@ import {
 
 import { useSelector, useDispatch } from "react-redux";
 
-import { deleteStory } from "../reducers/story";
+import { deleteStory, updateStory } from "../reducers/story";
 
 // import de la bibliothèque d'icône Fontawsome via react-native-vector-icons
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -33,13 +33,16 @@ export default function MyPublishedStoriesScreen({ navigation }) {
   const goBack = () => navigation.goBack();
 
   const [stories, setStories] = useState([]); //hook d'état pour stocker les histoires publiées
-
+  const [isVisible, setIsVisible] = useState(false) // hook d'état pour le spoiler sur les images sensibles
 
   const user = useSelector((state) => state.user.value); // Informations recupérées depuis le store
-
-  const story = useSelector((state) => state.story.value) // story list = tableau d'objets
+  const story = useSelector((state) => state.story.value) || [] // story list = tableau d'objets
 
   const dispatch = useDispatch();
+
+  const handleShowContent = () => {
+    setIsVisible(!isVisible);
+  }
 
   // Fonction pour récupérer les histoires publiées
   const getMyPublishedStories = () => {
@@ -74,7 +77,6 @@ export default function MyPublishedStoriesScreen({ navigation }) {
         console.log("ID: ", storyId)
 
         if (data.result) {
-
           console.log('Réponse du serveur (data.result): ', data.result)
           dispatch(deleteStory(storyId)) // supprime l'histoire du store
           console.log('story supprimée avec succès');
@@ -87,9 +89,45 @@ export default function MyPublishedStoriesScreen({ navigation }) {
   };
 
   // Fonction pour modifier une histoire postée : à définir
-  // const handlePutStory = async () => {
+  const handleUpdateStory = async (storyId) => {
+    // Debug ok
+    console.log("ID de l'histoire sélectionnée : ", storyId);
+    console.log("Type de storyId :", typeof storyId);
+    console.log("Type de user.token :", typeof user.token);
 
-  // }
+    try {
+      const response = await
+        fetch(`${BACKEND_ADDRESS}/stories/updatepublishedstory`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            token: user.token,
+            id: storyId,
+            // title: story.title, // Include title for update
+            // category: story.category,
+            // isAdult: story.isAdult,
+            // description: story.description,
+            // coverImage: story.coverImage,
+            // storyFile: story.storyFile,
+          }),
+        })
+      // Envoi de l'ID de l'histoire à supprimer lié au token de l'author : sans cette ligne, la requete est vide (cf. console.log de req.body sur la route) e renvoie => (NOBRIDGE) ERROR  Erreur lors de la modification:  [SyntaxError: JSON Parse error: Unexpected character: <]    
+      const data = await response.json();
+
+      if (data.result) {
+        console.log('Réponse du serveur (data.result): ', data.result);
+        dispatch(updateStory({ id, data: { title: 'Updated Title' } })); // Dispatch update action
+        console.log('Modification effectuée avec succès');
+        getMyPublishedStories(); // Re-fetch stories
+      } else {
+        console.error('Erreur lors de la mise à jour:', data.error);
+      }
+    } catch (error) {
+      console.error("Erreur lors de la modification:", error);
+    }
+  };
 
 
   return (
@@ -119,8 +157,8 @@ export default function MyPublishedStoriesScreen({ navigation }) {
         <FlatList
           initialScrollIndex={0}
           keyExtractor={(item) => item._id}
-          data={stories}
-          //data={stories.reverse()} // pour inverser l'affichage des story postées sans gérer un tri par date
+          // data={stories}
+          data={Array.isArray(stories) ? stories.reverse() : []} // Check if stories is an array pour inverser l'affichage des story postées sans gérer un tri par date
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => navigation.navigate("ReadStory", { story: item })} // Navigation avec paramètres
@@ -134,8 +172,8 @@ export default function MyPublishedStoriesScreen({ navigation }) {
                 <View style={styles.contentCard}>
 
                   <View>
-                    <Text style={styles.storyCategory}>{"Catégorie: " + item.category}</Text>
                     <Text style={styles.storyPublic}>{item.isAdult ? 'Contenu 18+' : "Tout public"}</Text>
+                    <Text style={styles.storyCategory}>{"Catégorie: " + item.category}</Text>
                     <Text style={styles.storyDescription}>{"Résumé: " + item.description}</Text>
                   </View>
 
@@ -144,10 +182,17 @@ export default function MyPublishedStoriesScreen({ navigation }) {
                     {item.coverImage && (
                       <Image
                         source={{ uri: item.coverImage }}
-                        style={story.isAdult ? styles.coverImage : styles.coverImageAdult}
-                        blurRadius={story.isAdult ? 10 : 0}
+                        style={item.isAdult ? styles.coverImageAdult : styles.coverImage}
+                        blurRadius={item.isAdult ? 10 : 0}
                       />
                     )}
+                    <TouchableOpacity
+                      onPress={handleShowContent}
+                    >
+                      {item.coverImage && (
+                        <Text style={item.isAdult ? styles.showContent : null} >Contenu sensible</Text>
+                      )}
+                    </TouchableOpacity>
                   </View>
                 </View>
 
@@ -162,7 +207,7 @@ export default function MyPublishedStoriesScreen({ navigation }) {
                     activeOpacity={0.8}
                   >
                     <TouchableOpacity
-                      // onPress={handlePutStory} : à définir
+                      onPress={handleUpdateStory}
                       style={styles.button}
                     >
                       <Text style={styles.textButton}>Modifier</Text>
@@ -236,7 +281,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     flexWrap: 'wrap',
     // width: '55%',
-    maxWidth: '55%',
+    width: '60%',
     height: 70,
 
     // borderWidth: 1,
@@ -246,9 +291,10 @@ const styles = StyleSheet.create({
   storyPublic: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginTop: 5,
+    marginBottom: 10,
     flexWrap: 'wrap',
-    width: '50%',
+    width: '60%',
 
     // borderWidth: 1,
     // borderColor: 'purple',
@@ -257,7 +303,7 @@ const styles = StyleSheet.create({
   storyDescription: {
     fontSize: 16,
     marginTop: 5,
-    textAlign: 'justify',
+    textAlign: 'left',
     flexWrap: 'wrap',
     maxWidth: '100%',
 
@@ -270,24 +316,34 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     right: 0,
-    width: '45%',
+    width: '40%',
     padding: 5,
     // borderWidth: 1,
     // borderColor: 'blue',
   },
 
   coverImage: {
-    height: 120,
+    height: 110,
     borderRadius: 10,
     borderWidth: 0.5,
     borderColor: 'rgba(55, 27, 12, 0.5)',
   },
 
   coverImageAdult: {
-    height: 120,
+    height: 110,
     borderRadius: 10,
     borderWidth: 0.6,
     borderColor: 'rgba(255, 123, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 1)',
+    opacity: 0.1,
+  },
+
+  showContent: {
+    position: 'absolute',
+    top: -65,
+    right: 7,
+    backgroundColor: 'rgba(253,255,0, 1)',
+    textAlign: 'center',
   },
 
   // CSS du bouton Modifier + poubelle pour suppr
