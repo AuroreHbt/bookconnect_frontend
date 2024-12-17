@@ -25,11 +25,13 @@ export default function ReadStoryScreen({ route, navigation }) {
   const CLOUDINARY_FILE = process.env.EXPO_PUBLIC_CLOUDINARY_FILE
   console.log(CLOUDINARY_FILE);
 
-  const fileName = story.storyFile.split('/').pop()
+  const fileName = story.storyFile.split('/')
+  const pathName = fileName.slice(-2).join('/');
   console.log('fileName: ', fileName);
+  console.log('pathName: ', pathName);
   console.log('uri: ', story.storyFile);
 
-  const pdfUri = `${CLOUDINARY_FILE}/${fileName}`
+  const pdfUri = `${CLOUDINARY_FILE}/${pathName}`
 
   const pdfEncoded = encodeURIComponent(pdfUri);
   const googleDocsUrl = `https://docs.google.com/gview?embedded=true&url=${pdfEncoded}`;
