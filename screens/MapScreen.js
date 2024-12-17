@@ -9,8 +9,8 @@ export default function MapScreen({ route }) {
 
   const mapRef = useRef(null);
   const [region, setRegion] = useState({
-    latitude: latitude || 48.8566,
-    longitude: longitude || 2.3522,
+    latitude: latitude || 48.8566, 
+    longitude: longitude || 2.3522, 
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
