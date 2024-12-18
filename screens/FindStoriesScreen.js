@@ -19,6 +19,8 @@ import { Picker } from '@react-native-picker/picker';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
+const defaultImage = require ('../assets/image-livre-defaut.jpg')
+
 
 const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
 
@@ -73,7 +75,7 @@ export default function FindStoriesScreen({ navigation }) {
     }, []);
 
     const handleRandomStory = () => {
-        console.log('click')
+        console.log('click2')
         if (allStories.length > 1) {
             let randomIndex = Math.floor(Math.random() * allStories.length);
             while (allStories[randomIndex]._id === lastStoryId) {
@@ -102,7 +104,7 @@ export default function FindStoriesScreen({ navigation }) {
         style={styles.storyCard}>
         {item.coverImage && (
             <Image
-                source={{ uri: item.coverImage }}
+                source={item.coverImage ? { uri: item.coverImage } : defaultImage}
                 style={styles.coverImage}
             />
         )}
