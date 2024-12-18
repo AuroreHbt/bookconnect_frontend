@@ -58,25 +58,13 @@ export default function MyEventsScreen({ navigation }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          token: user.token, // Le token de l'utilisateur
-          id: eventId, // L'ID de l'événement à supprimer
-        }),
+        body: JSON.stringify({ token: user.token, id: eventId }),
       })
-        .then((response) => {
-          console.log("Réponse du serveur:", response); // Log pour voir ce qui est renvoyé
-          if (response.ok) {
-            return response.json(); // Parse la réponse uniquement si le statut HTTP est 2xx
-          } else {
-            throw new Error('Erreur serveur');
-          }
-        })
+        .then((response) => response.json())
         .then((data) => {
           if (data.result) {
-            dispatch(deleteEvent(eventId)); // Supprimer l'événement du store
+            dispatch(deleteEvent(eventId)); // Supprime l'événement du store
             getMyEvents(); // Rafraîchir la liste des événements
-          } else {
-            console.error("Erreur lors de la suppression de l'événement:", data.error);
           }
         })
         .catch((error) => {
@@ -96,51 +84,34 @@ export default function MyEventsScreen({ navigation }) {
   
           {/* Affichage des événements */}
           <FlatList
-  initialScrollIndex={0}
-  keyExtractor={(item) => item._id || item.id || item.title} // Utilisez un champ unique pour la clé
-  data={events}
-  renderItem={({ item }) => {
-    console.log('Affichage de l\'événement:', item); // Debugging
-    console.log('URL de l\'image :', item.eventImage); // Vérifie spécifiquement l'image
-    return (
-      <View style={styles.eventCard}>
-        <View style={styles.cardContent}>
-          {/* Informations sur l'événement */}
-          <View style={styles.eventInfo}>
-            <Text style={styles.eventTitle}>{item.title}</Text>
-            <Text style={styles.eventDescription}>{item.description}</Text>
-            <Text style={styles.eventDate}>Date : {new Date(item.date.day).toLocaleDateString()}</Text>
-            <Text style={styles.eventTime}>Heure : {new Date(item.date.start).toLocaleTimeString()} - {new Date(item.date.end).toLocaleTimeString()}</Text>
-            <Text style={styles.eventAddress}>Lieu: {item.identityPlace}</Text>
-            <Text style={styles.eventAddress}>Adresse : {item.place.number} {item.place.street}, {item.place.code} {item.place.city}</Text>
-            <Text style={styles.eventPlanner}>Planifié par : {item.planner.username}</Text>
-          </View>
-
-          {/* Affichage de l'image */}
-      {item.eventImage ? (
-        <Image
-          source={{ uri: item.eventImage }}
-          style={styles.eventImage}
-        />
-      ) : (
-        <Text>Aucune image disponible</Text>
-      )}
-        </View>
-
-        <View style={styles.buttonCard}>
-          <LinearGradient colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']} start={{ x: 0, y: 0 }} end={{ x: 0, y: 0.7 }} style={styles.gradientButton}>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.textButton}>Modifier</Text>
-            </TouchableOpacity>
-          </LinearGradient>
-          <TouchableOpacity style={styles.iconContainer} onPress={() => handleDeleteEvent(item._id)}>
-            <Icon name="trash-o" size={28} color="rgba(55, 27, 12, 0.7)" />
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  }}
-/>
+            initialScrollIndex={0}
+            keyExtractor={(item) => item._id || item.id || item.title} // Utilisez un champ unique pour la clé
+            data={events} // Utilise l'état `events` pour afficher les événements
+            renderItem={({ item }) => {
+                console.log('Affichage de l\'événement:', item); // Debugging
+      return (
+              <View style={styles.eventCard}>
+                <Text style={styles.eventTitle}>{item.title}</Text>
+                <Text style={styles.eventDescription}>{item.description}</Text>
+                <Text style={styles.eventDate}>Date : {new Date(item.date.day).toLocaleDateString()}</Text>
+                <Text style={styles.eventTime}>Heure : {new Date(item.date.start).toLocaleTimeString()} - {new Date(item.date.end).toLocaleTimeString()}</Text>
+                <Text style={styles.eventAddress}>Lieu: {item.identityPlace}</Text>
+                <Text style={styles.eventAddress}>Adresse : {item.place.number} {item.place.street}, {item.place.code} {item.place.city}</Text>
+                <Text style={styles.eventPlanner}>Planifié par : {item.planner.username}</Text>
+                <View style={styles.buttonCard}>
+                  <LinearGradient colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']} start={{ x: 0, y: 0 }} end={{ x: 0, y: 0.7 }} style={styles.gradientButton}>
+                    <TouchableOpacity style={styles.button}>
+                      <Text style={styles.textButton}>Modifier</Text>
+                    </TouchableOpacity>
+                  </LinearGradient>
+                  <TouchableOpacity style={styles.iconContainer} onPress={() => handleDeleteEvent(item._id)}>
+                    <Icon name="trash-o" size={28} color="rgba(55, 27, 12, 0.7)" />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            );
+            }}
+          />
         </View>
       </KeyboardAvoidingView>
     );
@@ -151,85 +122,127 @@ export default function MyEventsScreen({ navigation }) {
 // attention : le StyleSheet doit bien être en dehors de la fonction!
 const styles = StyleSheet.create({
 
-    container: {
-        flex: 0.95,
-        padding: 20,
-      },
+  container: {
+    flex: 0.95,
+    padding: 20,
+  },
 
     // CSS global des cards Events
     eventCard: {
-      backgroundColor: 'rgba(238, 236, 232, 1)',
-      marginVertical: 10,
+      backgroundColor: 'rgba(238, 236, 232, 1)', // "#EEECE8",
       padding: 10,
-      borderRadius: 10,
-      shadowColor: '#000',
-      shadowOpacity: 0.1,
-      shadowRadius: 5,
-      elevation: 3,
+      marginBottom: 15,
+      borderRadius: 8,
+      width: '100%',
+      // marginLeft: 10,
+  
+      borderWidth: 1,
+      borderColor: 'rgba(55, 27, 12, 0.1)',
     },
-    cardContent: {
-      flexDirection: 'row', // Organise le contenu horizontalement
-      alignItems: 'center',
-    },
-    eventInfo: {
-      flex: 2, // Prend plus de place que l'image
-      marginRight: 10, // Ajoute un espace entre le texte et l'image
-    },
+  
     eventTitle: {
-      fontSize: 14,
+      fontFamily: 'Poppins-Regular',
+      fontWeight: '400',
+      fontSize: 18,
+      padding: 5,
+      margin: 5,
+      flexWrap: 'wrap',
+    },
+  
+    // CSS infos story + cover
+    contentCard: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      width: '100%',
+      padding: 10,
+  
+      // borderWidth: 1,
+      // borderColor: 'red',
+    },
+  
+    eventCategory: {
+      fontSize: 18,
+      marginBottom: 10,
+    },
+  
+    eventPublic: {
+      fontSize: 16,
       fontWeight: 'bold',
-      marginBottom: 5,
+      marginBottom: 10,
     },
+  
     eventDescription: {
-      fontSize: 12,
-      marginBottom: 5,
+      fontSize: 16,
+      marginBottom: 10,
     },
-    eventDate: {
-      fontSize: 14,
-      marginBottom: 5,
+  
+    // CSS des couvertures
+    imageContainer: {
+      width: '40%',
+      padding: 5,
+      // borderWidth: 1,
+      // borderColor: 'blue',
     },
-    eventTime: {
-      fontSize: 14,
-      marginBottom: 5,
-    },
-    eventAddress: {
-      fontSize: 14,
-      marginBottom: 5,
-    },
-    eventPlanner: {
-      fontSize: 14,
-      fontStyle: 'italic',
-    },
-    eventImage: {
-    width: 100, // Largeur de l'image
-    height: 100, // Hauteur de l'image
-    marginTop: 10, // Pour espacer l'image des autres éléments
-    },
+  
+    // CSS du bouton Modifier + poubelle pour suppr
     buttonCard: {
       flexDirection: 'row',
       justifyContent: 'space-between',
+      width: '100%',
       marginTop: 10,
+  
+      // borderWidth: 1,
+      // borderColor: 'rgba(238, 236, 232, 1)',
     },
+  
     gradientButton: {
-      flex: 1,
-      borderRadius: 5,
-      marginRight: 10,
+      borderRadius: 10,
     },
+  
     button: {
-      alignItems: 'center',
-      justifyContent: 'center',
-      height: 40,
+      padding: 4,
+      margin: 4,
     },
+  
     textButton: {
-      color: '#fff',
+      textAlign: 'center',
+      fontFamily: 'sans-serif',
       fontWeight: 'bold',
+      fontSize: 16,
+      color: 'white', // 'rgba(55, 27, 12, 0.8)', // #371B0C
     },
+  
     iconContainer: {
-      justifyContent: 'center',
-      alignItems: 'center',
-      width: 40,
-      height: 40,
+      top: 5,
+      left: 15,
+      marginRight: 30,
     },
+    eventDate: {
+        fontSize: 16,
+        color: '#555',
+        marginBottom: 5,
+      },
+      
+      eventTime: {
+        fontSize: 16,
+        color: '#555',
+        marginBottom: 5,
+      },
+      
+      eventAddress: {
+        fontSize: 16,
+        color: '#555',
+        marginBottom: 5,
+      },
+      
+      eventPlanner: {
+        fontSize: 16,
+        fontStyle: 'italic',
+        color: '#888',
+        marginBottom: 5,
+      },
+      
   
   });
   

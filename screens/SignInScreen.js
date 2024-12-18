@@ -15,6 +15,8 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
+  Keyboard,
   View,
 } from "react-native";
 
@@ -121,78 +123,84 @@ export default function SignInScreen({ navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={signPageStyles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <Image style={signPageStyles.logo} source={require("../assets/LogoBc.png")} />
-      <View>
-        <Text style={signPageStyles.title}>BookConnect</Text>
-      </View>
-      <View style={signPageStyles.separator} />
-      <View style={signPageStyles.inputContainer}>
-        <TextInput
-          placeholder="E-mail"
-          autoCapitalize="none"
-          keyboardType="email-address"
-          autoComplete="email"
-          textContentType="emailAddress"
-          onChangeText={(value) => setEmail(value)}
-          value={email}
-          style={signPageStyles.input}
-        />
-        {emailError ? <Text style={signPageStyles.errorText}>{emailError}</Text> : null}
 
-        <View style={signPageStyles.inputPwd}>
-          <TextInput
-            placeholder="Mot de passe"
-            secureTextEntry={!showPassword}
-            onChangeText={(value) => setPassword(value)}
-            value={password}
-            style={signPageStyles.input}
-          />
-          <TouchableOpacity
-            style={signPageStyles.iconContainer}
-            onPress={toggleShowPassword}
-          >
-            <Icon
-              name={showPassword ? 'eye' : 'eye-slash'}
-              size={24}
-              color={showPassword ? 'rgba(55, 27, 12, 0.8)' : '#D3D3D3'}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={{ flex: 1, justifyContent: 'center', padding: 16 }}>
+
+        <KeyboardAvoidingView
+          style={signPageStyles.container}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
+          <Image style={signPageStyles.logo} source={require("../assets/LogoBc.png")} />
+          <View>
+            <Text style={signPageStyles.title}>BookConnect</Text>
+          </View>
+          <View style={signPageStyles.separator} />
+          <View style={signPageStyles.inputContainer}>
+            <TextInput
+              placeholder="E-mail"
+              autoCapitalize="none"
+              keyboardType="email-address"
+              autoComplete="email"
+              textContentType="emailAddress"
+              onChangeText={(value) => setEmail(value)}
+              value={email}
+              style={signPageStyles.input}
             />
-          </TouchableOpacity>
-        </View>
+            {emailError ? <Text style={signPageStyles.errorText}>{emailError}</Text> : null}
 
-        {passwordError ? (
-          <Text style={signPageStyles.errorText}>{passwordError}</Text>
-        ) : null}
+            <View style={signPageStyles.inputPwd}>
+              <TextInput
+                placeholder="Mot de passe"
+                secureTextEntry={!showPassword}
+                onChangeText={(value) => setPassword(value)}
+                value={password}
+                style={signPageStyles.input}
+              />
+              <TouchableOpacity
+                style={signPageStyles.iconContainer}
+                onPress={toggleShowPassword}
+              >
+                <Icon
+                  name={showPassword ? 'eye' : 'eye-slash'}
+                  size={24}
+                  color={showPassword ? 'rgba(55, 27, 12, 0.8)' : '#D3D3D3'}
+                />
+              </TouchableOpacity>
+            </View>
 
-        <View style={signPageStyles.buttonContainer}>
-          <LinearGradient
-            colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 0.7 }}
-            style={signPageStyles.gradientButton}
-            activeOpacity={0.8}
-          >
-            <TouchableOpacity
-              onPress={() => handleSubmitSignIn()}
-              style={signPageStyles.button}
-            >
-              <Text style={signPageStyles.textButton}>Se connecter</Text>
-            </TouchableOpacity>
-          </LinearGradient>
-        </View>
+            {passwordError ? (
+              <Text style={signPageStyles.errorText}>{passwordError}</Text>
+            ) : null}
 
-        <View>
-          <TouchableOpacity
-            onPress={goBack}
-            activeOpacity={0.8}
-          >
-            <Text style={signPageStyles.textReturn}>Je n'ai pas encore de compte</Text>
-          </TouchableOpacity>
-        </View>
+            <View style={signPageStyles.buttonContainer}>
+              <LinearGradient
+                colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 0, y: 0.7 }}
+                style={signPageStyles.gradientButton}
+                activeOpacity={0.8}
+              >
+                <TouchableOpacity
+                  onPress={() => handleSubmitSignIn()}
+                  style={signPageStyles.button}
+                >
+                  <Text style={signPageStyles.textButton}>Se connecter</Text>
+                </TouchableOpacity>
+              </LinearGradient>
+            </View>
+
+            <View>
+              <TouchableOpacity
+                onPress={goBack}
+                activeOpacity={0.8}
+              >
+                <Text style={signPageStyles.textReturn}>Je n'ai pas encore de compte</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
       </View>
-    </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
