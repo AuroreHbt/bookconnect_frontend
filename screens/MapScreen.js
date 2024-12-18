@@ -174,7 +174,7 @@ export default function MapScreen({ route }) {
 
 const styles = StyleSheet.create({
   map: {
-    flex: 1,
+    flex: 0.95,
     marginTop: 35,
   },
   modalBackground: {

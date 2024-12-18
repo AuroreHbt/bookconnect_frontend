@@ -217,6 +217,7 @@ const styles = StyleSheet.create({
     flex: 0.95,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingTop: 30,
   },
 
   gradientContainer: {
