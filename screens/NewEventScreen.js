@@ -116,7 +116,7 @@ export default function NewEventScreen({ navigation }) {
       }
   
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        mediaTypes: ImagePicker.MediaType.Images,
         quality: 1,
       });
   
