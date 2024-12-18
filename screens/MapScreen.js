@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState, useCallback } from "react";
+import { useDispatch } from 'react-redux';
 import {
   StyleSheet,
   Text,
@@ -12,9 +13,10 @@ import MapView, { PROVIDER_DEFAULT, Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useIsFocused } from "@react-navigation/native";
-import { likeEvent, unlikeEvent } from "../reducers/event";
+import { likeEvent, unlikeEvent, addEvent } from "../reducers/event";
 
 export default function MapScreen({ route }) {
+  const dispatch = useDispatch();
   const { latitude, longitude, events = {} } = route.params;
   const eventsData = events.data || [];
 
@@ -42,26 +44,36 @@ export default function MapScreen({ route }) {
     setEventModalVisible(!eventModalVisible);
   };
 
+  const handleParticipate = (event) => {
+    console.log('Tentative d\'ajouter l\'événement :', event);
+    dispatch(addEvent(event)); // Envoie l'événement au reducer
+    alert('Votre événement a été ajouté au dashboard');
+  };
+  
+
   // Fonction de gestion des favoris
   const toggleFavorite = (eventIndex) => {
+    const event = eventsData[eventIndex];
+  
+    // Si l'événement est déjà dans les favoris
+    if (favorites.includes(eventIndex)) {
+      // Retirer de la liste des favoris
+      dispatch(unlikeEvent(event)); // Dispatch de l'action `unlikeEvent`
+    } else {
+      // Ajouter aux favoris
+      dispatch(likeEvent(event)); // Dispatch de l'action `likeEvent`
+    }
+  
+    // Mettre à jour localement l'état des favoris (facultatif si vous voulez garder cette gestion visuelle)
     setFavorites((prevFavorites) => {
-      // Vérifie si l'événement est déjà dans les favoris
       if (prevFavorites.includes(eventIndex)) {
-        // Si oui, on le retire
         return prevFavorites.filter((index) => index !== eventIndex);
       } else {
-        // Sinon, on l'ajoute
         return [...prevFavorites, eventIndex];
       }
     });
-
-    // Dispatch l'action likeEvent ou unlikeEvent
-    if (!favorites.includes(eventIndex)) {
-      likeEvent(eventsData[eventIndex]); // Pousse l'événement aimé dans le reducer
-    } else {
-      unlikeEvent(eventsData[eventIndex]); // Retirer l'événement des favoris
-    }
   };
+  
 
   const updateRegion = useCallback((newRegion) => {
     setRegion((prevRegion) => {
@@ -160,13 +172,14 @@ export default function MapScreen({ route }) {
       </Text>
 
       {/* Bouton "Participer" */}
-      <TouchableOpacity
-        style={styles.participateButton}
-        onPress={() => {
-          // Afficher le message de confirmation ici (ou l'ajouter au dashboard si nécessaire)
-          alert("Votre événement a été ajouté au dashboard");
+       <TouchableOpacity
+         onPress={() => {
+          console.log('Bouton Participer cliqué !');
+          handleParticipate(selectedEvent); // Ajoute l'événement au reducer
+          alert("Votre événement a été ajouté au dashboard !"); // Affiche le message de confirmation
         }}
-      >
+      style={styles.participateButton}
+    >
         <Text style={styles.participateButtonText}>Participer</Text>
       </TouchableOpacity>
     </View>
@@ -315,8 +328,9 @@ export default function MapScreen({ route }) {
                   <TouchableOpacity
                     style={styles.participateButton}
                     onPress={() => {
-                      // Afficher le message de confirmation ici (ou l'ajouter au dashboard si nécessaire)
-                      alert("Votre événement a été ajouté au dashboard");
+                      console.log('Bouton Participer cliqué !');
+                      handleParticipate(selectedEvent); // Ajoute l'événement au reducer
+                      alert("Votre événement a été ajouté au dashboard !"); // Affiche le message de confirmation
                     }}
                   >
                     <Text style={styles.participateButtonText}>Participer</Text>

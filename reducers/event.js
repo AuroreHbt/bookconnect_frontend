@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    value: [], 
+    events: [], 
     likes: [],  // Ajout de l'état pour les likes des événements
 };
 
@@ -10,8 +10,14 @@ export const eventSlice = createSlice({
     initialState,
     reducers: {
         addEvent: (state, action) => {
-            state.value.push(action.payload);
+            state.events.push(action.payload);
         },
+       
+        deleteEvent: (state, action) => {
+            state.events = state.events.filter(event => event._id !== action.payload.id);
+          },
+          
+
         likeEvent: (state, action) => {
             if (!state.likes.includes(action.payload.id)) {
                 state.likes.push(action.payload.id); // Ajout du like
@@ -21,9 +27,6 @@ export const eventSlice = createSlice({
             state.likes = state.likes.filter(id => id !== action.payload.id); 
         },
 
-        deleteEvent: (state, action) => {
-            state.value = state.value.filter(event => event.id !== action.payload); // comparaison par id de chaque event
-        },
     },
 });
 
