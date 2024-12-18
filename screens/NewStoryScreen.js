@@ -589,13 +589,13 @@ const styles = StyleSheet.create({
 
   fileIconContainer: {
     position: 'absolute', // position absolue pour superposer l'icone sur l'input
-    top: 3,
+    top: -3,
     right: 18,
   },
 
   imgIconContainer: {
     position: 'absolute', // position absolue pour superposer l'icone sur l'input
-    top: 3,
+    top: -3,
     right: 15,
   },
 
