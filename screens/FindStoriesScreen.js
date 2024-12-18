@@ -19,6 +19,8 @@ import { Picker } from '@react-native-picker/picker';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
+require
+
 
 const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
 
