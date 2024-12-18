@@ -166,8 +166,8 @@ function TabNavigator() {
       },
 
       headerShown: false,
-      tabBarActiveTintColor: 'rgba(216, 72, 21, 0.9)',
-      tabBarInactiveTintColor: '#6C4300',
+      tabBarActiveTintColor: 'rgba(216, 72, 21, 0.8)',
+      tabBarInactiveTintColor: 'rgba(55, 27, 12, 0.67)',
       tabBarStyle: { position: 'absolute' },
 
       tabBarBackground: () => (

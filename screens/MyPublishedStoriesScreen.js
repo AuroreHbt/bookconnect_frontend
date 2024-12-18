@@ -11,7 +11,8 @@ import {
   FlatList,
   StyleSheet,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert,
 } from "react-native";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -43,12 +44,11 @@ export default function MyPublishedStoriesScreen({ navigation }) {
   const dispatch = useDispatch();
 
   const handleShowContent = () => {
-    console.log('isVisible: ', isVisible);
-
-    if (isVisible) {
+    console.log('isVisible initial: ', isVisible);
+    setIsVisible(!isVisible); // Inverse l'état de isVisible
+    if (isVisible === false) {
       Alert.alert("Contenu sensible visible");
     }
-    setIsVisible(!isVisible); // Inverse l'état de isVisible
   };
 
   // Fonction pour récupérer les histoires publiées
@@ -186,35 +186,30 @@ export default function MyPublishedStoriesScreen({ navigation }) {
                   <View style={styles.imageContainer}>
                     {/* affichage du fichier image téléchargé */}
 
-                    {item.coverImage &&
-                      <Image
-                        source={item.coverImage ? { uri: item.coverImage } : defaultImage}
-                        style={
-                          item.isAdult // isAdult=true (18+)
-                            ? [styles.coverImageAdult, { width: 130, height: 115 }]
-                            : [styles.coverImage, { width: 130, height: 115 }]
-                        }
-                        blurRadius={item.isAdult ? 10 : 0}
-                      />
-                    }
+                    {/* {item.coverImage && */}
+                    <Image
+                      source={item.coverImage ? { uri: item.coverImage } : defaultImage}
+                      style={
+                        item.isAdult // isAdult=true (18+)
+                          ? [styles.coverImageAdult, { width: 150, height: 150 }]
+                          : [styles.coverImage, { width: 150, height: 150 }]
+                      }
+                    />
 
                     {item.coverImage && item.isAdult ? (
-                      <TouchableOpacity
+                      <Icon
+                        name={isVisible ? 'eye' : 'eye-slash'}
+                        size={48}
+                        style={isVisible ? styles.hideContent : styles.showContent}
                         onPress={handleShowContent}
-                      // style={{ padding: 10, backgroundColor: 'red' }} // Style temporaire
-                      >
-                        <Icon
-                          name={isVisible ? null : "eye-slash"}
-                          size={36}
-                          style={styles.showContent} />
-                      </TouchableOpacity>
+                      />
                     ) : null}
 
                     {/* Affiche l'image si isVisible est vrai */}
                     {isVisible && (
                       <Image
-                        source={{ uri: item.coverImage }} // Utilise l'image à partir de l'URI
-                        style={[styles.coverImage, { width: 130, height: 115 }]}
+                        source={{ uri: item.coverImage }}
+                        style={[styles.coverImage, { width: 150, height: 150 }]}
                       />
                     )}
                   </View>
@@ -362,35 +357,50 @@ const styles = StyleSheet.create({
     top: 0,
     right: 0,
     width: '40%',
-    paddingHorizontal: 1,
-    height: 115,
+    height: 150,
 
-    // borderWidth: 1,
-    // borderColor: 'blue',
+    borderWidth: 1,
+    borderColor: 'blue',
   },
 
   coverImage: {
     borderRadius: 10,
-    borderWidth: 0.5,
-    borderColor: 'rgba(55, 27, 12, 0.5)',
   },
 
   coverImageAdult: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+
     borderRadius: 10,
-    borderWidth: 0.5,
-    borderColor: 'rgba(255, 123, 0, 0.5)',
     backgroundColor: 'rgba(0, 0, 0, 1)',
-    opacity: 0.2,
+    opacity: 0.3,
+    // elevation: 0,
   },
 
-  showContent: {
+  showContent: { // eye-slash
     position: 'absolute',
-    top: -85,
-    right: 40,
-    color: 'rgba(253,255,0, 0.9)',
-    backgroundColor: 'rgba(216, 72, 21, 0.8)',
-    borderRadius: 30,
+    top: 25,
+    right: 35,
+    color: 'rgba(253,255,0, 0.8)',
+    backgroundColor: 'rgba(255, 123, 0, 0.7)',
+    borderRadius: 35,
     padding: 10,
+    elevation: 10,
+
+    // borderWidth: 1,
+    // borderColor: 'yellow',
+  },
+
+  hideContent: { // eye
+    position: 'absolute',
+    top: 25,
+    right: 35,
+    color: 'lightgrey', // 'rgba(216, 72, 21, 0.8)',
+    opacity: 0.3,
+    borderRadius: 35,
+    padding: 10,
+    elevation: 10,
   },
 
   // CSS du bouton Modifier + poubelle pour suppr
