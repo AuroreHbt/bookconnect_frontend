@@ -26,10 +26,6 @@ export default function EventsScreen({ navigation }) {
     navigation.navigate("NewEvent", { screen: "NewEventScreen" });
   };
 
-  const myEvent = () => {
-    navigation.navigate("MyEvents", { screen: "MyEventsScreen" });
-  };
-
   const handleSearchPlace = async () => {
     if (!city.trim()) {
       Alert.alert("Erreur", "Veuillez entrer une localisation");
@@ -123,19 +119,21 @@ export default function EventsScreen({ navigation }) {
           </LinearGradient>
         </View>
         <View style={bottomTabStyles.buttonContainer}>
-        <LinearGradient
-          colors={["rgba(255, 123, 0, 0.9)", "rgba(216, 72, 21, 1)"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 0.7 }}
-          style={bottomTabStyles.gradientButton}
-          activeOpacity={0.8}
-        >
-          <TouchableOpacity onPress={addEvent} style={bottomTabStyles.button}>
-            <Text style={bottomTabStyles.textButton}>Ajouter un évènement</Text>
-          </TouchableOpacity>
-        </LinearGradient>
-      </View>
-    </KeyboardAvoidingView>
+          <LinearGradient
+            colors={["rgba(255, 123, 0, 0.9)", "rgba(216, 72, 21, 1)"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 0.7 }}
+            style={bottomTabStyles.gradientButton}
+            activeOpacity={0.8}
+          >
+            <TouchableOpacity onPress={addEvent} style={bottomTabStyles.button}>
+              <Text style={bottomTabStyles.textButton}>Ajouter un évènement</Text>
+            </TouchableOpacity>
+          </LinearGradient>
+        </View>
+      </KeyboardAvoidingView>
+
+    </TouchableWithoutFeedback>
   );
 }
 
