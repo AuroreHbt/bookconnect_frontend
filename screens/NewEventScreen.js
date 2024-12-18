@@ -11,7 +11,7 @@ import {
   Image,
   Text,
   TextInput,
-
+  TouchableWithoutFeedback,
   StyleSheet,
   Platform,
   Alert,
@@ -19,6 +19,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Pressable,
+  Keyboard,
 } from 'react-native';
 
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -59,7 +60,6 @@ export default function NewEventScreen({ navigation }) {
   const [city, setCity] = useState('');
 
   const [category, setCategory] = useState('');
-  const [subcategory, setSubcategory] = useState('');
   const [description, setDescription] = useState('');
   const [url, setUrl] = useState('');
   const [eventImage, setEventImage] = useState(null);
@@ -70,7 +70,15 @@ export default function NewEventScreen({ navigation }) {
   const [isEndTimePickerVisible, setIsEndTimePickerVisibility] = useState(false);
 
   const [categorySelected, setCategorySelected] = useState('');
-  const [subcategorySelected, setSubcategorySelected] = useState('');
+
+  const [titleError, setTitleError] = useState('');
+  const [dateError, setDateError] = useState('');
+  const [startTimeError, setStartTimeError] = useState('');
+  const [endTimeError, setEndTimeError] = useState('');
+  const [categoryError, setCategoryError] = useState('');
+  const [identityPlaceError, setIdentityPlaceError] = useState('');
+  const [placeError, setPlaceError] = useState('');
+  const [descError, setDescError] = useState('');
 
   // Fonctions pour gérer le DatePicker / StartTime / EndTime
   const showDatePicker = () => setDatePickerVisibility(true);
@@ -108,7 +116,7 @@ export default function NewEventScreen({ navigation }) {
   // Demande de permission pour accéder à la galerie photo du mobile
   const handleImagePick = async () => {
     try {
-      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const permissionResult = await ImagePickerOptions.requestMediaLibraryPermissionsAsync();
   
       if (!permissionResult.granted) {
         Alert.alert('Permission refusée', 'Vous devez autoriser l\'accès à la galerie.');
@@ -116,18 +124,17 @@ export default function NewEventScreen({ navigation }) {
       }
   
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaType.Images,
+        mediaTypes: ImagePicker.MediaType.Images, // Utilise MediaTypeOptions
         quality: 1,
       });
   
-      console.log(result);
+      console.log("Résultat de la sélection d'image :", result);
   
-      if (result.cancelled) {
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        setEventImage(result.assets[0]);
+      } else {
         console.log("Aucune image sélectionnée.");
-        return;
       }
-  
-      setEventImage(result.assets[0]);
     } catch (error) {
       console.error("Erreur lors de la sélection de l'image", error);
     }
@@ -137,7 +144,6 @@ export default function NewEventScreen({ navigation }) {
   console.log("Planner :", user._id);
   console.log("Titre :", title);
   console.log("Catégorie :", category);
-  console.log("Sous-catégorie :", subcategory);
   console.log("Description :", description);
   console.log("Jour :", day);
   console.log("Heure de début :", startTime);
@@ -153,26 +159,92 @@ export default function NewEventScreen({ navigation }) {
   if (!code) console.log("Erreur : Le code postal est manquant");
   if (!city) console.log("Erreur : La ville est manquante");
   if (!category) console.log("Erreur : La catégorie est manquante");
-  if (!subcategory) console.log("Erreur : La sous-catégorie est manquante");
   if (!description) console.log("Erreur : La description est manquante");
   if (!day) console.log("Erreur : La date est manquante");
   if (!startTime) console.log("Erreur : L'heure de début est manquante");
   if (!endTime) console.log("Erreur : L'heure de fin est manquante");
 
-  // Vérification plus précise des valeurs
-  if (!day || !(day instanceof Date) || isNaN(day.getTime())) {
-    console.log("Erreur : La date est invalide ou manquante");
+  console.log("Préparation des données...");
+
+  /* // validation des champs :
+  let hasError = false;
+
+  // Validation du titre
+  if (!title) {
+    setTitleError('Le titre est obligatoire');
+    hasError = true;
+  } else {
+    setTitleError('');
   }
-  if (!startTime || !(startTime instanceof Date) || isNaN(startTime.getTime())) {
-    console.log("Erreur : L'heure de début est invalide ou manquante");
+
+  // Validation de la catégorie
+  if (!category) {
+    setCategoryError('La catégorie est obligatoire');
+    hasError = true;
+  } else {
+    setCategoryError('');
   }
-  if (!endTime || !(endTime instanceof Date) || isNaN(endTime.getTime())) {
-    console.log("Erreur : L'heure de fin est invalide ou manquante");
+
+  // Validation de la description
+  if (!description) {
+    setDescError('La description est obligatoire');
+    hasError = true;
+  } else {
+    setDescError('');
   }
-    if (!title || !identityPlace || !placeNumber || !street || !code || !city || !category || !subcategory || !description || !day || !startTime || !endTime) {
-      Alert.alert('Erreur', 'Tous les champs obligatoires doivent être remplis.');
-      return;
-    };
+
+  // Validation de la date
+  if (!day) {
+    setDateError('La date est obligatoire');
+    hasError = true;
+  } else {
+    setDateError('');
+  }
+
+  // Validation de l'heure de début
+  if (!startTime) {
+    setStartTimeError('L\'heure de début est obligatoire');
+    hasError = true;
+  } else {
+    setStartTimeError('');
+  }
+
+  // Validation de l'heure de fin
+  if (!endTime) {
+    setEndTimeError('L\'heure de fin est obligatoire');
+    hasError = true;
+  } else {
+    setEndTimeError('');
+  }
+
+  // Validation du lieu
+  if (!identityPlace) {
+    setIdentityPlaceError('Le lieu est obligatoire');
+    hasError = true;
+  } else {
+    setIdentityPlaceError('');
+  }
+
+  // Validation de l'adresse
+  if (!placeNumber || !street || !code || !city) {
+    setPlaceError('L\'adresse complète est obligatoire');
+    hasError = true;
+  } else {
+    setPlaceError('');
+  }
+
+  if (hasError) {
+    console.log("Validation échouée, soumission annulée.");
+    return; // early return
+  } */
+
+  /*   if (!placeNumber || !street || !code || !city) {
+      console.log("Erreur sur l'adresse :", { placeNumber, street, code, city });
+      setPlaceError('L\'adresse complète est obligatoire');
+      hasError = true;
+    } else {
+      setPlaceError('');
+    } */
 
     console.log("Planner (user._id) :", user._id);
     if (!user._id) {
@@ -184,13 +256,31 @@ export default function NewEventScreen({ navigation }) {
     const start = startTime;
     const end = endTime;
 
+    console.log("Variables pour eventData :");
+console.log("planner :", user?._id);
+console.log("title :", title);
+console.log("category :", category);
+console.log("date :", day);
+console.log("startTime :", startTime);
+console.log("endTime :", endTime);
+console.log("identityPlace :", identityPlace);
+console.log("placeNumber :", placeNumber);
+console.log("street :", street);
+console.log("city :", city);
+console.log("code :", code);
+console.log("description :", description);
+console.log("url :", url);
+
+console.log("Date validée (moment) :", moment(day).isValid());
+console.log("Heure de début validée (moment) :", moment(startTime).isValid());
+console.log("Heure de fin validée (moment) :", moment(endTime).isValid());
+
 
     // Création de l'objet conforme au backend
     const eventData = {
       planner: user._id,
       title,
       category,
-      subcategory,
       date: {
         day: moment(day).toDate(),  // Utilise la date formatée en ISO
         start: start,
@@ -220,6 +310,7 @@ export default function NewEventScreen({ navigation }) {
       type: eventImage.type || 'image/jpeg',
     });
     }
+    console.log("Envoi des données...");
     fetch(`${BACKEND_ADDRESS}/events/addevent`, {
       method: "POST",
       headers: {
@@ -245,11 +336,9 @@ export default function NewEventScreen({ navigation }) {
           setCode('')
           setCity('')
           setCategory('')
-          setSubcategory('')
           setDescription('')
           setUrl('')
           setEventImage('')
-          navigation.navigate('MyEvents')
         } else {
           console.log('erreur lors de la création', data.error);
         }
@@ -261,10 +350,9 @@ export default function NewEventScreen({ navigation }) {
       behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <ScrollView>
       <View>
-
         {/* Titre + Bouton retour (goBack) */}
           <View style={globalStyles.titleContainer}>
-            <Text style={globalStyles.title}>Mes évènements</Text>
+            <Text style={globalStyles.title}>Proposer un évènement</Text>
             <TouchableOpacity onPress={goBack} activeOpacity={0.8}>
               <Icon style={globalStyles.returnContainer} name="chevron-circle-left" size={32} color='rgba(55, 27, 12, 0.3)' />
             </TouchableOpacity>
@@ -272,20 +360,21 @@ export default function NewEventScreen({ navigation }) {
 
           {/* formulaire pour créer un évènement */}
           <View style={styles.inputContainerSection}>
-          <Text style={styles.label}>Titre de l'évènement</Text>
+          <Text style={styles.label}>Titre de l'évènement *</Text>
             <View style={styles.inputContainer}>
               <TextInput
-                placeholder="Titre de l'évènement (obligatoire)"
+                placeholder="Ex: Festival du livre, ..."
                 onChangeText={(value) => setTitle(value)}
                 value={title}
               />
             </View>
+            {/* {titleError ? <Text style={styles.errorText}>{titleError}</Text> : null} */}
 
           {/* Date Picker */}
           <View style={styles.datePickerContainer}>
-            <Text style={styles.label}>Date</Text>
+            <Text style={styles.label}>Date *</Text>
             <TouchableOpacity onPress={showDatePicker} style={styles.inputContainer}>
-              <Text style={styles.dateText}>{moment(day).format('DD MMMM YYYY')}</Text>
+            <Text style={styles.dateText}>{moment(day).format('DD MMMM YYYY')}</Text>
             </TouchableOpacity>
             <DateTimePickerModal
               isVisible={isDatePickerVisible}
@@ -299,10 +388,11 @@ export default function NewEventScreen({ navigation }) {
               cancelTextIOS="Annuler"
             />
           </View>
+          {/* {dateError ? <Text style={styles.errorText}>{dateError}</Text> : null} */}
 
           {/* Start Time Picker */}
           <View style={styles.timePickerContainer}>
-            <Text style={styles.label}>Heure de début</Text>
+            <Text style={styles.label}>Heure de début *</Text>
             <TouchableOpacity onPress={showStartTimePicker} style={styles.inputContainer}>
             <Text style={styles.dateText}>{moment(startTime).format('HH:mm')}</Text>
             </TouchableOpacity>
@@ -318,10 +408,11 @@ export default function NewEventScreen({ navigation }) {
             cancelTextIOS="Annuler"
           />
         </View>
+        {/* {startTimeError ? <Text style={styles.errorText}>{startTimeError}</Text> : null} */}
 
         {/* End Time Picker */}
         <View style={styles.timePickerContainer}>
-        <Text style={styles.label}>Heure de fin</Text>
+        <Text style={styles.label}>Heure de fin *</Text>
         <TouchableOpacity onPress={showEndTimePicker} style={styles.inputContainer}>
         <Text style={styles.dateText}>{moment(endTime).format('HH:mm')}</Text>
         </TouchableOpacity>
@@ -337,48 +428,55 @@ export default function NewEventScreen({ navigation }) {
         cancelTextIOS="Annuler"
       />
       </View>
+      {/* {endTimeError ? <Text style={styles.errorText}>{endTimeError}</Text> : null} */}
       </View>
 
-            <Text style={styles.label}>Lieu</Text>
-          <TextInput
-          style={styles.inputContainer}
-            placeholder="Lieu de l'évènement"
-            value={identityPlace}
-            onChangeText={setIdentityPlace}
+      <Text style={styles.label}>Lieu *</Text>
+            <View style={styles.inputContainer}>
+            <TextInput
+          placeholder="Ex: Bibliothèque, Café, ..."
+          value={identityPlace}
+          onChangeText={setIdentityPlace}
           />
+          </View>
+          {/* {identityPlaceError ? <Text style={styles.errorText}>{identityPlaceError}</Text> : null} */}
 
-          <Text style={styles.label}>Numéro</Text>
-          <TextInput
-          style={styles.inputContainer}
-            placeholder="Numéro de rue (obligatoire)"
-            value={placeNumber}
-            onChangeText={setPlaceNumber}
-          />
-          
-          <Text style={styles.label}>Rue</Text>
-          <TextInput
-            style={styles.inputContainer}
-            placeholder="Nom de la rue (obligatoire)"
-            value={street}
-            onChangeText={setStreet}
-          />
-          <Text style={styles.label}>Code Postal</Text>
-          <TextInput
-            style={styles.inputContainer}
-            placeholder="Code postal"
-            value={code}
-            onChangeText={setCode}
-          />
-          <Text style={styles.label}>Ville</Text>
-          <TextInput
-            style={styles.inputContainer}
-            placeholder="Ville (obligatoire)"
-            value={city}
-            onChangeText={setCity}
-          />
+      <View style={styles.placeContainer}>
+      <Text style={styles.label}>Adresse *</Text>
+  <View style={styles.row}>
+    <TextInput
+      style={[styles.inputSmall, styles.inputRow]}
+      placeholder="N°"
+      value={placeNumber}
+      onChangeText={setPlaceNumber}
+    />
+    <TextInput
+      style={[styles.inputLarge, styles.inputRow]}
+      placeholder="Rue"
+      value={street}
+      onChangeText={setStreet}
+    />
+  </View>
+
+  <View style={styles.row}>
+    <TextInput
+      style={[styles.inputSmall, styles.inputRow]}
+      placeholder="Code postal"
+      value={code}
+      onChangeText={setCode}
+    />
+    <TextInput
+      style={[styles.inputLarge, styles.inputRow]}
+      placeholder="Ville"
+      value={city}
+      onChangeText={setCity}
+    />
+  </View>
+</View>
+{/* {placeError ? <Text style={styles.errorText}>{placeError}</Text> : null} */}
 
             {/* Catégorie : liste de choix */}
-            <Text style={styles.label}>Catégorie</Text>
+            <Text style={styles.label}>Catégorie *</Text>
             <View style={styles.pickerContainer}>
             <Pressable
               style={styles.picker}
@@ -405,38 +503,10 @@ export default function NewEventScreen({ navigation }) {
               color={categorySelected ? styles.iconPickerChecked : null}
             />
           </View>
-
-          {/* Sous-Catégorie : liste de choix */}
-          <Text style={styles.label}>Sous-Catégorie</Text>
-            <View style={styles.pickerContainer}>
-            <Pressable
-              style={styles.picker}
-            >
-              <Picker
-                selectedValue={subcategory}
-                onValueChange={(value) => { setSubcategory(value); setSubcategorySelected(value) }}
-                prompt="Sous-Catégorie (obligatoire)"
-              >
-                <Picker.Item label="Festival & Salons" value="Festival" />
-                <Picker.Item label="Ateliers" value="Ateliers" />
-                <Picker.Item label="Rencontres" value="Rencontres" />
-                <Picker.Item label="Concours" value="Concours" />
-                <Picker.Item label="Conférences" value="Conférences" />
-                <Picker.Item label="Lectures publiques" value="Lectures" />
-                <Picker.Item label="Expositions" value="Expositions" />
-                <Picker.Item label="Autre" value="Autre" />
-              </Picker>
-            </Pressable>
-            <Icon
-              style={styles.iconPicker}
-              name="check"
-              size={22}
-              color={subcategorySelected ? styles.iconPickerChecked : null}
-            />
-          </View>
+          {/* {categoryError ? <Text style={styles.errorText}>{categoryError}</Text> : null} */}
 
 
-          <Text style={styles.label}>Description</Text>
+          <Text style={styles.label}>Description *</Text>
           <TextInput
             style={styles.inputContainer}
             placeholder="Description (obligatoire)"
@@ -444,6 +514,7 @@ export default function NewEventScreen({ navigation }) {
             onChangeText={setDescription}
             multiline
           />
+          {/* {descError ? <Text style={styles.errorText}>{descError}</Text> : null} */}
 
           <Text style={styles.label}>URL</Text>
           <TextInput
@@ -483,13 +554,17 @@ export default function NewEventScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 0.95,
-    padding: 20,
+    flex: 1,
+    paddingTop: 40,
+    paddingLeft: 20,
+    paddingRight: 20,
   },
 
   // CSS du container du formulaire
   inputContainerSection: {
     maxWidth: '100%',
+    marginBottom: 20,
+    paddingTop: 60,
   }, 
 
   // CSS de l'input title de l'évènement
@@ -499,9 +574,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderBottomWidth: 0.7,
     borderBottomColor: "rgba(55, 27, 12, 0.50)",
-    maxWidth: "90%",
+    maxWidth: "100%",
     paddingLeft: 15,
-    margin: 10,
+    marginVertical: 15, // Augmenter l'espacement vertical
+    marginHorizontal: 10, // Espacement horizontal
     height: 50,
     justifyContent: 'center',
   },
@@ -522,11 +598,15 @@ const styles = StyleSheet.create({
   },
 
   datePickerContainer: {
-    marginVertical: 15,
+    marginVertical: 20,
+  },
+
+  pickerContainer: {
+    marginVertical: 20,
   },
 
   dateText: {
-    fontSize: 16,
+    fontSize: 12,
     color: '#555',
   },
 
@@ -538,12 +618,42 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8f8f8',
   },
 
+  placeContainer: {
+    marginVertical: 20, // Pour la section lieu
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginVertical: 10,
+  },
+  
+  inputRow: {
+    paddingHorizontal: 10,
+    height: 50,
+    borderRadius: 5,
+    backgroundColor: "rgba(238, 236, 232, 0.9)",
+    borderBottomWidth: 0.7,
+    borderBottomColor: "rgba(55, 27, 12, 0.50)",
+  },
+  
+  inputSmall: {
+    flex: 1, // Le champ occupe une part proportionnelle
+    marginRight: 10, // Espacement entre les champs
+  },
+  
+  inputLarge: {
+    flex: 3, // Le champ occupe trois parts proportionnelles
+  },
+  
+
   // CSS du bouton publier avec spinner-button pour le temps de chargement
   buttonContainer: {
     justifyContent: 'center', // Centrer le contenu horizontalement
     alignItems: 'center',
     marginBottom: 60, // Ajoutez un peu d'espace vertical si nécessaire
     marginTop: 30,
+    paddingBottom: 60,
   },
 
   gradientButton: {
@@ -575,6 +685,10 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     marginBottom: 15,
   },
+
+  timePickerContainer: {
+    marginVertical: 20,
+  },
   picker: {
     backgroundColor: "rgba(238, 236, 232, 0.9)",
     borderRadius: 5,
@@ -599,5 +713,14 @@ const styles = StyleSheet.create({
 
   iconPickerChecked: {
     color: 'green',
+  },
+
+  errorText: {
+    textAlign: 'left',
+    fontFamily: 'sans-serif',
+    fontSize: 16,
+    color: 'red',
+    maxWidth: "85%",
+    paddingLeft: 20,
   },
 });

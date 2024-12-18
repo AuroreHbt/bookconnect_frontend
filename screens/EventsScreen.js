@@ -21,7 +21,11 @@ export default function EventsScreen({ navigation }) {
 
 
   const addEvent = () => {
-    navigation.navigate("NewEvent", { screen: "NewEventScreen" });
+    navigation.navigate("NewEvent", { screen: "MyEventsScreen" });
+  };
+
+  const myEvent = () => {
+    navigation.navigate("MyEvents", { screen: "MyEventsScreen" });
   };
 
   const handleSearchPlace = async () => {

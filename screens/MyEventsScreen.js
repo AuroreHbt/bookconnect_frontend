@@ -105,27 +105,35 @@ export default function MyEventsScreen({ navigation }) {
     return (
       <View style={styles.eventCard}>
         <View style={styles.cardContent}>
+
           {/* Informations sur l'événement */}
-          <View style={styles.eventInfo}>
+          <View style={styles.sectionTop}>
+          <View style={styles.eventInfoTitle}>
             <Text style={styles.eventTitle}>{item.title}</Text>
             <Text style={styles.eventDescription}>{item.description}</Text>
+            </View>
+            {/* Affichage de l'image */}
+            {item.eventImage ? (
+            <Image
+            source={{ uri: item.eventImage }}
+            style={styles.eventImage}
+          />
+          ) : (
+          <Text>Aucune image disponible</Text>
+          )}
+          </View>
+
+            <View style={styles.sectionBottom}>
             <Text style={styles.eventDate}>Date : {new Date(item.date.day).toLocaleDateString()}</Text>
-            <Text style={styles.eventTime}>Heure : {new Date(item.date.start).toLocaleTimeString()} - {new Date(item.date.end).toLocaleTimeString()}</Text>
+            <Text style={styles.eventTime}>Heure :{" "}
+            {new Date(item.date.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -{" "}
+            {new Date(item.date.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
             <Text style={styles.eventAddress}>Lieu: {item.identityPlace}</Text>
             <Text style={styles.eventAddress}>Adresse : {item.place.number} {item.place.street}, {item.place.code} {item.place.city}</Text>
             <Text style={styles.eventPlanner}>Planifié par : {item.planner.username}</Text>
+            </View>
           </View>
 
-          {/* Affichage de l'image */}
-      {item.eventImage ? (
-        <Image
-          source={{ uri: item.eventImage }}
-          style={styles.eventImage}
-        />
-      ) : (
-        <Text>Aucune image disponible</Text>
-      )}
-        </View>
 
         <View style={styles.buttonCard}>
           <LinearGradient colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']} start={{ x: 0, y: 0 }} end={{ x: 0, y: 0.7 }} style={styles.gradientButton}>
@@ -152,7 +160,7 @@ export default function MyEventsScreen({ navigation }) {
 const styles = StyleSheet.create({
 
     container: {
-        flex: 0.95,
+        flex: 1,
         padding: 20,
       },
 
@@ -166,44 +174,60 @@ const styles = StyleSheet.create({
       shadowOpacity: 0.1,
       shadowRadius: 5,
       elevation: 3,
+      height: 400,
+      flexDirection: 'column', // Organisation verticale
     },
     cardContent: {
-      flexDirection: 'row', // Organise le contenu horizontalement
-      alignItems: 'center',
+      flex: 1,
     },
-    eventInfo: {
-      flex: 2, // Prend plus de place que l'image
-      marginRight: 10, // Ajoute un espace entre le texte et l'image
+    sectionTop: {
+      flex: 2, // Occupe un tiers de la hauteur
+      flexDirection: 'row', // Organisation verticale
+      justifyContent: 'space-between', // Aligne verticalement
+      alignItems: 'center', // Centre horizontalement
+      marginBottom: 10, // Espacement avec la section suivante
+    },
+    eventInfoTitle: {
+      marginBottom: 10, // Espace entre le texte et l'image
     },
     eventTitle: {
-      fontSize: 14,
+      fontSize: 26,
       fontWeight: 'bold',
+      textAlign: 'center', // Centré horizontalement
       marginBottom: 5,
     },
     eventDescription: {
-      fontSize: 12,
-      marginBottom: 5,
+      fontSize: 14,
+      textAlign: 'center',
+      marginBottom: 10,
+    },
+    sectionBottom: {
+      flex: 2, // Occupe un tiers de la hauteur
+      justifyContent: 'center', // Centré verticalement
+      margin: 10,
     },
     eventDate: {
       fontSize: 14,
-      marginBottom: 5,
+      marginBottom: 10,
     },
     eventTime: {
       fontSize: 14,
-      marginBottom: 5,
+      marginBottom: 10,
     },
     eventAddress: {
       fontSize: 14,
-      marginBottom: 5,
+      marginBottom: 10,
     },
     eventPlanner: {
       fontSize: 14,
       fontStyle: 'italic',
     },
     eventImage: {
-    width: 100, // Largeur de l'image
-    height: 100, // Hauteur de l'image
-    marginTop: 10, // Pour espacer l'image des autres éléments
+      width: 140,
+      height: 140,
+      borderRadius: 10,
+      resizeMode: 'cover', // Ajustement de l'image
+      marginTop: 10, // Pour espacer l'image des autres éléments
     },
     buttonCard: {
       flexDirection: 'row',
