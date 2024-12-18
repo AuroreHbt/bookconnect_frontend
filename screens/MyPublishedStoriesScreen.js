@@ -32,6 +32,8 @@ export default function MyPublishedStoriesScreen({ navigation }) {
   // https://reactnavigation.org/docs/navigation-object/#goback
   const goBack = () => navigation.goBack();
 
+  const defaultImage = require('../assets/image-livre-defaut.jpg')
+
   const [stories, setStories] = useState([]); //hook d'état pour stocker les histoires publiées
   const [isVisible, setIsVisible] = useState(false) // hook d'état pour le spoiler sur les images sensibles
 
@@ -41,8 +43,13 @@ export default function MyPublishedStoriesScreen({ navigation }) {
   const dispatch = useDispatch();
 
   const handleShowContent = () => {
-    setIsVisible(!isVisible);
-  }
+    console.log('isVisible: ', isVisible);
+
+    if (isVisible) {
+      Alert.alert("Contenu sensible visible");
+    }
+    setIsVisible(!isVisible); // Inverse l'état de isVisible
+  };
 
   // Fonction pour récupérer les histoires publiées
   const getMyPublishedStories = () => {
@@ -178,33 +185,38 @@ export default function MyPublishedStoriesScreen({ navigation }) {
 
                   <View style={styles.imageContainer}>
                     {/* affichage du fichier image téléchargé */}
-                    {item.coverImage
-                      ?
+
+                    {item.coverImage &&
                       <Image
-                        source={{ uri: story.coverImage }}
+                        source={item.coverImage ? { uri: item.coverImage } : defaultImage}
                         style={
                           item.isAdult // isAdult=true (18+)
-                            ? [styles.coverImageAdult, { width: 200, height: 115 }]
-                            : [styles.coverImage, { width: 200, height: 115 }]
+                            ? [styles.coverImageAdult, { width: 130, height: 115 }]
+                            : [styles.coverImage, { width: 130, height: 115 }]
                         }
                         blurRadius={item.isAdult ? 10 : 0}
                       />
-                      :
-                      < Image
-                        source={require('../assets/bookCover-placeholder.png')}
-                        style={[
-                          styles.coverImage, { width: 200, height: 115 }]
-                        }
-                      />
                     }
 
-                    <TouchableOpacity
-                      onPress={handleShowContent}
-                    >
-                      {item.isAdult && (
-                        <Text style={item.isAdult ? styles.showContent : null} >Contenu sensible</Text>
-                      )}
-                    </TouchableOpacity>
+                    {item.coverImage && item.isAdult ? (
+                      <TouchableOpacity
+                        onPress={handleShowContent}
+                      // style={{ padding: 10, backgroundColor: 'red' }} // Style temporaire
+                      >
+                        <Icon
+                          name={isVisible ? null : "eye-slash"}
+                          size={36}
+                          style={styles.showContent} />
+                      </TouchableOpacity>
+                    ) : null}
+
+                    {/* Affiche l'image si isVisible est vrai */}
+                    {isVisible && (
+                      <Image
+                        source={{ uri: item.coverImage }} // Utilise l'image à partir de l'URI
+                        style={[styles.coverImage, { width: 130, height: 115 }]}
+                      />
+                    )}
                   </View>
                 </View>
 
@@ -249,7 +261,7 @@ export default function MyPublishedStoriesScreen({ navigation }) {
           )}
         />
       </View>
-    </KeyboardAvoidingView>
+    </KeyboardAvoidingView >
   );
 }
 
@@ -271,8 +283,10 @@ const styles = StyleSheet.create({
   storyContainer: {
     width: '100%',
     padding: 5,
-    backgroundColor: "rgba(238, 236, 232, 0.9)",
+    marginBottom: 15,
     borderRadius: 10,
+    backgroundColor: "rgba(238, 236, 232, 0.9)",
+    elevation: 0, // Pour Android => permet de mettre ce contenu en "arriere plan" pour acceder au onPress={handleShowContent} qui était masqué
 
     // borderWidth: 2,
     // borderColor: 'purple',
@@ -322,9 +336,9 @@ const styles = StyleSheet.create({
   storyCategory: {
     fontSize: 18,
     paddingHorizontal: 5,
-    marginVertical: 10,
+    marginVertical: 5,
     width: '100%',
-    height: 60,
+    height: 70,
 
     // borderWidth: 1,
     // borderColor: 'red',
@@ -348,10 +362,11 @@ const styles = StyleSheet.create({
     top: 0,
     right: 0,
     width: '40%',
+    paddingHorizontal: 1,
     height: 115,
 
-    borderWidth: 1,
-    borderColor: 'blue',
+    // borderWidth: 1,
+    // borderColor: 'blue',
   },
 
   coverImage: {
@@ -364,17 +379,18 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 0.5,
     borderColor: 'rgba(255, 123, 0, 0.5)',
-
     backgroundColor: 'rgba(0, 0, 0, 1)',
-    opacity: 0.5,
+    opacity: 0.2,
   },
 
   showContent: {
     position: 'absolute',
-    top: -65,
-    right: 7,
-    backgroundColor: 'rgba(253,255,0, 1)',
-    textAlign: 'center',
+    top: -85,
+    right: 40,
+    color: 'rgba(253,255,0, 0.9)',
+    backgroundColor: 'rgba(216, 72, 21, 0.8)',
+    borderRadius: 30,
+    padding: 10,
   },
 
   // CSS du bouton Modifier + poubelle pour suppr

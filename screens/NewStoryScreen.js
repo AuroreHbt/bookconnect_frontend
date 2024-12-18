@@ -55,8 +55,7 @@ export default function NewStoryScreen({ navigation }) {
 
   // https://reactnavigation.org/docs/navigation-object/#goback
   const goBack = () => navigation.goBack();
-
-
+  
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
   const [isAdult, setIsAdult] = useState(false);
@@ -449,8 +448,6 @@ export default function NewStoryScreen({ navigation }) {
 
 
 const styles = StyleSheet.create({
-
-  // CSS à revoir => bug affichage inputs sur emulateur
 
   // CSS du container du formulaire
   inputContainer: {

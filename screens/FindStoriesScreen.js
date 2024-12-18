@@ -5,7 +5,7 @@ import {
     StyleSheet,
     KeyboardAvoidingView,
     TouchableWithoutFeedback,
-    Keyboard,  
+    Keyboard,
     Platform,
     Text,
     TextInput,
@@ -19,7 +19,7 @@ import { Picker } from '@react-native-picker/picker';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
-const defaultImage = require ('../assets/image-livre-defaut.jpg')
+const defaultImage = require('../assets/image-livre-defaut.jpg')
 
 
 const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
@@ -45,7 +45,6 @@ export default function FindStoriesScreen({ navigation }) {
     const handleStorySearch = () => {
         console.log('click');
 
-
         const query = `?${title ? `title=${title}` : ''}${author ? `&author=${author}` : ''}${category ? `&category=${category}` : ''}`;
 
         fetch(`${BACKEND_ADDRESS}/stories/search${query}`)
@@ -57,6 +56,12 @@ export default function FindStoriesScreen({ navigation }) {
                 if (data.result) {
                     setStories(data.stories);
                     console.log('donnée', data.stories);
+
+                    // reset des cahmps de recherche
+                    setTitle('');
+                    setAuthor('');
+                    setCategory('');
+                    setCategorySelected('');
 
                     // Navigation vers l'écran ResultResearchStories et affichage des résultats
                     navigation.navigate('ResultResearchStories', { stories: data.stories });
@@ -102,10 +107,10 @@ export default function FindStoriesScreen({ navigation }) {
     const renderStory = ({ item }) => (<TouchableOpacity
         onPress={() => navigation.navigate("ReadStory", { story: item })}
         style={styles.storyCard}>
-            <Image
-                source={item.coverImage ? { uri: item.coverImage } : defaultImage}
-                style={styles.coverImage}
-            />
+        <Image
+            source={item.coverImage ? { uri: item.coverImage } : defaultImage}
+            style={styles.coverImage}
+        />
         <Text style={styles.storyTitle}>{item.title}</Text>
         <Text style={styles.storyCategory}>{item.category}</Text>
     </TouchableOpacity>

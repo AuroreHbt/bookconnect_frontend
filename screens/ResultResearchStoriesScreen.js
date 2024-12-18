@@ -1,12 +1,12 @@
 import {
-    TouchableOpacity,
-    StyleSheet,
-    KeyboardAvoidingView,
-    Platform,
-    Text,
-    View,
-    FlatList,
-    Image
+  TouchableOpacity,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  Text,
+  View,
+  FlatList,
+  Image
 } from 'react-native';
 
 import { globalStyles } from '../styles/globalStyles';
@@ -14,7 +14,7 @@ import { globalStyles } from '../styles/globalStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 
-export default function ResultResearchStoriesScreen({route, navigation}) {
+export default function ResultResearchStoriesScreen({ route, navigation }) {
 
   const goBack = () => navigation.goBack();
 
@@ -22,21 +22,21 @@ export default function ResultResearchStoriesScreen({route, navigation}) {
     setIsVisible(!isVisible);
   }
 
-    const { stories } = route.params
+  const { stories } = route.params
 
-    console.log("Histoire reçue :", stories);
+  console.log("Histoire reçue :", stories);
 
-    const renderStory = ({item}) => (
-      <View style={styles.storyContainer}>
-        <Text style={styles.storyTitle}>{item.title}</Text>
-        <Text style={styles.storyAuthor}>Auteur :{item.author.username}</Text>
-        <Text style={styles.storyCategory}>Description :{item.category.username}</Text>
-        <Text style={styles.storyDescription}>Description :{item.description.username}</Text>
-      </View>
-    );
+  const renderStory = ({ item }) => (
+    <View style={styles.storyContainer}>
+      <Text style={styles.storyTitle}>{item.title}</Text>
+      <Text style={styles.storyAuthor}>Auteur :{item.author.username}</Text>
+      <Text style={styles.storyCategory}>Description :{item.category.username}</Text>
+      <Text style={styles.storyDescription}>Description :{item.description.username}</Text>
+    </View>
+  );
 
   return (
-  <KeyboardAvoidingView
+    <KeyboardAvoidingView
       style={globalStyles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
@@ -87,7 +87,11 @@ export default function ResultResearchStoriesScreen({route, navigation}) {
                     {item.coverImage && (
                       <Image
                         source={{ uri: item.coverImage }}
-                        style={item.isAdult ? styles.coverImageAdult : styles.coverImage}
+                        style={
+                          item.isAdult // isAdult=true (18+)
+                            ? [styles.coverImageAdult, { width: 130, height: 115 }]
+                            : [styles.coverImage, { width: 130, height: 115 }]
+                        }
                         blurRadius={item.isAdult ? 10 : 0}
                       />
                     )}
@@ -110,7 +114,7 @@ export default function ResultResearchStoriesScreen({route, navigation}) {
     </KeyboardAvoidingView>
   );
 }
-    
+
 
 
 
@@ -151,37 +155,35 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
   },
 
+  storyPublic: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    paddingHorizontal: 5,
+    marginTop: 10,
+    width: '100%',
+
+    // borderWidth: 1,
+    // borderColor: 'purple',
+  },
+
   storyCategory: {
     fontSize: 18,
-    marginTop: 5,
-    marginBottom: 10,
-    flexWrap: 'wrap',
-    // width: '55%',
-    width: '60%',
+    paddingHorizontal: 5,
+    marginVertical: 5,
+    width: '100%',
     height: 70,
 
     // borderWidth: 1,
     // borderColor: 'red',
   },
 
-  storyPublic: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginTop: 5,
-    marginBottom: 10,
-    flexWrap: 'wrap',
-    width: '60%',
-
-    // borderWidth: 1,
-    // borderColor: 'purple',
-  },
-
   storyDescription: {
     fontSize: 16,
-    marginTop: 5,
-    textAlign: 'left',
+    paddingHorizontal: 5,
+    marginVertical: 5,
+    textAlign: 'justify',
+    width: '100%',
     flexWrap: 'wrap',
-    maxWidth: '100%',
 
     // borderWidth: 1,
     // borderColor: 'purple',
@@ -191,27 +193,25 @@ const styles = StyleSheet.create({
   imageContainer: {
     position: 'absolute',
     top: 0,
-    right: 0,
-    width: '40%',
-    padding: 5,
+    right: 5,
+    width: '36%',
+    height: 115,
     // borderWidth: 1,
     // borderColor: 'blue',
   },
 
   coverImage: {
-    height: 110,
     borderRadius: 10,
     borderWidth: 0.5,
     borderColor: 'rgba(55, 27, 12, 0.5)',
   },
 
   coverImageAdult: {
-    height: 110,
     borderRadius: 10,
     borderWidth: 0.6,
     borderColor: 'rgba(255, 123, 0, 0.5)',
     backgroundColor: 'rgba(0, 0, 0, 1)',
-    opacity: 0.1,
+    opacity: 0.2,
   },
 
   showContent: {
