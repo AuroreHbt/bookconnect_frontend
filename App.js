@@ -42,12 +42,13 @@ import FavEventScreen from './screens/FavEventScreen'; // Favoris > Mes events f
 // Imports pour configurer le store redux
 import user from './reducers/user';
 import story from './reducers/story';
+import event from './reducers/event';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 
 
 const store = configureStore({
-  reducer: { user, story },
+  reducer: { user, story, event },
 })
 
 
