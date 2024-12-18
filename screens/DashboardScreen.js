@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { LinearGradient } from 'expo-linear-gradient';
@@ -16,6 +16,7 @@ import {
   Modal,
   Image,
   TouchableWithoutFeedback,
+  Keyboard
 } from 'react-native';
 
 import { useDispatch } from "react-redux";
@@ -23,6 +24,10 @@ import { logout } from "../reducers/user";
 
 
 export default function DashboardScreen({ navigation }) {
+
+  useEffect(() => {
+    Keyboard.dismiss();
+  }, []);
 
   /*  const data = [
      { id: '1', image: require('../assets/avatar.png') },
@@ -57,150 +62,152 @@ export default function DashboardScreen({ navigation }) {
 
 
   return (
-    <SafeAreaView style={styles.container} >
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+    <TouchableWithoutFeedback>
+      <SafeAreaView style={styles.container} >
+        <ScrollView contentContainerStyle={styles.scrollContent}>
 
-        {/* Dégradé en haut */}
-        <View style={styles.gradientContainer}>
-          <LinearGradient
-            colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
-            start={{ x: 0.7, y: 0 }} // Début du gradient (coin haut gauche)
-            end={{ x: 0.5, y: 0.9 }}  // Fin du gradient (coin bas droit)
-            style={styles.gradient}
-          />
-        </View>
-        <View style={styles.header}>
-
-          {/* Logo et Nom de l'app */}
-          <View style={styles.identityApp}>
-
-            {/* Icône Paramètre */}
+          {/* Dégradé en haut */}
+          <View style={styles.gradientContainer}>
+            <LinearGradient
+              colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
+              start={{ x: 0.7, y: 0 }} // Début du gradient (coin haut gauche)
+              end={{ x: 0.5, y: 0.9 }}  // Fin du gradient (coin bas droit)
+              style={styles.gradient}
+            />
           </View>
-          <TouchableOpacity onPress={toggleParameter} style={styles.ParameterButton}>
-            <Icon name="gear" size={36} color="white" />
-          </TouchableOpacity>
-        </View>
+          <View style={styles.header}>
 
-        {/* Modal */}
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={isParameterVisible}
-          onRequestClose={toggleParameter}
-        >
-          {/* TouchableWithoutFeedback pour fermer la modal quand on touche n'importe où sur l'écran */}
-          <TouchableWithoutFeedback onPress={toggleParameter}>
-            <View style={styles.overlay}>
-              <View style={styles.ParameterContent}>
+            {/* Logo et Nom de l'app */}
+            <View style={styles.identityApp}>
 
-                {/* Options de paramètres */}
-                <TouchableOpacity style={styles.optionButton}>
-                  <Text style={styles.optionText} onPress={() => handleLogout()}>Déconnexion</Text>
-                  <Icon name='sign-out' size={20} color='rgba(216, 72, 21, 0.9)' style={styles.logoutIcon} />
-                </TouchableOpacity>
+              {/* Icône Paramètre */}
+            </View>
+            <TouchableOpacity onPress={toggleParameter} style={styles.ParameterButton}>
+              <Icon name="gear" size={36} color="white" />
+            </TouchableOpacity>
+          </View>
+
+          {/* Modal */}
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={isParameterVisible}
+            onRequestClose={toggleParameter}
+          >
+            {/* TouchableWithoutFeedback pour fermer la modal quand on touche n'importe où sur l'écran */}
+            <TouchableWithoutFeedback onPress={toggleParameter}>
+              <View style={styles.overlay}>
+                <View style={styles.ParameterContent}>
+
+                  {/* Options de paramètres */}
+                  <TouchableOpacity style={styles.optionButton}>
+                    <Text style={styles.optionText} onPress={() => handleLogout()}>Déconnexion</Text>
+                    <Icon name='sign-out' size={20} color='rgba(216, 72, 21, 0.9)' style={styles.logoutIcon} />
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-          </TouchableWithoutFeedback>
-        </Modal>
+            </TouchableWithoutFeedback>
+          </Modal>
 
-        {/* Photo de profil et Message de bienvenue */}
-        <View style={styles.identityUser}>
-          <Image
-            source={require('../assets/avatar1.jpeg')}
-            style={styles.avatar}
-          />
-          <Text style={styles.welcome}>Hello {user?.username || 'Utilisateur'}</Text>
-        </View>
-
-        {/* Section carrousel mes lectures en cours */}
-        <View style={styles.sectionContainer}>
-          {/* Titre de la section */}
-          <View style={styles.sectionHeader}>
-            <Text style={styles.textSection}>Mes lectures en cours</Text>
-            <TouchableOpacity
-              onPress={handleMyCurrentReadings}
-              activeOpacity={0.8}
-            >
-              <Icon name="chevron-circle-right" size={20} color="rgba(216, 72, 21, 0.9)" />
-            </TouchableOpacity>
+          {/* Photo de profil et Message de bienvenue */}
+          <View style={styles.identityUser}>
+            <Image
+              source={require('../assets/avatar1.jpeg')}
+              style={styles.avatar}
+            />
+            <Text style={styles.welcome}>Hello {user?.username || 'Utilisateur'}</Text>
           </View>
 
-          {/* ScrollView horizontal */}
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.booksContainer}>
-            <View style={styles.bookCard}>
-              <Image
-                source={require('../assets/book3.png')}
-                style={styles.book}
-              />
-              <Text style={styles.textCard}>Book1</Text>
-              <Text style={styles.subtextCard}>Elina M.</Text>
+          {/* Section carrousel mes lectures en cours */}
+          <View style={styles.sectionContainer}>
+            {/* Titre de la section */}
+            <View style={styles.sectionHeader}>
+              <Text style={styles.textSection}>Mes lectures en cours</Text>
+              <TouchableOpacity
+                onPress={handleMyCurrentReadings}
+                activeOpacity={0.8}
+              >
+                <Icon name="chevron-circle-right" size={20} color="rgba(216, 72, 21, 0.9)" />
+              </TouchableOpacity>
             </View>
-            <View style={styles.bookCard}>
-              <Image
-                source={require('../assets/book1.png')}
-                style={styles.book}
-              />
-              <Text style={styles.textCard}>Book2</Text>
-              <Text style={styles.subtextCard}>Aurore H.</Text>
-            </View>
-            <View style={styles.bookCard}>
-              <Image
-                source={require('../assets/book2.png')}
-                style={styles.book}
-              />
-              <Text style={styles.textCard}>Book3</Text>
-              <Text style={styles.subtextCard}>Robin L.</Text>
-            </View>
-            <View style={styles.bookCard}>
-              <Image
-                source={require('../assets/book4.png')}
-                style={styles.book}
-              />
-              <Text style={styles.textCard}>Book4</Text>
-              <Text style={styles.subtextCard}>Marie B.</Text>
-            </View>
-          </ScrollView>
-        </View>
 
-        {/* Section carrousel mes évènements */}
-        <View style={styles.sectionContainer}>
-          {/* Titre de la section */}
-          <View style={styles.sectionHeader}>
-            <Text style={styles.textSection}>Mes évènements</Text>
-            <TouchableOpacity
-              onPress={handleMyEvents}
-              activeOpacity={0.8}
-            >
-              <Icon name="chevron-circle-right" size={20} color="rgba(216, 72, 21, 0.9)" />
-            </TouchableOpacity>
+            {/* ScrollView horizontal */}
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.booksContainer}>
+              <View style={styles.bookCard}>
+                <Image
+                  source={require('../assets/book3.png')}
+                  style={styles.book}
+                />
+                <Text style={styles.textCard}>Book1</Text>
+                <Text style={styles.subtextCard}>Elina M.</Text>
+              </View>
+              <View style={styles.bookCard}>
+                <Image
+                  source={require('../assets/book1.png')}
+                  style={styles.book}
+                />
+                <Text style={styles.textCard}>Book2</Text>
+                <Text style={styles.subtextCard}>Aurore H.</Text>
+              </View>
+              <View style={styles.bookCard}>
+                <Image
+                  source={require('../assets/book2.png')}
+                  style={styles.book}
+                />
+                <Text style={styles.textCard}>Book3</Text>
+                <Text style={styles.subtextCard}>Robin L.</Text>
+              </View>
+              <View style={styles.bookCard}>
+                <Image
+                  source={require('../assets/book4.png')}
+                  style={styles.book}
+                />
+                <Text style={styles.textCard}>Book4</Text>
+                <Text style={styles.subtextCard}>Marie B.</Text>
+              </View>
+            </ScrollView>
           </View>
-          {/* ScrollView horizontal des évènements*/}
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.eventsContainer}>
-            <View style={styles.bookCard}>
-              <View style={styles.event} backgroundColor={'green'}></View>
-              <Text style={styles.textCard}>Event1</Text>
-              <Text style={styles.subtextCard}>Samedi 14 décembre</Text>
+
+          {/* Section carrousel mes évènements */}
+          <View style={styles.sectionContainer}>
+            {/* Titre de la section */}
+            <View style={styles.sectionHeader}>
+              <Text style={styles.textSection}>Mes évènements</Text>
+              <TouchableOpacity
+                onPress={handleMyEvents}
+                activeOpacity={0.8}
+              >
+                <Icon name="chevron-circle-right" size={20} color="rgba(216, 72, 21, 0.9)" />
+              </TouchableOpacity>
             </View>
-            <View style={styles.bookCard}>
-              <View style={styles.event} backgroundColor={'blue'}></View>
-              <Text style={styles.textCard}>Event2</Text>
-              <Text style={styles.subtextCard}>Samedi 21 décembre</Text>
-            </View>
-            <View style={styles.bookCard}>
-              <View style={styles.event} backgroundColor={'red'}></View>
-              <Text style={styles.textCard}>Event3</Text>
-              <Text style={styles.subtextCard}>Mercredi 25 décembre</Text>
-            </View>
-            <View style={styles.bookCard}>
-              <View style={styles.event} backgroundColor={'pink'}></View>
-              <Text style={styles.textCard}>Event4</Text>
-              <Text style={styles.subtextCard}>Mercredi 31 décembre</Text>
-            </View>
-          </ScrollView>
-        </View>
-        
-      </ScrollView>
-    </SafeAreaView>
+            {/* ScrollView horizontal des évènements*/}
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.eventsContainer}>
+              <View style={styles.bookCard}>
+                <View style={styles.event} backgroundColor={'green'}></View>
+                <Text style={styles.textCard}>Event1</Text>
+                <Text style={styles.subtextCard}>Samedi 14 décembre</Text>
+              </View>
+              <View style={styles.bookCard}>
+                <View style={styles.event} backgroundColor={'blue'}></View>
+                <Text style={styles.textCard}>Event2</Text>
+                <Text style={styles.subtextCard}>Samedi 21 décembre</Text>
+              </View>
+              <View style={styles.bookCard}>
+                <View style={styles.event} backgroundColor={'red'}></View>
+                <Text style={styles.textCard}>Event3</Text>
+                <Text style={styles.subtextCard}>Mercredi 25 décembre</Text>
+              </View>
+              <View style={styles.bookCard}>
+                <View style={styles.event} backgroundColor={'pink'}></View>
+                <Text style={styles.textCard}>Event4</Text>
+                <Text style={styles.subtextCard}>Mercredi 31 décembre</Text>
+              </View>
+            </ScrollView>
+          </View>
+
+        </ScrollView>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -212,6 +219,7 @@ const styles = StyleSheet.create({
     flex: 0.95,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingTop: 30,
   },
 
   gradientContainer: {

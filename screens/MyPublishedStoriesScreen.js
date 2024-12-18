@@ -11,7 +11,8 @@ import {
   FlatList,
   StyleSheet,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert,
 } from "react-native";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -32,6 +33,8 @@ export default function MyPublishedStoriesScreen({ navigation }) {
   // https://reactnavigation.org/docs/navigation-object/#goback
   const goBack = () => navigation.goBack();
 
+  const defaultImage = require('../assets/image-livre-defaut.jpg')
+
   const [stories, setStories] = useState([]); //hook d'état pour stocker les histoires publiées
   const [isVisible, setIsVisible] = useState(false) // hook d'état pour le spoiler sur les images sensibles
 
@@ -41,8 +44,12 @@ export default function MyPublishedStoriesScreen({ navigation }) {
   const dispatch = useDispatch();
 
   const handleShowContent = () => {
-    setIsVisible(!isVisible);
-  }
+    console.log('isVisible initial: ', isVisible);
+    setIsVisible(!isVisible); // Inverse l'état de isVisible
+    if (isVisible === false) {
+      Alert.alert("Contenu sensible visible");
+    }
+  };
 
   // Fonction pour récupérer les histoires publiées
   const getMyPublishedStories = () => {
@@ -132,7 +139,7 @@ export default function MyPublishedStoriesScreen({ navigation }) {
 
   return (
     <KeyboardAvoidingView
-      style={globalStyles.container}
+      style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View>
@@ -157,44 +164,60 @@ export default function MyPublishedStoriesScreen({ navigation }) {
         <FlatList
           initialScrollIndex={0}
           keyExtractor={(item) => item._id}
-          // data={stories}
-          data={Array.isArray(stories) ? stories.reverse() : []} // Check if stories is an array pour inverser l'affichage des story postées sans gérer un tri par date
+          data={stories}
+          // data={Array.isArray(stories) ? stories.reverse() : []} // Check if stories is an array pour inverser l'affichage des story postées sans gérer un tri par date
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() => navigation.navigate("ReadStory", { story: item })} // Navigation avec paramètres
             >
-              <View style={styles.storyCard}>
+              <View style={styles.storyContainer}>
                 {/* affichage des infos venant de addNewStory */}
                 <View>
                   <Text style={styles.storyTitle}>{item.title}</Text>
                 </View>
 
-                <View style={styles.contentCard}>
+                <View style={styles.rowContainer}>
 
-                  <View>
+                  <View style={styles.storyCard} >
                     <Text style={styles.storyPublic}>{item.isAdult ? 'Contenu 18+' : "Tout public"}</Text>
                     <Text style={styles.storyCategory}>{"Catégorie: " + item.category}</Text>
-                    <Text style={styles.storyDescription}>{"Résumé: " + item.description}</Text>
                   </View>
 
+                  {/* affichage du fichier image téléchargé */}
                   <View style={styles.imageContainer}>
-                    {/* affichage du fichier image téléchargé */}
-                    {item.coverImage && (
+
+                    {/* Spoiler sur Image */}
+                    <Image
+                      source={item.coverImage ? { uri: item.coverImage } : defaultImage}
+                      style={
+                        item.isAdult // isAdult=true (18+)
+                          ? [styles.coverImageSpoiler, { width: 130, height: 130 }]
+                          : [styles.coverImage, { width: 130, height: 130 }]
+                      }
+                    />
+
+                    {item.coverImage && item.isAdult ? ( // si isAdult = true => 18+ => isVisible doit être false (donc true) pour retirer le spoiler et afficher l'image uploadée
+                      <Icon
+                        name={isVisible ? null : 'eye-slash'} // si isVisible est true (donc = false), pas d'icon, else icon eye-slash
+                        size={72}
+                        style={isVisible ? null : styles.contentVisible}
+                        onPress={handleShowContent}
+                      />
+                    ) : null}
+
+                    {/* Affiche l'image si isVisible est false donc true */}
+                    {isVisible && (
                       <Image
                         source={{ uri: item.coverImage }}
-                        style={item.isAdult ? styles.coverImageAdult : styles.coverImage}
-                        blurRadius={item.isAdult ? 10 : 0}
+                        style={[styles.coverImageVisible, { width: 130, height: 130 }]}
                       />
                     )}
-                    <TouchableOpacity
-                      onPress={handleShowContent}
-                    >
-                      {item.coverImage && (
-                        <Text style={item.isAdult ? styles.showContent : null} >Contenu sensible</Text>
-                      )}
-                    </TouchableOpacity>
                   </View>
                 </View>
+
+                <Text style={styles.storyDescription}>
+                  {"Résumé: " + item.description}
+                </Text>
 
                 <View style={styles.buttonCard}>
 
@@ -233,118 +256,162 @@ export default function MyPublishedStoriesScreen({ navigation }) {
           )}
         />
       </View>
-    </KeyboardAvoidingView>
+    </KeyboardAvoidingView >
   );
 }
 
 
 const styles = StyleSheet.create({
 
-  // CSS global des cards Story
-  storyCard: {
-    backgroundColor: 'rgba(238, 236, 232, 1)', // "#EEECE8",
-    padding: 10,
-    marginBottom: 15,
-    borderRadius: 8,
+  container: {
+    flex: 0.95, // l'écran prend 95% + 5% de barre de nav
+    justifyContent: 'center',
+    alignItems: 'center',
     width: '100%',
-    // marginLeft: 10,
+    paddingTop: 25,
+    paddingHorizontal: 15,
 
-    borderWidth: 1,
-    borderColor: 'rgba(55, 27, 12, 0.1)',
+    // borderWidth: 2,
+    // borderColor: 'red',
+  },
+
+  storyContainer: {
+    width: '100%',
+    padding: 5,
+    marginBottom: 15,
+    borderRadius: 10,
+    backgroundColor: "rgba(238, 236, 232, 0.9)",
+    elevation: 0, // Pour Android => permet de mettre ce contenu en "arriere plan" pour acceder au onPress={handleShowContent} qui était masqué
+
+    // borderWidth: 2,
+    // borderColor: 'purple',
   },
 
   storyTitle: {
     fontFamily: 'Poppins-Regular',
     fontWeight: '400',
     fontSize: 18,
-    padding: 5,
-    marginBottom: 15,
-    flexWrap: 'wrap',
+    paddingHorizontal: 5,
+    marginBottom: 20,
     borderBottomWidth: 0.5,
-    borderBottomColor: "rgba(55, 27, 12, 0.5)"
-  },
-
-  // CSS infos story + cover
-  contentCard: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    padding: 10,
+    borderBottomColor: "rgba(55, 27, 12, 0.5)",
 
     // borderWidth: 1,
+    // borderColor: 'yellow',
+  },
+
+  // bloc storyCard + cover
+  rowContainer: {
+    flexDirection: 'row',
+    width: '100%',
+    height: 140,
+
+    // borderWidth: 1,
+    // borderColor: 'green',
+  },
+
+  // bloc des infos de l'histoire: public, category, description
+  storyCard: {
+    width: '60%',
+
+    // borderWidth: 1,
+    // borderColor: 'darkorange',
+  },
+
+  storyPublic: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    paddingHorizontal: 5,
+    marginTop: 10,
+    width: '100%',
+
+    // borderWidth: 1,
+    // borderColor: 'pink',
   },
 
   storyCategory: {
     fontSize: 18,
-    marginTop: 5,
-    marginBottom: 10,
-    flexWrap: 'wrap',
-    // width: '55%',
-    width: '60%',
+    paddingHorizontal: 5,
+    marginVertical: 5,
+    width: '100%',
     height: 70,
 
     // borderWidth: 1,
     // borderColor: 'red',
   },
 
-  storyPublic: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginTop: 5,
-    marginBottom: 10,
-    flexWrap: 'wrap',
-    width: '60%',
-
-    // borderWidth: 1,
-    // borderColor: 'purple',
-  },
-
   storyDescription: {
     fontSize: 16,
-    marginTop: 5,
-    textAlign: 'left',
+    paddingHorizontal: 5,
+    marginVertical: 5,
+    textAlign: 'justify',
+    width: '100%',
     flexWrap: 'wrap',
-    maxWidth: '100%',
 
     // borderWidth: 1,
     // borderColor: 'purple',
   },
 
-  // CSS des couvertures
+  // bloc des couvertures
   imageContainer: {
     position: 'absolute',
     top: 0,
     right: 0,
     width: '40%',
-    padding: 5,
+    height: 135,
+    paddingVertical: 2,
+    paddingHorizontal: 3,
+    marginBottom: 10,
+
     // borderWidth: 1,
     // borderColor: 'blue',
   },
 
   coverImage: {
-    height: 110,
     borderRadius: 10,
-    borderWidth: 0.5,
-    borderColor: 'rgba(55, 27, 12, 0.5)',
   },
 
-  coverImageAdult: {
-    height: 110,
+  coverImageVisible: {
+    position: 'absolute', // supersposition de l'image sur le spoiler
+    top: 0,
+    right: 0,
     borderRadius: 10,
-    borderWidth: 0.6,
-    borderColor: 'rgba(255, 123, 0, 0.5)',
+  },
+
+  coverImageSpoiler: {
+    position: 'absolute', // supersposition de l'image sur le spoiler
+    top: 0,
+    right: 0,
+
+    borderRadius: 10,
     backgroundColor: 'rgba(0, 0, 0, 1)',
-    opacity: 0.1,
+    opacity: 0.3,
   },
 
-  showContent: {
+  contentVisible: { // eye-slash
     position: 'absolute',
-    top: -65,
-    right: 7,
-    backgroundColor: 'rgba(253,255,0, 1)',
-    textAlign: 'center',
+    top: 20,
+    right: 20,
+    color: 'rgba(253,255,0, 0.8)',
+    backgroundColor: 'rgba(255, 123, 0, 0.7)',
+    borderRadius: 50,
+    padding: 10,
+    // elevation: 10,
+
+    // borderWidth: 1,
+    // borderColor: 'yellow',
   },
+
+  // contentHidden: { // eye
+  //   position: 'absolute',
+  //   top: 20,
+  //   right: 25,
+  //   color: 'lightgrey', // 'rgba(216, 72, 21, 0.8)',
+  //   opacity: 0.5,
+  //   borderRadius: 50,
+  //   padding: 10,
+  //   // elevation: 10,
+  // },
 
   // CSS du bouton Modifier + poubelle pour suppr
   buttonCard: {

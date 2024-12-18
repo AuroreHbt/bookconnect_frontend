@@ -18,6 +18,8 @@ import { WebView } from "react-native-webview";
 export default function ReadStoryScreen({ route, navigation }) {
   const { story } = route.params;
   console.log("Histoire reçue :", story);
+  console.log('Cover Image URI:', story.coverImage);
+
 
   // https://reactnavigation.org/docs/navigation-object/#goback
   const goBack = () => navigation.goBack();
@@ -57,7 +59,7 @@ export default function ReadStoryScreen({ route, navigation }) {
 
       <View>
         {/* affichage d'une 'entete' pour lecture */}
-        <Image src={story.coverImage} />
+        <Image source={{uri: story.coverImage}} />
         <Text style={styles.storyTitle}>{story.title}</Text>
         <Text style={styles.storyCategory}>{story.category}</Text>
         {/* <Text style={styles.storyPublic}>{{publicReader} ? "Contenu 18+" : "Tout public" }</Text> */}
@@ -133,7 +135,5 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     // borderColor: 'purple',
   },
-
-
 
 });
