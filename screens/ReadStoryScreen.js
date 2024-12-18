@@ -107,6 +107,8 @@ const styles = StyleSheet.create({
   storyContainer: {
     width: '100%',
     padding: 5,
+    backgroundColor: "rgba(238, 236, 232, 0.9)",
+    borderRadius: 10,
 
     // borderWidth: 2,
     // borderColor: 'purple',
@@ -122,7 +124,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "rgba(55, 27, 12, 0.5)",
 
     // borderWidth: 1,
-    // borderColor: 'purple',
+    // borderColor: 'yellow',
   },
 
   // bloc storyCard + cover
@@ -193,6 +195,24 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 0.5,
     borderColor: 'rgba(55, 27, 12, 0.5)',
+  },
+
+  coverImageAdult: {
+    height: 115,
+    borderRadius: 10,
+    borderWidth: 0.5,
+    borderColor: 'rgba(255, 123, 0, 0.5)',
+
+    backgroundColor: 'rgba(0, 0, 0, 1)',
+    opacity: 0.5,
+  },
+
+  showContent: {
+    position: 'absolute',
+    top: -65,
+    right: 7,
+    backgroundColor: 'rgba(253,255,0, 1)',
+    textAlign: 'center',
   },
 
   // bloc du display de PDF

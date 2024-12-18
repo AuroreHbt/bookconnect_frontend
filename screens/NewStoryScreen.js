@@ -71,7 +71,10 @@ export default function NewStoryScreen({ navigation }) {
   const [fileError, setFileError] = useState('');
 
   const [categorySelected, setCategorySelected] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // variable d'état pour gérer l'état du spinner-button
+  const [characterTitleCount, setCharacterTitleCount] = useState(0); // variable d'état pour gérer l'affichage du nombre de caractères pour le titre
+  const [characterDescriptionCount, setCharacterDescriptionCount] = useState(0); // variable d'état pour gérer l'affichage du nombre de caractères pour la description
+
 
   const user = useSelector((state) => state.user.value)
   const story = useSelector((state) => state.story.value)
@@ -221,6 +224,8 @@ export default function NewStoryScreen({ navigation }) {
           setStoryFile('')
           setCoverImage('')
           setIsLoading(false)
+          setCharacterTitleCount(0)
+          setCharacterDescriptionCount(0)
           console.log('Histoire publiée avec succès!');
           navigation.navigate('MyPublishedStories')
         } else {
@@ -263,10 +268,27 @@ export default function NewStoryScreen({ navigation }) {
               <View style={styles.titleInputContainer}>
                 <TextInput
                   placeholder="Titre de votre histoire (obligatoire)"
-                  onChangeText={(value) => setTitle(value)}
+                  maxLength={55}
+                  onChangeText={(value) => {
+                    setTitle(value);
+                    setCharacterTitleCount(value.length);
+                  }}
                   value={title}
                 />
               </View>
+              <Text
+                style={
+                  {
+                    textAlign: 'right',
+                    color: 'grey',
+                    marginRight: 25,
+                    marginTop: -5,
+                    marginBottom: 5,
+                  }
+                } >
+                {characterTitleCount}/55
+              </Text>
+
               {titleError ? <Text style={styles.errorText}>{titleError}</Text> : null}
 
               {/* Catégorie : liste de choix */}
@@ -277,7 +299,7 @@ export default function NewStoryScreen({ navigation }) {
                 >
                   <Picker
                     prompt="Catégorie (obligatoire)"
-
+                    style={{ color: !categorySelected ? 'grey' : 'black' }}
                     selectedValue={category}
                     // useNativeAndroidPickerStyle={false}
                     onValueChange={(value) => {
@@ -321,21 +343,42 @@ export default function NewStoryScreen({ navigation }) {
 
               <View style={styles.inputMultiline} >
                 <TextInput
-                  placeholder="Description (obligatoire), 250 caractères max"
-                  length={250}
-                  multiline
-                  numberOfLines={7}
-                  onChangeText={(value) => setDescription(value)}
+                  placeholder="Description (obligatoire)"
+                  maxLength={200}
+                  onChangeText={(value) => {
+                    setDescription(value);
+                    setCharacterDescriptionCount(value.length);
+                  }}
                   value={description}
+                  multiline
+                  numberOfLines={5}
                 />
               </View>
+              <Text
+                style={
+                  {
+                    textAlign: 'right',
+                    color: 'grey',
+                    marginRight: 25,
+                    marginTop: -5,
+                    marginBottom: 5,
+                  }
+                } >
+                {characterDescriptionCount}/200
+              </Text>
               {descError ? <Text style={styles.errorText}>{descError}</Text> : null}
 
               <View style={styles.fileContainer}>
                 <TouchableOpacity
                   onPress={handleSelectStoryFile}
                 >
-                  <Text style={styles.fileInput}>
+                  <Text
+                    style={[
+                      styles.fileInput &&
+                      {
+                        color: !storyFile.name ? 'grey' : 'black'
+                      }
+                    ]}>
                     {storyFile ? storyFile.name : "Choisir un texte (obligatoire)"}
                   </Text>
 
@@ -355,7 +398,13 @@ export default function NewStoryScreen({ navigation }) {
                 <TouchableOpacity
                   onPress={handleSelectCoverImage}
                 >
-                  <Text style={styles.fileInput}>
+                  <Text
+                    style={[
+                      styles.fileInput &&
+                      {
+                        color: !coverImage.name ? 'grey' : 'black'
+                      }
+                    ]}>
                     {coverImage ? coverImage.name : "Choisir une image (option)"}
                   </Text>
 
@@ -533,7 +582,6 @@ const styles = StyleSheet.create({
   },
 
   fileInput: {
-
     paddingTop: 5,
     paddingLeft: 10,
     height: 30,

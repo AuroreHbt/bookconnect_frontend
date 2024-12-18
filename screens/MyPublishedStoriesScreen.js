@@ -183,18 +183,21 @@ export default function MyPublishedStoriesScreen({ navigation }) {
                       <Image
                         source={{ uri: story.coverImage }}
                         style={
-                          item.isAdult
-                            ? styles.coverImageAdult
-                            : styles.coverImage
+                          item.isAdult // isAdult=true (18+)
+                            ? [styles.coverImageAdult, { width: 200, height: 115 }]
+                            : [styles.coverImage, { width: 200, height: 115 }]
                         }
                         blurRadius={item.isAdult ? 10 : 0}
                       />
                       :
-                      <Image
+                      < Image
                         source={require('../assets/bookCover-placeholder.png')}
-                        style={styles.coverImage}
+                        style={[
+                          styles.coverImage, { width: 200, height: 115 }]
+                        }
                       />
                     }
+
                     <TouchableOpacity
                       onPress={handleShowContent}
                     >
@@ -268,6 +271,8 @@ const styles = StyleSheet.create({
   storyContainer: {
     width: '100%',
     padding: 5,
+    backgroundColor: "rgba(238, 236, 232, 0.9)",
+    borderRadius: 10,
 
     // borderWidth: 2,
     // borderColor: 'purple',
@@ -337,7 +342,7 @@ const styles = StyleSheet.create({
     // borderColor: 'purple',
   },
 
-  // CSS des couvertures
+  // bloc des couvertures
   imageContainer: {
     position: 'absolute',
     top: 0,
@@ -350,15 +355,12 @@ const styles = StyleSheet.create({
   },
 
   coverImage: {
-    height: 115,
     borderRadius: 10,
-
     borderWidth: 0.5,
     borderColor: 'rgba(55, 27, 12, 0.5)',
   },
 
   coverImageAdult: {
-    height: 115,
     borderRadius: 10,
     borderWidth: 0.5,
     borderColor: 'rgba(255, 123, 0, 0.5)',
