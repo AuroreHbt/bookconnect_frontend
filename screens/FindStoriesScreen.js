@@ -16,8 +16,11 @@ import {
 } from 'react-native';
 
 import { Picker } from '@react-native-picker/picker';
+import { globalStyles } from '../styles/globalStyles'
 
 import { LinearGradient } from 'expo-linear-gradient';
+
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const defaultImage = require('../assets/image-livre-defaut.jpg')
 
@@ -38,6 +41,7 @@ export default function FindStoriesScreen({ navigation }) {
 
     const [laststories, setLastStories] = useState([])
 
+    const goBack = () => navigation.goBack();
 
     // Fonction pour effectuer une recherche d'histoire
 
@@ -57,7 +61,7 @@ export default function FindStoriesScreen({ navigation }) {
                     setStories(data.stories);
                     console.log('donnée', data.stories);
 
-                    // reset des cahmps de recherche
+                    // reset des champs de recherche
                     setTitle('');
                     setAuthor('');
                     setCategory('');
@@ -125,6 +129,17 @@ export default function FindStoriesScreen({ navigation }) {
                 <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
                     <View style={styles.titlePageContainer}>
                         <Text style={styles.titlePage} >Rechercher une histoire</Text>
+                        <TouchableOpacity
+                            onPress={goBack}
+                            activeOpacity={0.8}
+                        >
+                            <Icon
+                                style={styles.returnContainer}
+                                name="chevron-circle-left"
+                                size={32}
+                                color='rgba(55, 27, 12, 0.3)'
+                            />
+                        </TouchableOpacity>
                     </View>
                     <View style={styles.inputContainer}>
 
@@ -206,6 +221,7 @@ export default function FindStoriesScreen({ navigation }) {
                         renderItem={renderStory}
                         style={styles.flatList}
                         horizontal
+                        showsHorizontalScrollIndicator={false}
                     />
 
                 </KeyboardAvoidingView>
@@ -226,14 +242,20 @@ const styles = StyleSheet.create({
     titlePageContainer: {
         position: 'absolute',
         top: 50,
-        alignItems: 'center'
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+
     },
 
     titlePage: {
         fontWeight: 'bold',
-        fontSize: 20,
-
+        fontSize: 28,
+        color: 'rgba(55, 27, 12, 0.9)',
+        flex: 1
     },
+
+
 
     inputContainer: {
         alignItems: 'center',
@@ -243,7 +265,7 @@ const styles = StyleSheet.create({
 
     input: {
         backgroundColor: "#EEECE8",
-        paddingVertical: 10,
+        paddingVertical: 5,
         borderRadius: 5,
         borderBottomWidth: 0.7,
         borderBottomColor: "rgba(55, 27, 12, 0.50)",
@@ -296,13 +318,13 @@ const styles = StyleSheet.create({
     },
 
     gradientButton: {
-        borderRadius: 15,
+        borderRadius: 10,
         margin: 10,
         width: '55%',
     },
 
     button: {
-        padding: 10,
+        padding: 8,
         margin: 5,
     },
 

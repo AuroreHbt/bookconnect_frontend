@@ -9,22 +9,48 @@ import {
   Image
 } from 'react-native';
 
+
 import { globalStyles } from '../styles/globalStyles';
+import { useDispatch, useSelector } from 'react-redux'
+import { addLike, removeLike } from '../reducers/story'
+import { useState } from 'react';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 export default function ResultResearchStoriesScreen({ route, navigation }) {
 
+  const { stories: initialStories = [] } = route.params || {}; // Récupère les histoires depuis les paramètres ou initialise un tableau vide
+  const [stories, setStories] = useState(initialStories) // Définit l'état local avec les histoires initiales
+
+
+  const dispatch = useDispatch();
+
+  const handleLike = (story) => {
+    // Met à jour isLiked pour l'histoire cliquée
+    const updatedStory = { ...story, isLiked: !story.isLiked };
+
+    setStories((prevStories) =>
+      prevStories.map((currentStory) =>
+        currentStory._id === story._id ? updatedStory : currentStory
+      )
+    );
+    // Envoie l'action appropriée à Redux
+    if (updatedStory.isLiked) {
+
+      dispatch(addLike(updatedStory));
+    } else {
+
+      dispatch(removeLike(updatedStory._id));
+    }
+    console.log("état isLiked", updatedStory)
+  }
+
   const goBack = () => navigation.goBack();
 
   const handleShowContent = () => {
     setIsVisible(!isVisible);
   }
-
-  const { stories } = route.params
-
-  console.log("Histoire reçue :", stories);
 
   const renderStory = ({ item }) => (
     <View style={styles.storyContainer}>
@@ -95,6 +121,17 @@ export default function ResultResearchStoriesScreen({ route, navigation }) {
                         blurRadius={item.isAdult ? 10 : 0}
                       />
                     )}
+                    <TouchableOpacity
+                      style={styles.likeButton}
+                      onPress={() => handleLike(item)}
+                    >
+
+                      <Icon
+                        name={item.isLiked ? "heart" : "heart-o"}
+                        size={26}
+                        color={item.isLiked ? "red" : "rgba(55, 27, 12, 0.3)"}
+                      />
+                    </TouchableOpacity>
                     <TouchableOpacity
                       onPress={handleShowContent}
                     >
@@ -199,6 +236,16 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     // borderColor: 'blue',
   },
+
+  likeButton: {
+    position: 'absolute',
+    top: 150,
+    right: 10,
+    padding: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
 
   coverImage: {
     borderRadius: 10,
