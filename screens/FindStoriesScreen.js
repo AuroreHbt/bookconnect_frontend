@@ -102,12 +102,10 @@ export default function FindStoriesScreen({ navigation }) {
     const renderStory = ({ item }) => (<TouchableOpacity
         onPress={() => navigation.navigate("ReadStory", { story: item })}
         style={styles.storyCard}>
-        {item.coverImage && (
             <Image
                 source={item.coverImage ? { uri: item.coverImage } : defaultImage}
                 style={styles.coverImage}
             />
-        )}
         <Text style={styles.storyTitle}>{item.title}</Text>
         <Text style={styles.storyCategory}>{item.category}</Text>
     </TouchableOpacity>
