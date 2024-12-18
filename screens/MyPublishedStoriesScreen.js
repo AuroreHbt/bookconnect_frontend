@@ -183,33 +183,33 @@ export default function MyPublishedStoriesScreen({ navigation }) {
                     <Text style={styles.storyCategory}>{"Catégorie: " + item.category}</Text>
                   </View>
 
+                  {/* affichage du fichier image téléchargé */}
                   <View style={styles.imageContainer}>
-                    {/* affichage du fichier image téléchargé */}
 
-                    {/* {item.coverImage && */}
+                    {/* Spoiler sur Image */}
                     <Image
                       source={item.coverImage ? { uri: item.coverImage } : defaultImage}
                       style={
                         item.isAdult // isAdult=true (18+)
-                          ? [styles.coverImageAdult, { width: 150, height: 150 }]
-                          : [styles.coverImage, { width: 150, height: 150 }]
+                          ? [styles.coverImageSpoiler, { width: 130, height: 130 }]
+                          : [styles.coverImage, { width: 130, height: 130 }]
                       }
                     />
 
-                    {item.coverImage && item.isAdult ? (
+                    {item.coverImage && item.isAdult ? ( // si isAdult = true => 18+ => isVisible doit être false (donc true) pour retirer le spoiler et afficher l'image uploadée
                       <Icon
-                        name={isVisible ? 'eye' : 'eye-slash'}
-                        size={48}
-                        style={isVisible ? styles.hideContent : styles.showContent}
+                        name={isVisible ? null : 'eye-slash'} // si isVisible est true (donc = false), pas d'icon, else icon eye-slash
+                        size={72}
+                        style={isVisible ? null : styles.contentVisible}
                         onPress={handleShowContent}
                       />
                     ) : null}
 
-                    {/* Affiche l'image si isVisible est vrai */}
+                    {/* Affiche l'image si isVisible est false donc true */}
                     {isVisible && (
                       <Image
                         source={{ uri: item.coverImage }}
-                        style={[styles.coverImage, { width: 150, height: 150 }]}
+                        style={[styles.coverImageVisible, { width: 130, height: 130 }]}
                       />
                     )}
                   </View>
@@ -304,6 +304,7 @@ const styles = StyleSheet.create({
   rowContainer: {
     flexDirection: 'row',
     width: '100%',
+    height: 140,
 
     // borderWidth: 1,
     // borderColor: 'green',
@@ -357,51 +358,60 @@ const styles = StyleSheet.create({
     top: 0,
     right: 0,
     width: '40%',
-    height: 150,
+    height: 135,
+    paddingVertical: 2,
+    paddingHorizontal: 3,
+    marginBottom: 10,
 
-    borderWidth: 1,
-    borderColor: 'blue',
+    // borderWidth: 1,
+    // borderColor: 'blue',
   },
 
   coverImage: {
     borderRadius: 10,
   },
 
-  coverImageAdult: {
-    position: 'absolute',
+  coverImageVisible: {
+    position: 'absolute', // supersposition de l'image sur le spoiler
+    top: 0,
+    right: 0,
+    borderRadius: 10,
+  },
+
+  coverImageSpoiler: {
+    position: 'absolute', // supersposition de l'image sur le spoiler
     top: 0,
     right: 0,
 
     borderRadius: 10,
     backgroundColor: 'rgba(0, 0, 0, 1)',
     opacity: 0.3,
-    // elevation: 0,
   },
 
-  showContent: { // eye-slash
+  contentVisible: { // eye-slash
     position: 'absolute',
-    top: 25,
-    right: 35,
+    top: 20,
+    right: 20,
     color: 'rgba(253,255,0, 0.8)',
     backgroundColor: 'rgba(255, 123, 0, 0.7)',
-    borderRadius: 35,
+    borderRadius: 50,
     padding: 10,
-    elevation: 10,
+    // elevation: 10,
 
     // borderWidth: 1,
     // borderColor: 'yellow',
   },
 
-  hideContent: { // eye
-    position: 'absolute',
-    top: 25,
-    right: 35,
-    color: 'lightgrey', // 'rgba(216, 72, 21, 0.8)',
-    opacity: 0.3,
-    borderRadius: 35,
-    padding: 10,
-    elevation: 10,
-  },
+  // contentHidden: { // eye
+  //   position: 'absolute',
+  //   top: 20,
+  //   right: 25,
+  //   color: 'lightgrey', // 'rgba(216, 72, 21, 0.8)',
+  //   opacity: 0.5,
+  //   borderRadius: 50,
+  //   padding: 10,
+  //   // elevation: 10,
+  // },
 
   // CSS du bouton Modifier + poubelle pour suppr
   buttonCard: {

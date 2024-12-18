@@ -167,7 +167,7 @@ function TabNavigator() {
 
       headerShown: false,
       tabBarActiveTintColor: 'rgba(216, 72, 21, 0.8)',
-      tabBarInactiveTintColor: 'rgba(55, 27, 12, 0.67)',
+      tabBarInactiveTintColor: 'rgba(55, 27, 12, 0.7)',
       tabBarStyle: { position: 'absolute' },
 
       tabBarBackground: () => (
@@ -232,7 +232,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 0.95,
-    backgroundColor: '#EEECE8',
+    backgroundColor: 'rgba(238, 236, 232, 1)',
     alignItems: 'center',
     justifyContent: 'center',
   },
