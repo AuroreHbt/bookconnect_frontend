@@ -116,7 +116,7 @@ export default function NewEventScreen({ navigation }) {
   // Demande de permission pour accéder à la galerie photo du mobile
   const handleImagePick = async () => {
     try {
-      const permissionResult = await ImagePickerOptions.requestMediaLibraryPermissionsAsync();
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
   
       if (!permissionResult.granted) {
         Alert.alert('Permission refusée', 'Vous devez autoriser l\'accès à la galerie.');
@@ -124,7 +124,7 @@ export default function NewEventScreen({ navigation }) {
       }
   
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaType.Images, // Utilise MediaTypeOptions
+        mediaTypes: ImagePicker.MediaTypeOptions.Images, // Utilise MediaTypeOptions
         quality: 1,
       });
   
