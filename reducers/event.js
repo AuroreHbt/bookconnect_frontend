@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    value: []
+    events: [], 
+    likes: [],  // Ajout de l'état pour les likes des événements
 };
 
 export const eventSlice = createSlice({
@@ -9,14 +10,26 @@ export const eventSlice = createSlice({
     initialState,
     reducers: {
         addEvent: (state, action) => {
-            state.value.push(action.payload);
+            state.events.push(action.payload);
         },
+       
         deleteEvent: (state, action) => {
-            state.value = state.value.filter(event => event.id !== action.payload); // comparaison par id de chaque event
+            state.events = state.events.filter(event => event._id !== action.payload.id);
+          },
+          
+
+        likeEvent: (state, action) => {
+            if (!state.likes.includes(action.payload.id)) {
+                state.likes.push(action.payload.id); // Ajout du like
+            }
         },
+        unlikeEvent: (state, action) => {
+            state.likes = state.likes.filter(id => id !== action.payload.id); 
+        },
+
     },
 });
 
-export const { addEvent, deleteEvent } = eventSlice.actions;
+export const { addEvent, likeEvent,unlikeEvent, deleteEvent } = eventSlice.actions;
 export default eventSlice.reducer;
 // reducer bien ajouté au App.js

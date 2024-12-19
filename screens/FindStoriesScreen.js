@@ -5,7 +5,7 @@ import {
     StyleSheet,
     KeyboardAvoidingView,
     TouchableWithoutFeedback,
-    Keyboard,  
+    Keyboard,
     Platform,
     Text,
     TextInput,
@@ -16,8 +16,13 @@ import {
 } from 'react-native';
 
 import { Picker } from '@react-native-picker/picker';
+import { globalStyles } from '../styles/globalStyles'
 
 import { LinearGradient } from 'expo-linear-gradient';
+
+import Icon from 'react-native-vector-icons/FontAwesome';
+
+const defaultImage = require('../assets/image-livre-defaut.jpg')
 
 
 const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
@@ -36,13 +41,13 @@ export default function FindStoriesScreen({ navigation }) {
 
     const [laststories, setLastStories] = useState([])
 
+    const goBack = () => navigation.goBack();
 
     // Fonction pour effectuer une recherche d'histoire
 
     // requête fetch vers le backend
     const handleStorySearch = () => {
         console.log('click');
-
 
         const query = `?${title ? `title=${title}` : ''}${author ? `&author=${author}` : ''}${category ? `&category=${category}` : ''}`;
 
@@ -55,6 +60,12 @@ export default function FindStoriesScreen({ navigation }) {
                 if (data.result) {
                     setStories(data.stories);
                     console.log('donnée', data.stories);
+
+                    // reset des champs de recherche
+                    setTitle('');
+                    setAuthor('');
+                    setCategory('');
+                    setCategorySelected('');
 
                     // Navigation vers l'écran ResultResearchStories et affichage des résultats
                     navigation.navigate('ResultResearchStories', { stories: data.stories });
@@ -73,7 +84,7 @@ export default function FindStoriesScreen({ navigation }) {
     }, []);
 
     const handleRandomStory = () => {
-        console.log('click')
+        console.log('click2')
         if (allStories.length > 1) {
             let randomIndex = Math.floor(Math.random() * allStories.length);
             while (allStories[randomIndex]._id === lastStoryId) {
@@ -100,12 +111,10 @@ export default function FindStoriesScreen({ navigation }) {
     const renderStory = ({ item }) => (<TouchableOpacity
         onPress={() => navigation.navigate("ReadStory", { story: item })}
         style={styles.storyCard}>
-        {item.coverImage && (
-            <Image
-                source={{ uri: item.coverImage }}
-                style={styles.coverImage}
-            />
-        )}
+        <Image
+            source={item.coverImage ? { uri: item.coverImage } : defaultImage}
+            style={styles.coverImage}
+        />
         <Text style={styles.storyTitle}>{item.title}</Text>
         <Text style={styles.storyCategory}>{item.category}</Text>
     </TouchableOpacity>
@@ -120,6 +129,17 @@ export default function FindStoriesScreen({ navigation }) {
                 <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
                     <View style={styles.titlePageContainer}>
                         <Text style={styles.titlePage} >Rechercher une histoire</Text>
+                        <TouchableOpacity
+                            onPress={goBack}
+                            activeOpacity={0.8}
+                        >
+                            <Icon
+                                style={styles.returnContainer}
+                                name="chevron-circle-left"
+                                size={32}
+                                color='rgba(55, 27, 12, 0.3)'
+                            />
+                        </TouchableOpacity>
                     </View>
                     <View style={styles.inputContainer}>
 
@@ -201,6 +221,7 @@ export default function FindStoriesScreen({ navigation }) {
                         renderItem={renderStory}
                         style={styles.flatList}
                         horizontal
+                        showsHorizontalScrollIndicator={false}
                     />
 
                 </KeyboardAvoidingView>
@@ -221,14 +242,20 @@ const styles = StyleSheet.create({
     titlePageContainer: {
         position: 'absolute',
         top: 50,
-        alignItems: 'center'
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+
     },
 
     titlePage: {
         fontWeight: 'bold',
-        fontSize: 20,
-
+        fontSize: 28,
+        color: 'rgba(55, 27, 12, 0.9)',
+        flex: 1
     },
+
+
 
     inputContainer: {
         alignItems: 'center',
@@ -238,7 +265,7 @@ const styles = StyleSheet.create({
 
     input: {
         backgroundColor: "#EEECE8",
-        paddingVertical: 10,
+        paddingVertical: 5,
         borderRadius: 5,
         borderBottomWidth: 0.7,
         borderBottomColor: "rgba(55, 27, 12, 0.50)",
@@ -291,13 +318,13 @@ const styles = StyleSheet.create({
     },
 
     gradientButton: {
-        borderRadius: 15,
+        borderRadius: 10,
         margin: 10,
         width: '55%',
     },
 
     button: {
-        padding: 10,
+        padding: 8,
         margin: 5,
     },
 
