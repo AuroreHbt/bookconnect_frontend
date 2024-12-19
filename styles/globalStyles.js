@@ -25,7 +25,8 @@ export const globalStyles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
-        padding: 20,
+        paddingTop: 25,
+        paddingHorizontal: 15,
         // overflow: 'hidden'
     },
 

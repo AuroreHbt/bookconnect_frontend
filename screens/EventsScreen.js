@@ -3,13 +3,13 @@ import {
   Alert,
   FlatList,
   KeyboardAvoidingView,
-  Keyboard,
-  TouchableWithoutFeedback,
   Platform,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
+  Keyboard,
   View,
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome"
@@ -24,6 +24,10 @@ export default function EventsScreen({ navigation }) {
 
   const addEvent = () => {
     navigation.navigate("NewEvent", { screen: "NewEventScreen" });
+  };
+
+  const myEvent = () => {
+    navigation.navigate("MyEvents", { screen: "MyEventsScreen" });
   };
 
   const handleSearchPlace = async () => {
@@ -78,9 +82,7 @@ export default function EventsScreen({ navigation }) {
   };
 
   return (
-
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={bottomTabStyles.container}
@@ -131,8 +133,20 @@ export default function EventsScreen({ navigation }) {
             </TouchableOpacity>
           </LinearGradient>
         </View>
+        <View style={bottomTabStyles.buttonContainer}>
+          <LinearGradient
+            colors={["rgba(255, 123, 0, 0.9)", "rgba(216, 72, 21, 1)"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 0.7 }}
+            style={bottomTabStyles.gradientButton}
+            activeOpacity={0.8}
+          >
+            <TouchableOpacity onPress={myEvent} style={bottomTabStyles.button}>
+              <Text style={bottomTabStyles.textButton}>Mes évènements</Text>
+            </TouchableOpacity>
+          </LinearGradient>
+        </View>
       </KeyboardAvoidingView>
-
     </TouchableWithoutFeedback>
   );
 }

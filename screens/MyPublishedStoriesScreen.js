@@ -11,7 +11,8 @@ import {
   FlatList,
   StyleSheet,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert,
 } from "react-native";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -32,6 +33,8 @@ export default function MyPublishedStoriesScreen({ navigation }) {
   // https://reactnavigation.org/docs/navigation-object/#goback
   const goBack = () => navigation.goBack();
 
+  const defaultImage = require('../assets/image-livre-defaut.jpg')
+
   const [stories, setStories] = useState([]); //hook d'état pour stocker les histoires publiées
   const [isVisible, setIsVisible] = useState(false) // hook d'état pour le spoiler sur les images sensibles
 
@@ -41,8 +44,12 @@ export default function MyPublishedStoriesScreen({ navigation }) {
   const dispatch = useDispatch();
 
   const handleShowContent = () => {
-    setIsVisible(!isVisible);
-  }
+    console.log('isVisible initial: ', isVisible);
+    setIsVisible(!isVisible); // Inverse l'état de isVisible
+    if (isVisible === false) {
+      Alert.alert("Contenu sensible visible");
+    }
+  };
 
   // Fonction pour récupérer les histoires publiées
   const getMyPublishedStories = () => {
@@ -176,32 +183,35 @@ export default function MyPublishedStoriesScreen({ navigation }) {
                     <Text style={styles.storyCategory}>{"Catégorie: " + item.category}</Text>
                   </View>
 
+                  {/* affichage du fichier image téléchargé */}
                   <View style={styles.imageContainer}>
-                    {/* affichage du fichier image téléchargé */}
-                    {item.coverImage
-                      ?
-                      <Image
-                        source={{ uri: story.coverImage }}
-                        style={
-                          item.isAdult
-                            ? styles.coverImageAdult
-                            : styles.coverImage
-                        }
-                        blurRadius={item.isAdult ? 10 : 0}
+
+                    {/* Spoiler sur Image */}
+                    <Image
+                      source={item.coverImage ? { uri: item.coverImage } : defaultImage}
+                      style={
+                        item.isAdult // isAdult=true (18+)
+                          ? [styles.coverImageSpoiler, { width: 130, height: 130 }]
+                          : [styles.coverImage, { width: 130, height: 130 }]
+                      }
+                    />
+
+                    {item.coverImage && item.isAdult ? ( // si isAdult = true => 18+ => isVisible doit être false (donc true) pour retirer le spoiler et afficher l'image uploadée
+                      <Icon
+                        name={isVisible ? null : 'eye-slash'} // si isVisible est true (donc = false), pas d'icon, else icon eye-slash
+                        size={72}
+                        style={isVisible ? null : styles.contentVisible}
+                        onPress={handleShowContent}
                       />
-                      :
+                    ) : null}
+
+                    {/* Affiche l'image si isVisible est false donc true */}
+                    {isVisible && (
                       <Image
-                        source={require('../assets/bookCover-placeholder.png')}
-                        style={styles.coverImage}
+                        source={{ uri: item.coverImage }}
+                        style={[styles.coverImageVisible, { width: 130, height: 130 }]}
                       />
-                    }
-                    <TouchableOpacity
-                      onPress={handleShowContent}
-                    >
-                      {item.isAdult && (
-                        <Text style={item.isAdult ? styles.showContent : null} >Contenu sensible</Text>
-                      )}
-                    </TouchableOpacity>
+                    )}
                   </View>
                 </View>
 
@@ -246,7 +256,7 @@ export default function MyPublishedStoriesScreen({ navigation }) {
           )}
         />
       </View>
-    </KeyboardAvoidingView>
+    </KeyboardAvoidingView >
   );
 }
 
@@ -268,6 +278,10 @@ const styles = StyleSheet.create({
   storyContainer: {
     width: '100%',
     padding: 5,
+    marginBottom: 15,
+    borderRadius: 10,
+    backgroundColor: "rgba(238, 236, 232, 0.9)",
+    elevation: 0, // Pour Android => permet de mettre ce contenu en "arriere plan" pour acceder au onPress={handleShowContent} qui était masqué
 
     // borderWidth: 2,
     // borderColor: 'purple',
@@ -290,6 +304,7 @@ const styles = StyleSheet.create({
   rowContainer: {
     flexDirection: 'row',
     width: '100%',
+    height: 140,
 
     // borderWidth: 1,
     // borderColor: 'green',
@@ -317,9 +332,9 @@ const styles = StyleSheet.create({
   storyCategory: {
     fontSize: 18,
     paddingHorizontal: 5,
-    marginVertical: 10,
+    marginVertical: 5,
     width: '100%',
-    height: 60,
+    height: 70,
 
     // borderWidth: 1,
     // borderColor: 'red',
@@ -337,43 +352,66 @@ const styles = StyleSheet.create({
     // borderColor: 'purple',
   },
 
-  // CSS des couvertures
+  // bloc des couvertures
   imageContainer: {
     position: 'absolute',
     top: 0,
     right: 0,
     width: '40%',
-    height: 115,
+    height: 135,
+    paddingVertical: 2,
+    paddingHorizontal: 3,
+    marginBottom: 10,
 
-    borderWidth: 1,
-    borderColor: 'blue',
+    // borderWidth: 1,
+    // borderColor: 'blue',
   },
 
   coverImage: {
-    height: 115,
     borderRadius: 10,
-
-    borderWidth: 0.5,
-    borderColor: 'rgba(55, 27, 12, 0.5)',
   },
 
-  coverImageAdult: {
-    height: 115,
+  coverImageVisible: {
+    position: 'absolute', // supersposition de l'image sur le spoiler
+    top: 0,
+    right: 0,
     borderRadius: 10,
-    borderWidth: 0.5,
-    borderColor: 'rgba(255, 123, 0, 0.5)',
+  },
 
+  coverImageSpoiler: {
+    position: 'absolute', // supersposition de l'image sur le spoiler
+    top: 0,
+    right: 0,
+
+    borderRadius: 10,
     backgroundColor: 'rgba(0, 0, 0, 1)',
-    opacity: 0.5,
+    opacity: 0.3,
   },
 
-  showContent: {
+  contentVisible: { // eye-slash
     position: 'absolute',
-    top: -65,
-    right: 7,
-    backgroundColor: 'rgba(253,255,0, 1)',
-    textAlign: 'center',
+    top: 20,
+    right: 20,
+    color: 'rgba(253,255,0, 0.8)',
+    backgroundColor: 'rgba(255, 123, 0, 0.7)',
+    borderRadius: 50,
+    padding: 10,
+    // elevation: 10,
+
+    // borderWidth: 1,
+    // borderColor: 'yellow',
   },
+
+  // contentHidden: { // eye
+  //   position: 'absolute',
+  //   top: 20,
+  //   right: 25,
+  //   color: 'lightgrey', // 'rgba(216, 72, 21, 0.8)',
+  //   opacity: 0.5,
+  //   borderRadius: 50,
+  //   padding: 10,
+  //   // elevation: 10,
+  // },
 
   // CSS du bouton Modifier + poubelle pour suppr
   buttonCard: {
