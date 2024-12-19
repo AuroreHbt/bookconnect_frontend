@@ -36,12 +36,52 @@ export default function FavReadingScreen() {
 
 // attention : le StyleSheet doit bien être en dehors de la fonction!
 const styles = StyleSheet.create({
-
     container: {
-        flex: 0.95,
-        backgroundColor: 'pink',
-        alignItems: 'center',
-        justifyContent: 'center',
+        flex: 1,
+        backgroundColor: '#EEECE8', // Couleur de fond similaire
+        padding: 16,
     },
 
+    flatList: {
+        marginTop: 20,
+    },
+
+    storyCard: {
+        backgroundColor: 'rgba(238, 236, 232, 1)', // Couleur de la carte
+        padding: 10,
+        borderRadius: 10,
+        marginBottom: 15,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 1,
+        borderColor: 'rgba(55, 27, 12, 0.1)', // Bordure légère
+    },
+
+    coverImage: {
+        width: 150,
+        height: 150,
+        borderRadius: 10,
+        marginBottom: 10,
+    },
+
+    storyTitle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: 'rgba(55, 27, 12, 0.9)', // Couleur du texte
+        textAlign: 'center',
+        marginBottom: 5,
+    },
+
+    storyCategory: {
+        fontSize: 14,
+        color: 'rgba(55, 27, 12, 0.7)',
+        textAlign: 'center',
+        marginBottom: 5,
+    },
+
+    storyAuthor: {
+        fontSize: 12,
+        color: 'rgba(55, 27, 12, 0.5)', // Couleur plus claire pour l'auteur
+        textAlign: 'center',
+    },
 });

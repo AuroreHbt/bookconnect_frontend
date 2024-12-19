@@ -23,21 +23,15 @@ export const storySlice = createSlice({
             );
         },
         addLike: (state, action) => {
-            console.log('addLike', action.payload)
-            const story = state.value.find(story => story._id === action.payload._id);
-            if (story) {
-                story.isLiked = true;
-            } else {
+            console.log("Adding like:", action.payload);
+            const existingStory = state.value.find(story => story._id === action.payload._id);
+            if (!existingStory) {
                 state.value.push({ ...action.payload, isLiked: true });
             }
-            console.log('story:', state.value);
         },
         removeLike: (state, action) => {
-            const story = state.value.find(story => story._id === action.payload._id);
-            if (story) {
-                story.isLiked = false;
-            }
-            console.log('remove like', state.value);
+            console.log("Removing like for story ID:", action.payload);
+            state.value = state.value.filter(story => story._id !== action.payload);
         },
     },
 });
