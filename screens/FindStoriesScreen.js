@@ -39,7 +39,7 @@ export default function FindStoriesScreen({ navigation }) {
     const [randomStory, setRandomStory] = useState(null);
     const [lastStoryId, setLastStoryId] = useState([])
 
-    const [laststories, setLastStories] = useState([])
+   
 
     const goBack = () => navigation.goBack();
 
@@ -117,6 +117,7 @@ export default function FindStoriesScreen({ navigation }) {
         />
         <Text style={styles.storyTitle}>{item.title}</Text>
         <Text style={styles.storyCategory}>{item.category}</Text>
+        <Text style={styles.storyAuthor}>{item.author.username}</Text>
     </TouchableOpacity>
     )
 
@@ -369,6 +370,12 @@ const styles = StyleSheet.create({
     },
 
     storyCategory: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        marginBottom: 5
+    },
+
+    storyAuthor: {
         fontSize: 10,
         fontWeight: 'bold'
     }

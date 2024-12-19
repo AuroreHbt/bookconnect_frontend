@@ -22,6 +22,10 @@ import {
 import { useDispatch } from "react-redux";
 import { logout } from "../reducers/user";
 
+const defaultImage = require('../assets/image-livre-defaut.jpg')
+
+const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
+
 export default function DashboardScreen({ navigation }) {
   useEffect(() => {
     Keyboard.dismiss();
@@ -53,6 +57,17 @@ export default function DashboardScreen({ navigation }) {
   };
 
   const handleMyCurrentReadings = () => {
+
+  useEffect(() => {
+        fetch(`${BACKEND_ADDRESS}/stories/laststories`)
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.result) {
+                    setAllStories(data.stories)
+                }
+            })
+    }, []);
+
     navigation.navigate("MyCurrentReadings");
   };
 
