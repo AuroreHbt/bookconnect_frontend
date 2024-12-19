@@ -433,7 +433,7 @@ const styles = StyleSheet.create({
   },
   eventListButton: {
     position: "absolute",
-    bottom: 45,
+    bottom: 80,
     left: "50%",
     transform: [{ translateX: -120 }],
     backgroundColor: "#FF4525",
