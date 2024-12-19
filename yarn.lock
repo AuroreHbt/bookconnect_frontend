@@ -835,6 +835,11 @@
   dependencies:
     "@types/hammerjs" "^2.0.36"
 
+"@expo-google-fonts/asul@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@expo-google-fonts/asul/-/asul-0.2.3.tgz#3d730efed2f9f7be67670b36f6a63d881d0f42c9"
+  integrity sha512-NRDVj/Q3HOBaKTAsm7mmYLy4oOoOihZ5ReOL882wdrnbouAPRn7BfSag2u1pPtBCtBFOJuFd3SXI3/VoAtXdJA==
+
 "@expo-google-fonts/germania-one@^0.2.3":
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/@expo-google-fonts/germania-one/-/germania-one-0.2.3.tgz#fa63b7c7944d78ff769e2acb52cdee063e7e498a"
@@ -3239,7 +3244,7 @@ expo-file-system@~18.0.5:
   dependencies:
     web-streams-polyfill "^3.3.2"
 
-expo-font@~13.0.1:
+expo-font@^13.0.1, expo-font@~13.0.1:
   version "13.0.1"
   resolved "https://registry.yarnpkg.com/expo-font/-/expo-font-13.0.1.tgz#3a7eed7a4238a352fc74a425fd8c020c5f122382"
   integrity sha512-8JE47B+6cLeKWr5ql8gU6YsPHjhrz1vMrTqYMm72No/8iW8Sb/uL4Oc0dpmbjq3hLLXBY0xPBQOgU7FQ6Y04Vg==
@@ -3293,6 +3298,13 @@ expo-modules-core@2.1.1:
   integrity sha512-yQzYCLR2mre4BNMXuqkeJ0oSNgmGEMI6BcmIzeNZbC2NFEjiaDpKvlV9bclYCtyVhUEVNbJcEPYMr6c1Y4eR4w==
   dependencies:
     invariant "^2.2.4"
+
+expo-splash-screen@^0.29.18:
+  version "0.29.18"
+  resolved "https://registry.yarnpkg.com/expo-splash-screen/-/expo-splash-screen-0.29.18.tgz#96ccce3d5a03389a9061743903b0a77c22a16796"
+  integrity sha512-bTBY+LF6YtYen2j60yGNh2SX/tG4UXZAyBCMMriOSiZZ7LSCs3ARyEufaSiWk+ckWShTeMqItOnaAN/CAF8MJA==
+  dependencies:
+    "@expo/prebuild-config" "^8.0.23"
 
 expo-status-bar@~2.0.0:
   version "2.0.0"
