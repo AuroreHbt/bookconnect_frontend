@@ -417,11 +417,12 @@ const styles = StyleSheet.create({
   buttonCard: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '100%',
-    marginTop: 10,
+    width: '95%',
+    marginVertical: 10,
+    marginLeft: 10,
 
     // borderWidth: 1,
-    // borderColor: 'rgba(238, 236, 232, 1)',
+    // borderColor: 'red', // 'rgba(238, 236, 232, 1)',
   },
 
   gradientButton: {
@@ -429,8 +430,9 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    padding: 4,
-    margin: 4,
+    paddingVertical: 2,
+    paddingHorizontal: 5,
+    margin: 10,
   },
 
   textButton: {
@@ -444,7 +446,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     top: 5,
     left: 15,
-    marginRight: 30,
+    marginRight: 30,    
   },
 
 });
