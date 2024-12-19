@@ -80,25 +80,9 @@ export default function StoriesScreen({ navigation }) {
             </View>
 
             <View>
-                <Text style={bottomTabStyles.title}>Lire et découvrir</Text>
+                <Text style={bottomTabStyles.title}>Découvrir</Text>
             </View>
 
-            <View style={bottomTabStyles.buttonContainer}>
-                <LinearGradient
-                    colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 0, y: 0.7 }}
-                    style={bottomTabStyles.gradientButton}
-                    activeOpacity={0.8}
-                >
-                    <TouchableOpacity
-                        onPress={handleMyCurrentReadings}
-                        style={bottomTabStyles.button}
-                    >
-                        <Text style={bottomTabStyles.textButton}>Mes lectures en cours</Text>
-                    </TouchableOpacity>
-                </LinearGradient>
-            </View>
 
             <View style={bottomTabStyles.buttonContainer}>
                 <LinearGradient

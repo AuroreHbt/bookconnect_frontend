@@ -26,9 +26,6 @@ export default function EventsScreen({ navigation }) {
     navigation.navigate("NewEvent", { screen: "MyEventsScreen" });
   };
 
-  const myEvent = () => {
-    navigation.navigate("MyEvents", { screen: "MyEventsScreen" });
-  };
 
   const myEvent = () => {
     navigation.navigate("MyEvents", { screen: "MyEventsScreen" });

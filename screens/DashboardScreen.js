@@ -31,13 +31,7 @@ export default function DashboardScreen({ navigation }) {
     Keyboard.dismiss();
   }, []);
 
-  /*  const data = [
-     { id: '1', image: require('../assets/avatar.png') },
-     { id: '2', image: require('../assets/avatar.png') },
-     { id: '3', image: require('../assets/avatar.png') },
-   ]; */
 
-  // utiliser .map sur les reducer pour affichage dynamique
 
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
@@ -45,6 +39,17 @@ export default function DashboardScreen({ navigation }) {
   console.log("Événements dans le store:", addedEvents); // Vérifiez que les événements sont récupérés
 
   const [isParameterVisible, setIsParameterVisible] = useState(false);
+  const [allStories, setAllStories] = useState([]);
+
+    useEffect(() => {
+          fetch(`${BACKEND_ADDRESS}/stories/laststories`)
+              .then((response) => response.json())
+              .then((data) => {
+                  if (data.result) {
+                      setAllStories(data.stories)
+                  }
+              })
+      }, []);
 
   const toggleParameter = () => {
     setIsParameterVisible(!isParameterVisible);
@@ -56,19 +61,10 @@ export default function DashboardScreen({ navigation }) {
     navigation.navigate("Home");
   };
 
-  const handleMyCurrentReadings = () => {
 
-  useEffect(() => {
-        fetch(`${BACKEND_ADDRESS}/stories/laststories`)
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.result) {
-                    setAllStories(data.stories)
-                }
-            })
-    }, []);
-
-    navigation.navigate("MyCurrentReadings");
+  
+  const handleLastStories = (story) => {
+    navigation.navigate("ReadStory", { story});
   };
 
   const handleMyEvents = () => {
@@ -143,63 +139,60 @@ export default function DashboardScreen({ navigation }) {
             </Text>
           </View>
 
-          {/* Section carrousel mes lectures en cours */}
-          <View style={styles.sectionContainer}>
-            {/* Titre de la section */}
-            <View style={styles.sectionHeader}>
-              <Text style={styles.textSection}>Mes lectures en cours</Text>
-              <TouchableOpacity
-                onPress={handleMyCurrentReadings}
-                activeOpacity={0.8}
-              >
-                <Icon
-                  name="chevron-circle-right"
-                  size={20}
-                  color="rgba(216, 72, 21, 0.9)"
-                />
-              </TouchableOpacity>
-            </View>
-
-            {/* ScrollView horizontal */}
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.booksContainer}
+        {/* Section carrousel mes lectures en cours */}
+        <View style={styles.sectionContainer}>
+          {/* Titre de la section */}
+          <View style={styles.sectionHeader}>
+            <Text style={styles.textSection}>Dernières histoires</Text>
+            <TouchableOpacity
+            
+              activeOpacity={0.8}
             >
-              <View style={styles.bookCard}>
-                <Image
-                  source={require("../assets/book3.png")}
-                  style={styles.book}
-                />
-                <Text style={styles.textCard}>Book1</Text>
-                <Text style={styles.subtextCard}>Elina M.</Text>
-              </View>
-              <View style={styles.bookCard}>
-                <Image
-                  source={require("../assets/book1.png")}
-                  style={styles.book}
-                />
-                <Text style={styles.textCard}>Book2</Text>
-                <Text style={styles.subtextCard}>Aurore H.</Text>
-              </View>
-              <View style={styles.bookCard}>
-                <Image
-                  source={require("../assets/book2.png")}
-                  style={styles.book}
-                />
-                <Text style={styles.textCard}>Book3</Text>
-                <Text style={styles.subtextCard}>Robin L.</Text>
-              </View>
-              <View style={styles.bookCard}>
-                <Image
-                  source={require("../assets/book4.png")}
-                  style={styles.book}
-                />
-                <Text style={styles.textCard}>Book4</Text>
-                <Text style={styles.subtextCard}>Marie B.</Text>
-              </View>
-            </ScrollView>
+              <Icon
+                name="chevron-circle-right"
+                size={20}
+                color="#D8C7B5"
+              />
+            </TouchableOpacity>
           </View>
+
+          {/* ScrollView horizontal */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.booksContainer}
+          >
+         {allStories.length > 0 ? (
+              allStories.map((story, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.bookCard}
+                  onPress={() => handleLastStories(story)}
+                >
+                  <Image
+                    source={
+                      story.coverImage
+                        ? { uri: story.coverImage }
+                        : defaultImage
+                    }
+                    style={styles.book}
+                    resizeMode="cover"
+                  />
+                  <View style={styles.texContainer}>
+                  <Text style={styles.textCard}>
+                    {story.title}
+                  </Text>
+                  </View>
+                  <Text style={styles.subtextCard}>
+                    {story.author?.username}
+                  </Text>
+                </TouchableOpacity>
+              ))
+            ) : (
+              <Text style={styles.emptyMessage}>Aucune histoire trouvée.</Text>
+            )}
+          </ScrollView>
+        </View>
 
           {/* Section carrousel mes évènements */}
           <View style={styles.sectionContainer}>
@@ -509,5 +502,51 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(0,0,0,0.5)", // Fond semi-transparent
+  },
+
+  bookCard: {
+    marginRight: 15, 
+    alignItems: "center",
+    backgroundColor: "#fff", 
+    borderRadius: 10, 
+    width: 200, 
+    height: 300,
+    alignItems: 'center'
+  },
+
+  imageCard: {
+flex: 1,
+width: '100%',
+height: '100%',
+  },
+
+  book: {
+    flex: 1,
+    width: 200, 
+    height: 300, 
+    borderRadius: 8, 
+    marginBottom: 10, 
+  },
+
+texContainer : {
+  flex: 0.7,
+  width: "100%",
+  justifyContent: 'center',
+  alignItems: 'center'
+},
+
+  textCard: {
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "rgba(55, 27, 12, 0.9)", 
+  },
+
+  subtextCard: {
+    fontSize: 12,
+    margin: 4,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    margin: 0,
   },
 });

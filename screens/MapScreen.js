@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState, useCallback } from "react";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   StyleSheet,
   Text,
@@ -8,6 +8,8 @@ import {
   TouchableWithoutFeedback,
   FlatList,
   TouchableOpacity,
+  Image, 
+  Linking,
 } from "react-native";
 import MapView, { PROVIDER_DEFAULT, Marker } from "react-native-maps";
 import * as Location from "expo-location";
@@ -17,6 +19,7 @@ import { likeEvent, unlikeEvent, addEvent } from "../reducers/event";
 
 export default function MapScreen({ route }) {
   const dispatch = useDispatch();
+  const likes = useSelector((state) => state.event.likes); // Accès à l'état Redux des likes
   const { latitude, longitude, events = {} } = route.params;
   const eventsData = events.data || [];
 
@@ -34,7 +37,6 @@ export default function MapScreen({ route }) {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [eventModalVisible, setEventModalVisible] = useState(false);
-  const [favorites, setFavorites] = useState([]); // Tableau des indices des événements favoris
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);
@@ -45,35 +47,18 @@ export default function MapScreen({ route }) {
   };
 
   const handleParticipate = (event) => {
-    console.log('Tentative d\'ajouter l\'événement :', event);
-    dispatch(addEvent(event)); // Envoie l'événement au reducer
+    dispatch(addEvent(event));
     alert('Votre événement a été ajouté au dashboard');
   };
-  
 
-  // Fonction de gestion des favoris
-  const toggleFavorite = (eventIndex) => {
-    const event = eventsData[eventIndex];
-  
-    // Si l'événement est déjà dans les favoris
-    if (favorites.includes(eventIndex)) {
-      // Retirer de la liste des favoris
-      dispatch(unlikeEvent(event)); // Dispatch de l'action `unlikeEvent`
+  const toggleFavorite = (event) => {
+    const isLiked = likes.some((likedEvent) => likedEvent._id === event._id);
+    if (isLiked) {
+      dispatch(unlikeEvent({ id: event._id }));
     } else {
-      // Ajouter aux favoris
-      dispatch(likeEvent(event)); // Dispatch de l'action `likeEvent`
+      dispatch(likeEvent(event));
     }
-  
-    // Mettre à jour localement l'état des favoris (facultatif si vous voulez garder cette gestion visuelle)
-    setFavorites((prevFavorites) => {
-      if (prevFavorites.includes(eventIndex)) {
-        return prevFavorites.filter((index) => index !== eventIndex);
-      } else {
-        return [...prevFavorites, eventIndex];
-      }
-    });
   };
-  
 
   const updateRegion = useCallback((newRegion) => {
     setRegion((prevRegion) => {
@@ -131,59 +116,50 @@ export default function MapScreen({ route }) {
     }
   }, [currentPosition, region, cityProvided]);
 
-  const renderEventModalItem = ({ item, index }) => (
-    <View style={styles.modalItem}>
-      <View style={styles.itemHeader}>
-        <Text style={styles.modalTitle}>
-          {item.category || "Catégorie non renseignée"} -{" "}
-          {item.title || "Titre non renseigné"}
+  const renderEventModalItem = ({ item }) => {
+    const isLiked = likes.some((likedEvent) => likedEvent._id === item._id);
+    return (
+      <View style={styles.modalItem}>
+        {item.eventImage && (
+          <Image 
+            source={{ uri: item.eventImage }} 
+            style={styles.eventImage} 
+          />
+        )}
+        <View style={styles.itemHeader}>
+          <Text style={styles.modalTitle}>
+            {item.category || "Catégorie non renseignée"} - {item.title || "Titre non renseigné"}
+          </Text>
+          <TouchableOpacity
+            onPress={() => toggleFavorite(item)}
+            style={styles.favoriteButton}
+          >
+            <FontAwesome
+              name={isLiked ? "heart" : "heart-o"}
+              size={24}
+              color={isLiked ? "red" : "gray"}
+            />
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.modalDescription}>{item.description || "Aucune description disponible"}</Text>
+        <Text style={styles.modalDetails}>Lieu : {item.place?.street || "Rue non renseignée"} {item.place?.city || "Ville non renseignée"}</Text>
+        <Text style={styles.eventDate}>
+          Date : {item.date?.day ? new Date(item.date.day).toLocaleDateString() : "Date non renseignée"}
         </Text>
         <TouchableOpacity
-          onPress={() => toggleFavorite(index)} // Appelle la fonction pour ajouter/retirer des favoris en utilisant l'index
-          style={styles.favoriteButton}
+          onPress={() => handleParticipate(item)}
+          style={styles.participateButton}
         >
-          <FontAwesome
-            name={favorites.includes(index) ? "heart" : "heart-o"} // "heart" si favori, "heart-o" sinon
-            size={24}
-            color={favorites.includes(index) ? "red" : "gray"} // Rouge si favori, gris sinon
-          />
+          <Text style={styles.participateButtonText}>Participer</Text>
         </TouchableOpacity>
+        {item.url && (
+          <TouchableOpacity onPress={() => Linking.openURL(item.url)}>
+            <Text style={styles.urlLink}>{item.url}</Text>
+          </TouchableOpacity>
+        )}
       </View>
-      <Text style={styles.modalDescription}>
-        {item.description || "Aucune description disponible"}
-      </Text>
-      <Text style={styles.modalDetails}>
-        Lieu : {item.place?.street || "Rue non renseignée"}{" "}
-        {item.place?.city || "Ville non renseignée"}
-      </Text>
-      <Text style={styles.eventDate}>
-        Date :{" "}
-        {item.date?.day
-          ? new Date(item.date.day).toLocaleDateString()
-          : "Date non renseignée"}
-      </Text>
-      <Text style={styles.eventTime}>
-        Heure :{" "}
-        {item.date?.start && item.date?.end
-          ? `${new Date(item.date.start).toLocaleTimeString()} - ${new Date(
-              item.date.end
-            ).toLocaleTimeString()}`
-          : "Heure non renseignée"}
-      </Text>
-
-      {/* Bouton "Participer" */}
-       <TouchableOpacity
-         onPress={() => {
-          console.log('Bouton Participer cliqué !');
-          handleParticipate(selectedEvent); // Ajoute l'événement au reducer
-          alert("Votre événement a été ajouté au dashboard !"); // Affiche le message de confirmation
-        }}
-      style={styles.participateButton}
-    >
-        <Text style={styles.participateButtonText}>Participer</Text>
-      </TouchableOpacity>
-    </View>
-  );
+    );
+  };
 
   return (
     <>
@@ -207,6 +183,7 @@ export default function MapScreen({ route }) {
           const longitude = coordinates[0];
 
           if (latitude && longitude) {
+            const isLiked = likes.some((likedEvent) => likedEvent._id === event._id);
             return (
               <Marker
                 key={index}
@@ -215,7 +192,7 @@ export default function MapScreen({ route }) {
                   longitude: parseFloat(longitude),
                 }}
                 title={event.title}
-                pinColor={favorites.includes(index) ? "red" : "#FF4525"} // Si l'événement est favori, le marqueur devient rouge
+                pinColor={isLiked ? "red" : "#FF4525"}
                 onPress={() => {
                   setSelectedEvent(event);
                   setModalVisible(true);
@@ -227,7 +204,6 @@ export default function MapScreen({ route }) {
         })}
       </MapView>
 
-      {/* Bouton pour afficher la modale Liste des événements */}
       <TouchableOpacity
         style={styles.eventListButton}
         onPress={toggleEventModal}
@@ -235,108 +211,42 @@ export default function MapScreen({ route }) {
         <Text style={styles.eventListButtonText}>
           Voir les événements ({eventsData.length})
         </Text>
-        <View style={styles.eventListButtonBar} />
       </TouchableOpacity>
 
-      {/* Modal Liste des événements */}
       <Modal
         animationType="slide"
         transparent={true}
         visible={eventModalVisible}
         onRequestClose={toggleEventModal}
       >
+        {/* Utiliser TouchableWithoutFeedback uniquement à l'extérieur */}
         <TouchableWithoutFeedback onPress={toggleEventModal}>
           <View style={styles.modalBackground}>
             <View style={styles.modalContainer}>
               <FlatList
                 data={eventsData}
                 renderItem={renderEventModalItem}
-                keyExtractor={(item, index) => index.toString()}
+                keyExtractor={(item) => item._id}
                 style={styles.modalFlatList}
-                ItemSeparatorComponent={() => <View style={styles.separator} />}
-                showsVerticalScrollIndicator={false} // Supprime la barre de défilement
+                // Ne pas fermer la modal lors du scroll
+                onTouchStart={() => {}}
               />
             </View>
           </View>
         </TouchableWithoutFeedback>
       </Modal>
 
-      {/* Modal Détails de l'événement */}
       <Modal
         animationType="slide"
         transparent={true}
         visible={modalVisible}
         onRequestClose={toggleModal}
       >
+        {/* Utiliser TouchableWithoutFeedback uniquement à l'extérieur */}
         <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
           <View style={styles.modalBackgroundEvent}>
             <View>
-              {selectedEvent && (
-                <View style={styles.modalItem}>
-                  {/* Conteneur pour le titre et le bouton cœur */}
-                  <View style={styles.titleContainer}>
-                    <Text style={styles.modalTitle}>
-                      {selectedEvent.category || "Catégorie non renseignée"} -{" "}
-                      {selectedEvent.title || "Titre non renseigné"}
-                    </Text>
-                    <TouchableOpacity
-                      onPress={() =>
-                        toggleFavorite(eventsData.indexOf(selectedEvent))
-                      }
-                      style={styles.favoriteButton}
-                    >
-                      <FontAwesome
-                        name={
-                          favorites.includes(eventsData.indexOf(selectedEvent))
-                            ? "heart"
-                            : "heart-o"
-                        }
-                        size={24}
-                        color={
-                          favorites.includes(eventsData.indexOf(selectedEvent))
-                            ? "red"
-                            : "gray"
-                        }
-                      />
-                    </TouchableOpacity>
-                  </View>
-
-                  <Text style={styles.modalDescription}>
-                    {selectedEvent.description ||
-                      "Aucune description disponible"}
-                  </Text>
-                  <Text style={styles.modalDetails}>
-                    Lieu : {selectedEvent.place?.street || "Rue non renseignée"}
-                    , {selectedEvent.place?.city || "Ville non renseignée"}
-                  </Text>
-                  <Text style={styles.eventDate}>
-                    Date :{" "}
-                    {selectedEvent.date?.day
-                      ? new Date(selectedEvent.date.day).toLocaleDateString()
-                      : "Date non renseignée"}
-                  </Text>
-                  <Text style={styles.eventTime}>
-                    Heure :{" "}
-                    {selectedEvent.date?.start && selectedEvent.date?.end
-                      ? `${new Date(
-                          selectedEvent.date.start
-                        ).toLocaleTimeString()} - ${new Date(
-                          selectedEvent.date.end
-                        ).toLocaleTimeString()}`
-                      : "Heure non renseignée"}
-                  </Text>
-                  <TouchableOpacity
-                    style={styles.participateButton}
-                    onPress={() => {
-                      console.log('Bouton Participer cliqué !');
-                      handleParticipate(selectedEvent); // Ajoute l'événement au reducer
-                      alert("Votre événement a été ajouté au dashboard !"); // Affiche le message de confirmation
-                    }}
-                  >
-                    <Text style={styles.participateButtonText}>Participer</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
+              {selectedEvent && renderEventModalItem({ item: selectedEvent })}
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -347,7 +257,6 @@ export default function MapScreen({ route }) {
 
 const styles = StyleSheet.create({
   map: {
-    flex: 0.95,
     flex: 0.95,
     marginTop: 35,
   },
@@ -360,7 +269,7 @@ const styles = StyleSheet.create({
   modalBackgroundEvent: {
     flex: 1,
     backgroundColor: "transparent",
-    justifyContent: "center", // Centrer la modale verticalement
+    justifyContent: "center",
     alignItems: "center",
   },
   modalContainer: {
@@ -369,17 +278,17 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     padding: 10,
-    height: "50%",
+    height: "50%",  // Taille réduite de la modal pour la liste des événements
     overflow: "hidden",
   },
   modalFlatList: {
     width: "100%",
-    height: "100%",
-    padding: 10, // Ajout de padding pour améliorer l'apparence
+    height: "100%", // Modal avec FlatList occupe toute la hauteur
+    padding: 10,
   },
   modalItem: {
     padding: 15,
-    backgroundColor: "#f9f9f9", // Fond gris clair pour les éléments de la liste
+    backgroundColor: "#f9f9f9",
     borderRadius: 10,
     marginBottom: 15,
     shadowColor: "#000",
@@ -388,43 +297,44 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  eventImage: {
+    width: "100%",
+    height: 200,
+    resizeMode: "cover",
+    marginBottom: 5,
+  },
   itemHeader: {
-    flexDirection: "row", // Alignement horizontal pour le titre et le bouton cœur
-    alignItems: "center", // Aligner verticalement le titre et le bouton cœur
-    justifyContent: "space-between", // Espacement entre le titre et le bouton cœur
-    marginBottom: 10, // Espace sous le titre
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 10,
   },
   modalTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    textAlign: "left", // Aligné à gauche
-    flexWrap: "wrap", // Permet au texte de passer à la ligne
-    maxWidth: "85%", // Limite la largeur pour laisser de l'espace à l'icône
-    lineHeight: 22, // Espacement entre les lignes
+    textAlign: "left",
+    flexWrap: "wrap",
+    maxWidth: "85%",
+    lineHeight: 22,
   },
   favoriteButton: {
-    padding: 5, // Un peu d'espace autour de l'icône
+    padding: 5,
   },
   modalDescription: {
     fontSize: 14,
-    textAlign: "left", // Alignement à gauche pour mieux correspondre au titre
+    textAlign: "left",
     marginBottom: 10,
   },
   modalDetails: {
     fontSize: 12,
-    textAlign: "left", // Alignement à gauche
+    textAlign: "left",
     marginBottom: 5,
   },
   eventDate: {
     fontSize: 14,
     color: "#555",
     marginTop: 5,
-    textAlign: "left", // Aligné à gauche
-  },
-  eventTime: {
-    fontSize: 14,
-    color: "#555",
-    textAlign: "left", // Aligné à gauche
+    textAlign: "left",
   },
   separator: {
     height: 2,
@@ -433,9 +343,9 @@ const styles = StyleSheet.create({
   },
   eventListButton: {
     position: "absolute",
-    bottom: 45,
+    bottom: 80,
     left: "50%",
-    transform: [{ translateX: -120 }],
+    transform: [{ translateX: -100 }],
     backgroundColor: "#FF4525",
     paddingVertical: 8,
     paddingHorizontal: 20,
@@ -450,42 +360,24 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 4,
   },
-  eventListButtonBar: {
-    width: "40%",
-    height: 3,
-    backgroundColor: "#fff",
-    marginTop: 2,
-  },
-  titleContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
   participateButton: {
-    backgroundColor: "rgba(216, 72, 21, 1)", // Couleur de fond
-    paddingVertical: 6, // Réduit la hauteur du bouton
-    paddingHorizontal: 12, // Réduit la largeur du bouton
-    borderRadius: 20, // Bordure arrondie
-    marginTop: 15, // Espacement au-dessus
-    alignSelf: "center", // Centre le bouton horizontalement
+    backgroundColor: "rgba(216, 72, 21, 1)",
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    marginTop: 15,
+    alignSelf: "center",
     alignItems: "center",
     justifyContent: "center",
   },
   participateButtonText: {
     color: "#fff",
-    fontSize: 16, // Taille du texte réduite
+    fontSize: 16,
     fontWeight: "bold",
   },
-  participateButtEvent: {
-    position: "absolute", // Positionnement absolu
-    bottom: 20, // Espacement du bas de la modale
-    left: "50%", // Centrer horizontalement
-    transform: [{ translateX: -100 }], // Ajuste la position pour centrer précisément
-    backgroundColor: "rgba(216, 72, 21, 1)", // Couleur de fond
-    paddingVertical: 8, // Ajuste la hauteur du bouton
-    paddingHorizontal: 20, // Ajuste la largeur du bouton
-    borderRadius: 20, // Bordure arrondie
-    alignItems: "center", // Aligne le texte au centre
-    justifyContent: "center", // Assure que le texte est centré dans le bouton
+  urlLink: {
+    color: "#FF4525",
+    fontSize: 14,
+    marginTop: 10,
   },
 });
