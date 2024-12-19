@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 
 import { globalStyles } from '../styles/globalStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
- 
+
 import {
   TouchableOpacity,
   StyleSheet,
