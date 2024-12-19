@@ -27,10 +27,6 @@ export default function EventsScreen({ navigation }) {
   };
 
 
-  const myEvent = () => {
-    navigation.navigate("MyEvents", { screen: "MyEventsScreen" });
-  };
-
   const handleSearchPlace = async () => {
     if (!city.trim()) {
       Alert.alert("Erreur", "Veuillez entrer une localisation");

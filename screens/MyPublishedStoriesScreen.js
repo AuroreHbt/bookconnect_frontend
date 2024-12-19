@@ -13,6 +13,7 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  Modal,
 } from "react-native";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -37,9 +38,12 @@ export default function MyPublishedStoriesScreen({ navigation }) {
 
   const [stories, setStories] = useState([]); //hook d'état pour stocker les histoires publiées
   const [isVisible, setIsVisible] = useState(false) // hook d'état pour le spoiler sur les images sensibles
+  const [modaleIsVisible, setModaleIsVisible] = useState(false); // hook pour afficher la modale  handleShowModal
 
   const user = useSelector((state) => state.user.value); // Informations recupérées depuis le store
-  const story = useSelector((state) => state.story.value) || [] // story list = tableau d'objets
+  const story = useSelector((state) => state.story.value); // story list = tableau d'objets
+  // console.log('story:', story);
+
 
   const dispatch = useDispatch();
 
@@ -50,6 +54,12 @@ export default function MyPublishedStoriesScreen({ navigation }) {
       Alert.alert("Contenu sensible visible");
     }
   };
+
+  const handleShowModal = () => {
+    console.log('modaleIsVisible initial: ', modaleIsVisible);
+    setModaleIsVisible(!modaleIsVisible); // Inverse l'état de modaleIsVisible
+  };
+
 
   // Fonction pour récupérer les histoires publiées
   const getMyPublishedStories = () => {
@@ -96,43 +106,61 @@ export default function MyPublishedStoriesScreen({ navigation }) {
   };
 
   // Fonction pour modifier une histoire postée : à définir
-  const handleUpdateStory = async (storyId) => {
+  const handleUpdateStory = async () => {
+
+    const title = story[0].title;
+    const description = story[0].description; // Destructuration des données nécessaires
+    const storyId = story[0]._id; // Récupération de l'ID de l'histoire
+
     // Debug ok
-    console.log("ID de l'histoire sélectionnée : ", storyId);
-    console.log("Type de storyId :", typeof storyId);
-    console.log("Type de user.token :", typeof user.token);
+    console.log("ID de l'histoire à mettre à jour :", storyId);
+    console.log("Données à modifier :", { title, description });
+    console.log("Type de user.token :", user.token);
 
     try {
       const response = await
         fetch(`${BACKEND_ADDRESS}/stories/updatepublishedstory`, {
-          method: "PUT",
+          method: 'PUT',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            token: user.token,
-            id: storyId,
-            // title: story.title, // Include title for update
-            // category: story.category,
-            // isAdult: story.isAdult,
-            // description: story.description,
-            // coverImage: story.coverImage,
-            // storyFile: story.storyFile,
-          }),
-        })
-      // Envoi de l'ID de l'histoire à supprimer lié au token de l'author : sans cette ligne, la requete est vide (cf. console.log de req.body sur la route) e renvoie => (NOBRIDGE) ERROR  Erreur lors de la modification:  [SyntaxError: JSON Parse error: Unexpected character: <]    
+          body: JSON.stringify({ token: user.token, storyId, title, description }),
+          // Ajout de storyId ici => newTitle, newDescription (états de la modif)
+        });
+
       const data = await response.json();
 
+      console.log('Données reçues par le serveur :', data);
+
       if (data.result) {
-        console.log('Réponse du serveur (data.result): ', data.result);
-        dispatch(updateStory({ id, data: { title: 'Updated Title' } })); // Dispatch update action
-        console.log('Modification effectuée avec succès');
+        console.log('data.result: ', data.result);
+
+        // Dispatch de l'action updateStory pour mettre à jour le state
+        dispatch(updateStory({
+          id: storyId,
+          data: {
+            title: data.story.title,
+            description: data.story.description,
+          }
+        }));
+
+        console.log('Histoire mise à jour avec succès :', data.story);
+        Alert.alert(
+          "Succès",
+          "L'histoire a été mise à jour avec succès.",
+          [{ text: "OK" }]
+        );
+
         getMyPublishedStories(); // Re-fetch stories
+        return data.story;
+
       } else {
-        console.error('Erreur lors de la mise à jour:', data.error);
+        console.error('Erreur lors de la mise à jour :', data.error);
+        Alert.alert(`Erreur lors de la mise à jour : auteur ou histoire non trouvée`);
       }
     } catch (error) {
-      console.error("Erreur lors de la modification:", error);
+      console.error('Erreur lors de la requête :', error);
+      Alert.alert('Erreur lors de la requête');
     }
   };
 
@@ -230,7 +258,10 @@ export default function MyPublishedStoriesScreen({ navigation }) {
                     activeOpacity={0.8}
                   >
                     <TouchableOpacity
-                      onPress={handleUpdateStory}
+                      onPress={() => {
+                        handleUpdateStory();
+                        handleShowModal();
+                      }}
                       style={styles.button}
                     >
                       <Text style={styles.textButton}>Modifier</Text>
@@ -417,11 +448,12 @@ const styles = StyleSheet.create({
   buttonCard: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '100%',
-    marginTop: 10,
+    width: '95%',
+    marginVertical: 10,
+    marginLeft: 10,
 
     // borderWidth: 1,
-    // borderColor: 'rgba(238, 236, 232, 1)',
+    // borderColor: 'red', // 'rgba(238, 236, 232, 1)',
   },
 
   gradientButton: {
@@ -429,8 +461,9 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    padding: 4,
-    margin: 4,
+    paddingVertical: 2,
+    paddingHorizontal: 5,
+    margin: 10,
   },
 
   textButton: {
