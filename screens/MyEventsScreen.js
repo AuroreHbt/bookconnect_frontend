@@ -12,6 +12,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  Linking // créer un lien hypertexte
 } from "react-native";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -36,6 +37,8 @@ export default function MyEventsScreen({ navigation }) {
     const eventsFromStore = useSelector((state) => state.event.value); // Récupère les événements du store
     console.log('Événements dans le store Redux:', eventsFromStore);
     const dispatch = useDispatch();
+
+    
   
     // Fonction pour récupérer les événements
     const getMyEvents = () => {
@@ -51,6 +54,14 @@ export default function MyEventsScreen({ navigation }) {
     useEffect(() => {
       setEvents(eventsFromStore); // Mettre à jour l'état local avec les événements du store
     }, [eventsFromStore]); // Synchronisation avec le store Redux
+
+    const EventComponent = ({ item }) => {
+      const handleOpenUrl = (url) => {
+        if (url) {
+          Linking.openURL(url).catch((err) => console.error('Erreur lors de l\'ouverture du lien :', err));
+        }
+      };
+    };
   
     const handleDeleteEvent = (eventId) => {
       fetch(`${BACKEND_ADDRESS}/events/deleteevent`, {
@@ -105,27 +116,57 @@ export default function MyEventsScreen({ navigation }) {
     return (
       <View style={styles.eventCard}>
         <View style={styles.cardContent}>
+
           {/* Informations sur l'événement */}
-          <View style={styles.eventInfo}>
+          <View style={styles.sectionTop}>
+          <View style={styles.eventInfoTitle}>
             <Text style={styles.eventTitle}>{item.title}</Text>
             <Text style={styles.eventDescription}>{item.description}</Text>
-            <Text style={styles.eventDate}>Date : {new Date(item.date.day).toLocaleDateString()}</Text>
-            <Text style={styles.eventTime}>Heure : {new Date(item.date.start).toLocaleTimeString()} - {new Date(item.date.end).toLocaleTimeString()}</Text>
-            <Text style={styles.eventAddress}>Lieu: {item.identityPlace}</Text>
-            <Text style={styles.eventAddress}>Adresse : {item.place.number} {item.place.street}, {item.place.code} {item.place.city}</Text>
-            <Text style={styles.eventPlanner}>Planifié par : {item.planner.username}</Text>
-          </View>
-
-          {/* Affichage de l'image */}
-      {item.eventImage ? (
+            </View>
+            {/* Affichage de l'image */}
+            {item.eventImage ? (
         <Image
           source={{ uri: item.eventImage }}
           style={styles.eventImage}
         />
       ) : (
-        <Text>Aucune image disponible</Text>
-      )}
+        <View style={styles.noImageContainer}>
+        <Icon name="camera-retro" size={80} color="gray" />
         </View>
+      )}
+          </View>
+
+          <View style={styles.sectionBottom}>
+  <Text style={styles.eventDate}>
+    <Text style={styles.label}>Date : </Text>
+    {new Date(item.date.day).toLocaleDateString()}
+  </Text>
+  <Text style={styles.eventTime}>
+    <Text style={styles.label}>Heure : </Text>
+    {new Date(item.date.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -{" "}
+    {new Date(item.date.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+  </Text>
+  <Text style={styles.eventAddress}>
+    <Text style={styles.label}>Lieu : </Text>
+    {item.identityPlace}
+  </Text>
+  <Text style={styles.eventAddress}>
+    <Text style={styles.label}>Adresse : </Text>
+    {item.place.number} {item.place.street}, {item.place.code} {item.place.city}
+  </Text>
+  <Text style={styles.eventUrl}>
+  <Text style={styles.label}>Lien : </Text>
+      {item.url ? (
+        <Text style={styles.link} onPress={() => handleOpenUrl(item.url)}>
+          {item.url}
+        </Text>
+      ) : (
+        <Text style={styles.noLink}>Aucun lien disponible</Text>
+      )}
+  </Text>
+</View>
+          </View>
+
 
         <View style={styles.buttonCard}>
           <LinearGradient colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']} start={{ x: 0, y: 0 }} end={{ x: 0, y: 0.7 }} style={styles.gradientButton}>
@@ -152,58 +193,98 @@ export default function MyEventsScreen({ navigation }) {
 const styles = StyleSheet.create({
 
     container: {
-        flex: 0.95,
+        flex: 1,
         padding: 20,
       },
 
     // CSS global des cards Events
     eventCard: {
       backgroundColor: 'rgba(238, 236, 232, 1)',
-      marginVertical: 10,
+      marginVertical: 40,
       padding: 10,
       borderRadius: 10,
       shadowColor: '#000',
       shadowOpacity: 0.1,
       shadowRadius: 5,
       elevation: 3,
+      height: 450,
+      flexDirection: 'column', // Organisation verticale
     },
     cardContent: {
-      flexDirection: 'row', // Organise le contenu horizontalement
-      alignItems: 'center',
+      flex: 1,
     },
-    eventInfo: {
-      flex: 2, // Prend plus de place que l'image
-      marginRight: 10, // Ajoute un espace entre le texte et l'image
+    sectionTop: {
+      flexDirection: 'row', // Aligne horizontalement
+      justifyContent: 'space-between', // Titre à gauche, image à droite
+      alignItems: 'center', // Aligne verticalement au centre
+      marginBottom: 10, // Espacement avec la section suivante
+    },
+    eventInfoTitle: {
+      flex: 1, // Occupe tout l'espace disponible à gauche
+      justifyContent: 'flex-start', // Aligne le texte en haut
+      marginRight: 10, // Espace entre le texte et l'image
     },
     eventTitle: {
-      fontSize: 14,
+      fontSize: 20,
       fontWeight: 'bold',
+      textAlign: 'left', // Justifié à gauche
+      marginLeft: 5,
       marginBottom: 5,
+      marginTop: 5,
     },
     eventDescription: {
-      fontSize: 12,
-      marginBottom: 5,
+      fontSize: 16,
+      textAlign: 'left', // Justifié à gauche
+      marginBottom: 10,
+      marginLeft: 5,
+    },
+    sectionBottom: {
+      justifyContent: 'center', // Centré verticalement
+      margin: 5,
+      textAlign: 'left',
+    },
+    label: {
+      fontWeight: 'bold', // Texte en gras pour les indicateurs
     },
     eventDate: {
       fontSize: 14,
-      marginBottom: 5,
+      marginBottom: 10,
     },
     eventTime: {
       fontSize: 14,
-      marginBottom: 5,
+      marginBottom: 10,
     },
     eventAddress: {
       fontSize: 14,
-      marginBottom: 5,
+      marginBottom: 10,
+    },
+    eventUrl: {
+      fontSize: 14,
+      marginBottom: 10,
     },
     eventPlanner: {
       fontSize: 14,
       fontStyle: 'italic',
     },
     eventImage: {
-    width: 100, // Largeur de l'image
-    height: 100, // Hauteur de l'image
-    marginTop: 10, // Pour espacer l'image des autres éléments
+      width: 140,
+      height: 200,
+      borderRadius: 10,
+      resizeMode: 'cover', // Ajustement de l'image
+      marginLeft: 5, // Espace entre l'image et le texte
+      marginTop: 5,
+      marginRight: 5,
+    },
+    noImageContainer: {
+      width: 140,
+      height: 200,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#f0f0f0',
+      borderRadius: 10,
+      marginLeft: 5,
+      marginTop: 5,
+      marginRight: 5,
     },
     buttonCard: {
       flexDirection: 'row',
@@ -229,6 +310,15 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       width: 40,
       height: 40,
+    },
+    link: {
+      color: 'blue',
+      textDecorationLine: 'underline',
+      fontSize: 16,
+    },
+    noLink: {
+      fontSize: 16,
+      color: 'gray',
     },
   
   });
