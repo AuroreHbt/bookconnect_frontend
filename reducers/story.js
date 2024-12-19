@@ -22,9 +22,27 @@ export const storySlice = createSlice({
                 // : story => si les id ne match pas, la story reste inchangée
             );
         },
+        addLike: (state, action) => {
+            console.log('addLike', action.payload)
+            const story = state.value.find(story => story._id === action.payload._id);
+            if (story) {
+                story.isLiked = true;
+            } else {
+                state.value.push({ ...action.payload, isLiked: true });
+            }
+            console.log('story:', state.value);
+        },
+        removeLike: (state, action) => {
+            const story = state.value.find(story => story._id === action.payload._id);
+            if (story) {
+                story.isLiked = false;
+            }
+            console.log('remove like', state.value);
+        },
     },
 });
 
-export const { addStory, deleteStory, updateStory } = storySlice.actions;
+
+export const { addStory, deleteStory, updateStory, addLike, removeLike } = storySlice.actions;
 export default storySlice.reducer;
 // reducer bien ajouté au App.js

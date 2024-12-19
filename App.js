@@ -37,6 +37,7 @@ import FavEventScreen from './screens/FavEventScreen'; // Favoris > Mes events f
 // Imports pour configurer le store redux
 import user from './reducers/user';
 import story from './reducers/story';
+import event from './reducers/event';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 
@@ -52,7 +53,7 @@ import { useEffect } from 'react';
 SplashScreen.preventAutoHideAsync();
 
 const store = configureStore({
-  reducer: { user, story },
+  reducer: { user, story, event },
 })
 
 const Stack = createNativeStackNavigator();
@@ -169,8 +170,8 @@ function TabNavigator() {
       },
 
       headerShown: false,
-      tabBarActiveTintColor: 'rgba(216, 72, 21, 0.9)',
-      tabBarInactiveTintColor: '#6C4300',
+      tabBarActiveTintColor: 'rgba(216, 72, 21, 0.8)',
+      tabBarInactiveTintColor: 'rgba(55, 27, 12, 0.7)',
       tabBarStyle: { position: 'absolute' },
 
       tabBarBackground: () => (
@@ -241,7 +242,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 0.95,
-    backgroundColor: '#EEECE8',
+    backgroundColor: 'rgba(238, 236, 232, 1)',
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -25,7 +25,8 @@ export const globalStyles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
-        padding: 20,
+        paddingTop: 25,
+        paddingHorizontal: 15,
         // overflow: 'hidden'
     },
 
@@ -33,7 +34,7 @@ export const globalStyles = StyleSheet.create({
     titleContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        padding: 20,
+        padding: 15,
         marginTop: 10,
         marginBottom: 5,
         width: '100%',

@@ -8,6 +8,8 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
+  Keyboard,
   View,
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome"
@@ -22,6 +24,10 @@ export default function EventsScreen({ navigation }) {
 
   const addEvent = () => {
     navigation.navigate("NewEvent", { screen: "NewEventScreen" });
+  };
+
+  const myEvent = () => {
+    navigation.navigate("MyEvents", { screen: "MyEventsScreen" });
   };
 
   const handleSearchPlace = async () => {
@@ -76,62 +82,77 @@ export default function EventsScreen({ navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={bottomTabStyles.container}
-    >
-      <View style={styles.inputContainer}>
-        <View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={bottomTabStyles.container}
+      >
+        <View style={styles.inputContainer}>
           <View>
-            <Text style={styles.title}>BookConnect</Text>
+            <View>
+              <Text style={styles.title}>BookConnect</Text>
+            </View>
+            <Text style={styles.text}>
+              "Des événements pour échanger, des moments pour s'inspirer."
+            </Text>
           </View>
-          <Text style={styles.text}>
-            "Des événements pour échanger, des moments pour s'inspirer."
-          </Text>
-        </View>
 
-        <View style={styles.input}>
-          <FontAwesome name="map-marker" size={30} color="#D84815" />
-          <TextInput
-            placeholder="Ville ou code postal  ..."
-            onChangeText={(value) => setCity(value)}
-            value={city}
-            style={styles.inputField}
-          />
-        </View>
-      </View>
-      <View style={bottomTabStyles.buttonContainer}>
-        <LinearGradient
-          colors={["rgba(255, 123, 0, 0.9)", "rgba(216, 72, 21, 1)"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 0.7 }}
-          style={bottomTabStyles.gradientButton}
-          activeOpacity={0.8}
-        >
-          <TouchableOpacity onPress={handleSearchPlace} style={bottomTabStyles.button}>
-            <Text style={bottomTabStyles.textButton}>Rechercher</Text>
-          </TouchableOpacity>
-        </LinearGradient>
+          <View style={styles.input}>
+            <FontAwesome name="map-marker" size={30} color="#D84815" />
+            <TextInput
+              placeholder="Ville ou code postal  ..."
+              onChangeText={(value) => setCity(value)}
+              value={city}
+              style={styles.inputField}
+            />
+          </View>
         </View>
         <View style={bottomTabStyles.buttonContainer}>
-        <LinearGradient
-          colors={["rgba(255, 123, 0, 0.9)", "rgba(216, 72, 21, 1)"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 0.7 }}
-          style={bottomTabStyles.gradientButton}
-          activeOpacity={0.8}
-        >
-          <TouchableOpacity onPress={addEvent} style={bottomTabStyles.button}>
-            <Text style={bottomTabStyles.textButton}>Ajouter un évènement</Text>
-          </TouchableOpacity>
-        </LinearGradient>
-      </View>
-    </KeyboardAvoidingView>
+          <LinearGradient
+            colors={["rgba(255, 123, 0, 0.9)", "rgba(216, 72, 21, 1)"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 0.7 }}
+            style={bottomTabStyles.gradientButton}
+            activeOpacity={0.8}
+          >
+            <TouchableOpacity onPress={handleSearchPlace} style={bottomTabStyles.button}>
+              <Text style={bottomTabStyles.textButton}>Rechercher</Text>
+            </TouchableOpacity>
+          </LinearGradient>
+        </View>
+        <View style={bottomTabStyles.buttonContainer}>
+          <LinearGradient
+            colors={["rgba(255, 123, 0, 0.9)", "rgba(216, 72, 21, 1)"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 0.7 }}
+            style={bottomTabStyles.gradientButton}
+            activeOpacity={0.8}
+          >
+            <TouchableOpacity onPress={addEvent} style={bottomTabStyles.button}>
+              <Text style={bottomTabStyles.textButton}>Ajouter un évènement</Text>
+            </TouchableOpacity>
+          </LinearGradient>
+        </View>
+        <View style={bottomTabStyles.buttonContainer}>
+          <LinearGradient
+            colors={["rgba(255, 123, 0, 0.9)", "rgba(216, 72, 21, 1)"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 0.7 }}
+            style={bottomTabStyles.gradientButton}
+            activeOpacity={0.8}
+          >
+            <TouchableOpacity onPress={myEvent} style={bottomTabStyles.button}>
+              <Text style={bottomTabStyles.textButton}>Mes évènements</Text>
+            </TouchableOpacity>
+          </LinearGradient>
+        </View>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
- 
+
   inputContainer: {
     justifyContent: "center",
     width: "80%",
@@ -162,7 +183,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     color: 'rgba(55, 27, 12, 0.9)', // #371B0C
     textAlign: "center",
-},
+  },
 
   text: {
     fontFamily: "Poppins-Medium", // ou GermaniaOne-Regular
