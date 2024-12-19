@@ -144,7 +144,7 @@ export default function DashboardScreen({ navigation }) {
         <View style={styles.sectionContainer}>
           {/* Titre de la section */}
           <View style={styles.sectionHeader}>
-            <Text style={styles.textSection}>Mes lectures en cours</Text>
+            <Text style={styles.textSection}>Dernières histoires postées</Text>
             <TouchableOpacity
               onPress={handleMyCurrentReadings}
               activeOpacity={0.8}
