@@ -32,10 +32,14 @@ const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
 export default function MyEventsScreen({ navigation }) {
     const goBack = () => navigation.goBack();
     
-    const [events, setEvents] = useState([]); // État local pour les événements
+    const [eventPlanner, setEventPlanner] = useState([]); // État local pour les événements organisés
+    const [eventUser, setEventUser] = useState([]); // État local pour les événements participés
+
     const user = useSelector((state) => state.user.value);
-    const eventsFromStore = useSelector((state) => state.event.value); // Récupère les événements du store
-    console.log('Événements dans le store Redux:', eventsFromStore);
+    const eventsFromStore = useSelector((state) => state.event.eventsPlanner); // Récupère les événements du store
+    console.log('Événements crées dans le store Redux:', eventsFromStore);
+    const addedEvents = useSelector((state) => state.event.events);
+    console.log('Événements participés dans le store Redux:', addedEvents);
     const dispatch = useDispatch();
 
     
@@ -52,8 +56,12 @@ export default function MyEventsScreen({ navigation }) {
     }, [user.username]); // Récupérer les événements lors d'un changement de l'utilisateur
   
     useEffect(() => {
-      setEvents(eventsFromStore); // Mettre à jour l'état local avec les événements du store
+      setEventPlanner(eventsFromStore); // Mettre à jour l'état local avec les événements du store
     }, [eventsFromStore]); // Synchronisation avec le store Redux
+
+    useEffect(() => {
+      setEventUser(addedEvents); // Mettre à jour l'état local avec les événements du store
+    }, [addedEvents]); // Synchronisation avec le store Redux
 
   
     const handleDeleteEvent = (eventId) => {
@@ -98,11 +106,14 @@ export default function MyEventsScreen({ navigation }) {
             </TouchableOpacity>
           </View>
   
-          {/* Affichage des événements */}
+          {/* Affichage des événements que j'organise */}
+          <View>
+            <Text style={styles.texttest}>Evènements que j'organise</Text>
+          </View>
           <FlatList
   initialScrollIndex={0}
   keyExtractor={(item) => item._id || item.id || item.title} // Utilisez un champ unique pour la clé
-  data={events}
+  data={eventPlanner}
   renderItem={({ item }) => {
     console.log('Affichage de l\'événement:', item); // Debugging
     console.log('URL de l\'image :', item.eventImage); // Vérifie spécifiquement l'image
@@ -175,6 +186,88 @@ export default function MyEventsScreen({ navigation }) {
     );
   }}
 />
+          {/* Affichage des événements auxquels je participe*/}
+          <View>
+            <Text style={styles.texttest}>Evènements auxquels je participe</Text>
+          </View>
+          <FlatList
+  initialScrollIndex={0}
+  keyExtractor={(item) => item._id || item.id || item.title} // Utilisez un champ unique pour la clé
+  data={eventUser}
+  renderItem={({ item }) => {
+    console.log('Affichage de l\'événement:', item); // Debugging
+    console.log('URL de l\'image :', item.eventImage); // Vérifie spécifiquement l'image
+    return (
+      <View style={styles.eventCard}>
+        <View style={styles.cardContent}>
+
+          {/* Informations sur l'événement */}
+          <View style={styles.sectionTop}>
+          <View style={styles.eventInfoTitle}>
+            <Text style={styles.eventTitle}>{item.title}</Text>
+            <Text style={styles.eventDescription}>{item.description}</Text>
+            </View>
+            {/* Affichage de l'image */}
+            {item.eventImage ? (
+        <Image
+          source={{ uri: item.eventImage }}
+          style={styles.eventImage}
+        />
+      ) : (
+        <View style={styles.noImageContainer}>
+        <Icon name="camera-retro" size={80} color="gray" />
+        </View>
+      )}
+          </View>
+
+          <View style={styles.sectionBottom}>
+  <Text style={styles.eventDate}>
+    <Text style={styles.label}>Date : </Text>
+    {new Date(item.date.day).toLocaleDateString()}
+  </Text>
+  <Text style={styles.eventTime}>
+    <Text style={styles.label}>Heure : </Text>
+    {new Date(item.date.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -{" "}
+    {new Date(item.date.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+  </Text>
+  <Text style={styles.eventAddress}>
+    <Text style={styles.label}>Lieu : </Text>
+    {item.identityPlace}
+  </Text>
+  <Text style={styles.eventAddress}>
+    <Text style={styles.label}>Adresse : </Text>
+    {item.place.number} {item.place.street}, {item.place.code} {item.place.city}
+  </Text>
+  <Text style={styles.eventUrl}>
+  <Text style={styles.label}>Lien : </Text>
+      {item.url ? (
+        <Text style={styles.link} onPress={() => handleOpenUrl(item.url)}>
+          {item.url}
+        </Text>
+      ) : (
+        <Text style={styles.noLink}>Aucun lien disponible</Text>
+      )}
+  </Text>
+</View>
+          </View>
+
+
+        <View style={styles.buttonCard}>
+          <LinearGradient colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']} start={{ x: 0, y: 0 }} end={{ x: 0, y: 0.7 }} style={styles.gradientButton}>
+            <TouchableOpacity style={styles.button}>
+              <Text style={styles.textButton}>Modifier</Text>
+            </TouchableOpacity>
+          </LinearGradient>
+          <TouchableOpacity style={styles.iconContainer} onPress={() => handleDeleteEvent(item._id)}>
+            <Icon name="trash-o" size={28} color="rgba(55, 27, 12, 0.7)" />
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }}
+/>
+          
+
         </View>
       </KeyboardAvoidingView>
     );
@@ -312,6 +405,14 @@ const styles = StyleSheet.create({
     noLink: {
       fontSize: 16,
       color: 'gray',
+    },
+    texttest: {
+      fontFamily: "Poppins-Medium", // ou GermaniaOne-Regular
+      fontWeight: "500",
+      fontSize: 18,
+      marginBottom: 50,
+      color: "#371B0C",
+      textAlign: "center",
     },
   
   });
