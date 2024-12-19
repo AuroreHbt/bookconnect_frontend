@@ -55,13 +55,6 @@ export default function MyEventsScreen({ navigation }) {
       setEvents(eventsFromStore); // Mettre à jour l'état local avec les événements du store
     }, [eventsFromStore]); // Synchronisation avec le store Redux
 
-    const EventComponent = ({ item }) => {
-      const handleOpenUrl = (url) => {
-        if (url) {
-          Linking.openURL(url).catch((err) => console.error('Erreur lors de l\'ouverture du lien :', err));
-        }
-      };
-    };
   
     const handleDeleteEvent = (eventId) => {
       fetch(`${BACKEND_ADDRESS}/events/deleteevent`, {
