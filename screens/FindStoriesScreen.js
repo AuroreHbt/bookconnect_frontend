@@ -376,7 +376,7 @@ const styles = StyleSheet.create({
     },
 
     storyAuthor: {
-        fontSize: 10,
+        fontSize: 12,
         fontWeight: 'bold'
     }
 });
