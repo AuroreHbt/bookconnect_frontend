@@ -210,7 +210,7 @@ export default function NewStoryScreen({ navigation }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        // console.log("réponse du serveur", data)
+        console.log("réponse du serveur", data)
         if (data.result) {
           console.log("data.result: ", data.result)
           dispatch(addStory(data.story))

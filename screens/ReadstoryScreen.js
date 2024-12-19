@@ -30,6 +30,27 @@ export default function ReadStoryScreen({ route, navigation, stories }) {
   console.log('uri: ', story.storyFile);
 
 
+  const handleLike = (story) => {
+    // Met à jour isLiked pour l'histoire cliquée
+    const updatedStory = { ...story, isLiked: !story.isLiked };
+
+    setStories((prevStories) =>
+      prevStories.map((currentStory) =>
+        currentStory._id === story._id ? updatedStory : currentStory
+      )
+    );
+    // Envoie l'action appropriée à Redux
+    if (updatedStory.isLiked) {
+
+      dispatch(addLike(updatedStory));
+    } else {
+
+      dispatch(removeLike(updatedStory._id));
+    }
+    console.log("état isLiked", updatedStory)
+  }
+
+
   return (
 
     <View style={styles.container}>
@@ -54,6 +75,17 @@ export default function ReadStoryScreen({ route, navigation, stories }) {
         {/* affichage d'une 'entete' pour lecture */}
         <Text style={styles.storyTitle}>{story.title}</Text>
 
+        <TouchableOpacity
+          style={styles.likeButton}
+          onPress={() => handleLike(item)}
+        >
+          <Icon
+            name={item.isLiked ? "heart" : "heart-o"}
+            size={26}
+            color={item.isLiked ? "red" : "rgba(55, 27, 12, 0.3)"}
+          />
+        </TouchableOpacity>
+
         <View style={styles.rowContainer}>
 
           <View style={styles.storyCard}>
@@ -67,7 +99,7 @@ export default function ReadStoryScreen({ route, navigation, stories }) {
           >
             {/* affichage du fichier image téléchargé */}
             <Image
-              source={{ uri: story.coverImage}}
+              source={{ uri: story.coverImage }}
             />
           </View>
         </View>
@@ -126,6 +158,11 @@ const styles = StyleSheet.create({
 
     // borderWidth: 1,
     // borderColor: 'yellow',
+  },
+
+// style du bouton like
+  likeButton: {
+
   },
 
   // bloc storyCard + cover
