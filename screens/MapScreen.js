@@ -8,6 +8,8 @@ import {
   TouchableWithoutFeedback,
   FlatList,
   TouchableOpacity,
+  Image, 
+  Linking,
 } from "react-native";
 import MapView, { PROVIDER_DEFAULT, Marker } from "react-native-maps";
 import * as Location from "expo-location";
@@ -118,6 +120,12 @@ export default function MapScreen({ route }) {
     const isLiked = likes.some((likedEvent) => likedEvent._id === item._id);
     return (
       <View style={styles.modalItem}>
+        {item.eventImage && (
+          <Image 
+            source={{ uri: item.eventImage }} 
+            style={styles.eventImage} 
+          />
+        )}
         <View style={styles.itemHeader}>
           <Text style={styles.modalTitle}>
             {item.category || "Catégorie non renseignée"} - {item.title || "Titre non renseigné"}
@@ -144,6 +152,11 @@ export default function MapScreen({ route }) {
         >
           <Text style={styles.participateButtonText}>Participer</Text>
         </TouchableOpacity>
+        {item.url && (
+          <TouchableOpacity onPress={() => Linking.openURL(item.url)}>
+            <Text style={styles.urlLink}>{item.url}</Text>
+          </TouchableOpacity>
+        )}
       </View>
     );
   };
@@ -206,6 +219,7 @@ export default function MapScreen({ route }) {
         visible={eventModalVisible}
         onRequestClose={toggleEventModal}
       >
+        {/* Utiliser TouchableWithoutFeedback uniquement à l'extérieur */}
         <TouchableWithoutFeedback onPress={toggleEventModal}>
           <View style={styles.modalBackground}>
             <View style={styles.modalContainer}>
@@ -214,7 +228,8 @@ export default function MapScreen({ route }) {
                 renderItem={renderEventModalItem}
                 keyExtractor={(item) => item._id}
                 style={styles.modalFlatList}
-                ItemSeparatorComponent={() => <View style={styles.separator} />}
+                // Ne pas fermer la modal lors du scroll
+                onTouchStart={() => {}}
               />
             </View>
           </View>
@@ -227,6 +242,7 @@ export default function MapScreen({ route }) {
         visible={modalVisible}
         onRequestClose={toggleModal}
       >
+        {/* Utiliser TouchableWithoutFeedback uniquement à l'extérieur */}
         <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
           <View style={styles.modalBackgroundEvent}>
             <View>
@@ -242,7 +258,6 @@ export default function MapScreen({ route }) {
 const styles = StyleSheet.create({
   map: {
     flex: 0.95,
-    flex: 0.95,
     marginTop: 35,
   },
   modalBackground: {
@@ -254,7 +269,7 @@ const styles = StyleSheet.create({
   modalBackgroundEvent: {
     flex: 1,
     backgroundColor: "transparent",
-    justifyContent: "center", // Centrer la modale verticalement
+    justifyContent: "center",
     alignItems: "center",
   },
   modalContainer: {
@@ -263,17 +278,17 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     padding: 10,
-    height: "50%",
+    height: "50%",  // Taille réduite de la modal pour la liste des événements
     overflow: "hidden",
   },
   modalFlatList: {
     width: "100%",
-    height: "100%",
-    padding: 10, // Ajout de padding pour améliorer l'apparence
+    height: "100%", // Modal avec FlatList occupe toute la hauteur
+    padding: 10,
   },
   modalItem: {
     padding: 15,
-    backgroundColor: "#f9f9f9", // Fond gris clair pour les éléments de la liste
+    backgroundColor: "#f9f9f9",
     borderRadius: 10,
     marginBottom: 15,
     shadowColor: "#000",
@@ -282,43 +297,44 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  eventImage: {
+    width: "100%",
+    height: 200,
+    resizeMode: "cover",
+    marginBottom: 5,
+  },
   itemHeader: {
-    flexDirection: "row", // Alignement horizontal pour le titre et le bouton cœur
-    alignItems: "center", // Aligner verticalement le titre et le bouton cœur
-    justifyContent: "space-between", // Espacement entre le titre et le bouton cœur
-    marginBottom: 10, // Espace sous le titre
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 10,
   },
   modalTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    textAlign: "left", // Aligné à gauche
-    flexWrap: "wrap", // Permet au texte de passer à la ligne
-    maxWidth: "85%", // Limite la largeur pour laisser de l'espace à l'icône
-    lineHeight: 22, // Espacement entre les lignes
+    textAlign: "left",
+    flexWrap: "wrap",
+    maxWidth: "85%",
+    lineHeight: 22,
   },
   favoriteButton: {
-    padding: 5, // Un peu d'espace autour de l'icône
+    padding: 5,
   },
   modalDescription: {
     fontSize: 14,
-    textAlign: "left", // Alignement à gauche pour mieux correspondre au titre
+    textAlign: "left",
     marginBottom: 10,
   },
   modalDetails: {
     fontSize: 12,
-    textAlign: "left", // Alignement à gauche
+    textAlign: "left",
     marginBottom: 5,
   },
   eventDate: {
     fontSize: 14,
     color: "#555",
     marginTop: 5,
-    textAlign: "left", // Aligné à gauche
-  },
-  eventTime: {
-    fontSize: 14,
-    color: "#555",
-    textAlign: "left", // Aligné à gauche
+    textAlign: "left",
   },
   separator: {
     height: 2,
@@ -327,9 +343,9 @@ const styles = StyleSheet.create({
   },
   eventListButton: {
     position: "absolute",
-    bottom: 45,
+    bottom: 80,
     left: "50%",
-    transform: [{ translateX: -120 }],
+    transform: [{ translateX: -100 }],
     backgroundColor: "#FF4525",
     paddingVertical: 8,
     paddingHorizontal: 20,
@@ -344,42 +360,24 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 4,
   },
-  eventListButtonBar: {
-    width: "40%",
-    height: 3,
-    backgroundColor: "#fff",
-    marginTop: 2,
-  },
-  titleContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
   participateButton: {
-    backgroundColor: "rgba(216, 72, 21, 1)", // Couleur de fond
-    paddingVertical: 6, // Réduit la hauteur du bouton
-    paddingHorizontal: 12, // Réduit la largeur du bouton
-    borderRadius: 20, // Bordure arrondie
-    marginTop: 15, // Espacement au-dessus
-    alignSelf: "center", // Centre le bouton horizontalement
+    backgroundColor: "rgba(216, 72, 21, 1)",
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    marginTop: 15,
+    alignSelf: "center",
     alignItems: "center",
     justifyContent: "center",
   },
   participateButtonText: {
     color: "#fff",
-    fontSize: 16, // Taille du texte réduite
+    fontSize: 16,
     fontWeight: "bold",
   },
-  participateButtEvent: {
-    position: "absolute", // Positionnement absolu
-    bottom: 20, // Espacement du bas de la modale
-    left: "50%", // Centrer horizontalement
-    transform: [{ translateX: -100 }], // Ajuste la position pour centrer précisément
-    backgroundColor: "rgba(216, 72, 21, 1)", // Couleur de fond
-    paddingVertical: 8, // Ajuste la hauteur du bouton
-    paddingHorizontal: 20, // Ajuste la largeur du bouton
-    borderRadius: 20, // Bordure arrondie
-    alignItems: "center", // Aligne le texte au centre
-    justifyContent: "center", // Assure que le texte est centré dans le bouton
+  urlLink: {
+    color: "#FF4525",
+    fontSize: 14,
+    marginTop: 10,
   },
 });

@@ -7,22 +7,17 @@ import {
   ScrollView,
   Image,
   SafeAreaView,
+  Linking,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import Icon from "react-native-vector-icons/Ionicons"; // Exemple d'icône, à adapter si nécessaire
-import { unlikeEvent } from "../reducers/event"; // Remplacez par votre chemin correct
+import Icon from "react-native-vector-icons/Ionicons";
+import { unlikeEvent } from "../reducers/event";
 
 export default function FavEventScreen() {
   const dispatch = useDispatch();
-  
-  // Récupération des événements likés depuis le store Redux
   const likedEvents = useSelector((state) => state.event.likes || []);
-  
-  // Vous pouvez utiliser likedEvents directement comme displayedEvents
-  const displayedEvents = likedEvents;
 
-  console.log('Événements likés:', likedEvents); // Affiche les événements likés
-  console.log('Événements filtrés:', displayedEvents); // Affiche les événements affichés
+  console.log("Événements likés:", likedEvents);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -31,8 +26,8 @@ export default function FavEventScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.eventsContainer}
       >
-        {displayedEvents.length > 0 ? (
-          displayedEvents.map((event, index) => (
+        {likedEvents.length > 0 ? (
+          likedEvents.map((event, index) => (
             <View key={index} style={styles.eventCard}>
               <View
                 style={[
@@ -63,6 +58,21 @@ export default function FavEventScreen() {
                   ? `${new Date(event.date.start).toLocaleTimeString()} - ${new Date(event.date.end).toLocaleTimeString()}`
                   : "Heure non renseignée"}
               </Text>
+              <Text style={styles.eventDescription}>
+                {event.description || "Description non disponible"}
+              </Text>
+              <Text style={styles.eventAddress}>
+                {event.formattedAddress || "Adresse non disponible"}
+              </Text>
+              {/* URL cliquable */}
+              {event.url && (
+                <Text
+                  style={styles.eventUrl}
+                  onPress={() => Linking.openURL(event.url)}
+                >
+                  {event.url}
+                </Text>
+              )}
               <TouchableOpacity
                 onPress={() => dispatch(unlikeEvent({ id: event._id }))}
                 style={styles.deleteButton}
@@ -79,35 +89,35 @@ export default function FavEventScreen() {
   );
 }
 
-// Styles épurés
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 0.95,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#FFF",
   },
   eventsContainer: {
     flexDirection: "row",
-    flexWrap: "wrap", // Ajout pour gérer les événements sur plusieurs lignes
+    flexWrap: "wrap",
+    justifyContent: "center", // Centrer les cartes
     paddingHorizontal: 10,
   },
   eventCard: {
-    margin: 10,
+    margin: 15,
     alignItems: "center",
     borderRadius: 10,
-    width: 250,
+    width: 300, // Rendre les cartes plus larges
     backgroundColor: "white",
-    padding: 10,
+    padding: 15,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
-    elevation: 3, // Pour Android
+    elevation: 3,
   },
   event: {
     width: "100%",
-    height: 150,
+    height: 180, // Ajusté pour plus de visibilité
     borderRadius: 10,
     marginBottom: 10,
     justifyContent: "center",
@@ -119,7 +129,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   eventTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
     textAlign: "center",
     marginVertical: 5,
@@ -134,6 +144,25 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "gray",
     textAlign: "center",
+  },
+  eventDescription: {
+    fontSize: 12,
+    color: "gray",
+    textAlign: "center",
+    marginVertical: 5,
+  },
+  eventAddress: {
+    fontSize: 12,
+    color: "gray",
+    textAlign: "center",
+    marginBottom: 10,
+  },
+  eventUrl: {
+    fontSize: 12,
+    color: "orange",
+    textAlign: "center",
+    textDecorationLine: "underline",
+    marginVertical: 5,
   },
   emptyMessage: {
     textAlign: "center",
