@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState, useCallback } from "react";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   StyleSheet,
   Text,
@@ -17,6 +17,7 @@ import { likeEvent, unlikeEvent, addEvent } from "../reducers/event";
 
 export default function MapScreen({ route }) {
   const dispatch = useDispatch();
+  const likes = useSelector((state) => state.event.likes); // Accès à l'état Redux des likes
   const { latitude, longitude, events = {} } = route.params;
   const eventsData = events.data || [];
 
@@ -34,7 +35,6 @@ export default function MapScreen({ route }) {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [eventModalVisible, setEventModalVisible] = useState(false);
-  const [favorites, setFavorites] = useState([]); // Tableau des indices des événements favoris
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);
@@ -45,35 +45,18 @@ export default function MapScreen({ route }) {
   };
 
   const handleParticipate = (event) => {
-    console.log('Tentative d\'ajouter l\'événement :', event);
-    dispatch(addEvent(event)); // Envoie l'événement au reducer
+    dispatch(addEvent(event));
     alert('Votre événement a été ajouté au dashboard');
   };
-  
 
-  // Fonction de gestion des favoris
-  const toggleFavorite = (eventIndex) => {
-    const event = eventsData[eventIndex];
-  
-    // Si l'événement est déjà dans les favoris
-    if (favorites.includes(eventIndex)) {
-      // Retirer de la liste des favoris
-      dispatch(unlikeEvent(event)); // Dispatch de l'action `unlikeEvent`
+  const toggleFavorite = (event) => {
+    const isLiked = likes.some((likedEvent) => likedEvent._id === event._id);
+    if (isLiked) {
+      dispatch(unlikeEvent({ id: event._id }));
     } else {
-      // Ajouter aux favoris
-      dispatch(likeEvent(event)); // Dispatch de l'action `likeEvent`
+      dispatch(likeEvent(event));
     }
-  
-    // Mettre à jour localement l'état des favoris (facultatif si vous voulez garder cette gestion visuelle)
-    setFavorites((prevFavorites) => {
-      if (prevFavorites.includes(eventIndex)) {
-        return prevFavorites.filter((index) => index !== eventIndex);
-      } else {
-        return [...prevFavorites, eventIndex];
-      }
-    });
   };
-  
 
   const updateRegion = useCallback((newRegion) => {
     setRegion((prevRegion) => {
@@ -131,59 +114,39 @@ export default function MapScreen({ route }) {
     }
   }, [currentPosition, region, cityProvided]);
 
-  const renderEventModalItem = ({ item, index }) => (
-    <View style={styles.modalItem}>
-      <View style={styles.itemHeader}>
-        <Text style={styles.modalTitle}>
-          {item.category || "Catégorie non renseignée"} -{" "}
-          {item.title || "Titre non renseigné"}
+  const renderEventModalItem = ({ item }) => {
+    const isLiked = likes.some((likedEvent) => likedEvent._id === item._id);
+    return (
+      <View style={styles.modalItem}>
+        <View style={styles.itemHeader}>
+          <Text style={styles.modalTitle}>
+            {item.category || "Catégorie non renseignée"} - {item.title || "Titre non renseigné"}
+          </Text>
+          <TouchableOpacity
+            onPress={() => toggleFavorite(item)}
+            style={styles.favoriteButton}
+          >
+            <FontAwesome
+              name={isLiked ? "heart" : "heart-o"}
+              size={24}
+              color={isLiked ? "red" : "gray"}
+            />
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.modalDescription}>{item.description || "Aucune description disponible"}</Text>
+        <Text style={styles.modalDetails}>Lieu : {item.place?.street || "Rue non renseignée"} {item.place?.city || "Ville non renseignée"}</Text>
+        <Text style={styles.eventDate}>
+          Date : {item.date?.day ? new Date(item.date.day).toLocaleDateString() : "Date non renseignée"}
         </Text>
         <TouchableOpacity
-          onPress={() => toggleFavorite(index)} // Appelle la fonction pour ajouter/retirer des favoris en utilisant l'index
-          style={styles.favoriteButton}
+          onPress={() => handleParticipate(item)}
+          style={styles.participateButton}
         >
-          <FontAwesome
-            name={favorites.includes(index) ? "heart" : "heart-o"} // "heart" si favori, "heart-o" sinon
-            size={24}
-            color={favorites.includes(index) ? "red" : "gray"} // Rouge si favori, gris sinon
-          />
+          <Text style={styles.participateButtonText}>Participer</Text>
         </TouchableOpacity>
       </View>
-      <Text style={styles.modalDescription}>
-        {item.description || "Aucune description disponible"}
-      </Text>
-      <Text style={styles.modalDetails}>
-        Lieu : {item.place?.street || "Rue non renseignée"}{" "}
-        {item.place?.city || "Ville non renseignée"}
-      </Text>
-      <Text style={styles.eventDate}>
-        Date :{" "}
-        {item.date?.day
-          ? new Date(item.date.day).toLocaleDateString()
-          : "Date non renseignée"}
-      </Text>
-      <Text style={styles.eventTime}>
-        Heure :{" "}
-        {item.date?.start && item.date?.end
-          ? `${new Date(item.date.start).toLocaleTimeString()} - ${new Date(
-              item.date.end
-            ).toLocaleTimeString()}`
-          : "Heure non renseignée"}
-      </Text>
-
-      {/* Bouton "Participer" */}
-       <TouchableOpacity
-         onPress={() => {
-          console.log('Bouton Participer cliqué !');
-          handleParticipate(selectedEvent); // Ajoute l'événement au reducer
-          alert("Votre événement a été ajouté au dashboard !"); // Affiche le message de confirmation
-        }}
-      style={styles.participateButton}
-    >
-        <Text style={styles.participateButtonText}>Participer</Text>
-      </TouchableOpacity>
-    </View>
-  );
+    );
+  };
 
   return (
     <>
@@ -207,6 +170,7 @@ export default function MapScreen({ route }) {
           const longitude = coordinates[0];
 
           if (latitude && longitude) {
+            const isLiked = likes.some((likedEvent) => likedEvent._id === event._id);
             return (
               <Marker
                 key={index}
@@ -215,7 +179,7 @@ export default function MapScreen({ route }) {
                   longitude: parseFloat(longitude),
                 }}
                 title={event.title}
-                pinColor={favorites.includes(index) ? "red" : "#FF4525"} // Si l'événement est favori, le marqueur devient rouge
+                pinColor={isLiked ? "red" : "#FF4525"}
                 onPress={() => {
                   setSelectedEvent(event);
                   setModalVisible(true);
@@ -227,7 +191,6 @@ export default function MapScreen({ route }) {
         })}
       </MapView>
 
-      {/* Bouton pour afficher la modale Liste des événements */}
       <TouchableOpacity
         style={styles.eventListButton}
         onPress={toggleEventModal}
@@ -235,10 +198,8 @@ export default function MapScreen({ route }) {
         <Text style={styles.eventListButtonText}>
           Voir les événements ({eventsData.length})
         </Text>
-        <View style={styles.eventListButtonBar} />
       </TouchableOpacity>
 
-      {/* Modal Liste des événements */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -251,17 +212,15 @@ export default function MapScreen({ route }) {
               <FlatList
                 data={eventsData}
                 renderItem={renderEventModalItem}
-                keyExtractor={(item, index) => index.toString()}
+                keyExtractor={(item) => item._id}
                 style={styles.modalFlatList}
                 ItemSeparatorComponent={() => <View style={styles.separator} />}
-                showsVerticalScrollIndicator={false} // Supprime la barre de défilement
               />
             </View>
           </View>
         </TouchableWithoutFeedback>
       </Modal>
 
-      {/* Modal Détails de l'événement */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -271,72 +230,7 @@ export default function MapScreen({ route }) {
         <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
           <View style={styles.modalBackgroundEvent}>
             <View>
-              {selectedEvent && (
-                <View style={styles.modalItem}>
-                  {/* Conteneur pour le titre et le bouton cœur */}
-                  <View style={styles.titleContainer}>
-                    <Text style={styles.modalTitle}>
-                      {selectedEvent.category || "Catégorie non renseignée"} -{" "}
-                      {selectedEvent.title || "Titre non renseigné"}
-                    </Text>
-                    <TouchableOpacity
-                      onPress={() =>
-                        toggleFavorite(eventsData.indexOf(selectedEvent))
-                      }
-                      style={styles.favoriteButton}
-                    >
-                      <FontAwesome
-                        name={
-                          favorites.includes(eventsData.indexOf(selectedEvent))
-                            ? "heart"
-                            : "heart-o"
-                        }
-                        size={24}
-                        color={
-                          favorites.includes(eventsData.indexOf(selectedEvent))
-                            ? "red"
-                            : "gray"
-                        }
-                      />
-                    </TouchableOpacity>
-                  </View>
-
-                  <Text style={styles.modalDescription}>
-                    {selectedEvent.description ||
-                      "Aucune description disponible"}
-                  </Text>
-                  <Text style={styles.modalDetails}>
-                    Lieu : {selectedEvent.place?.street || "Rue non renseignée"}
-                    , {selectedEvent.place?.city || "Ville non renseignée"}
-                  </Text>
-                  <Text style={styles.eventDate}>
-                    Date :{" "}
-                    {selectedEvent.date?.day
-                      ? new Date(selectedEvent.date.day).toLocaleDateString()
-                      : "Date non renseignée"}
-                  </Text>
-                  <Text style={styles.eventTime}>
-                    Heure :{" "}
-                    {selectedEvent.date?.start && selectedEvent.date?.end
-                      ? `${new Date(
-                          selectedEvent.date.start
-                        ).toLocaleTimeString()} - ${new Date(
-                          selectedEvent.date.end
-                        ).toLocaleTimeString()}`
-                      : "Heure non renseignée"}
-                  </Text>
-                  <TouchableOpacity
-                    style={styles.participateButton}
-                    onPress={() => {
-                      console.log('Bouton Participer cliqué !');
-                      handleParticipate(selectedEvent); // Ajoute l'événement au reducer
-                      alert("Votre événement a été ajouté au dashboard !"); // Affiche le message de confirmation
-                    }}
-                  >
-                    <Text style={styles.participateButtonText}>Participer</Text>
-                  </TouchableOpacity>
-                </View>
-              )}
+              {selectedEvent && renderEventModalItem({ item: selectedEvent })}
             </View>
           </View>
         </TouchableWithoutFeedback>

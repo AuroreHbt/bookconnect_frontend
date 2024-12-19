@@ -18,18 +18,24 @@ export const eventSlice = createSlice({
           },
           
 
-        likeEvent: (state, action) => {
-            if (!state.likes.includes(action.payload.id)) {
-                state.likes.push(action.payload.id); // Ajout du like
+          likeEvent: (state, action) => {
+            console.log("Adding like:", action.payload);
+            const existingEvent = state.likes.find(event => event._id === action.payload._id);
+            if (!existingEvent) {
+                // Ajoute un événement aux favoris avec isLiked = true
+                state.likes.push({ ...action.payload, isLiked: true });
             }
         },
+
         unlikeEvent: (state, action) => {
-            state.likes = state.likes.filter(id => id !== action.payload.id); 
+            // Filtre les événements qui ne sont pas aimés
+            console.log("Removing like for event ID:", action.payload);
+            state.likes = state.likes.filter(event => event._id !== action.payload.id);
         },
 
     },
 });
 
-export const { addEvent, likeEvent,unlikeEvent, deleteEvent } = eventSlice.actions;
+export const { addEvent, likeEvent, unlikeEvent, deleteEvent } = eventSlice.actions;
 export default eventSlice.reducer;
 // reducer bien ajouté au App.js

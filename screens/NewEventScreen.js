@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-
+ 
 // BottomTab visible sur les Screens => globalStyles
 import { globalStyles } from '../styles/globalStyles';
-
+ 
 // import pour utiliser le comoposant Icon de la bibliothèque react-native-vector-icons (/FontAwesome)
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+ 
 import {
   View,
   Image,
@@ -21,65 +21,65 @@ import {
   Pressable,
   Keyboard,
 } from 'react-native';
-
+ 
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import * as ImagePicker from 'expo-image-picker';
 import { useSelector, useDispatch } from 'react-redux';
 import moment from 'moment';
 import { LinearGradient } from 'expo-linear-gradient';
-
-import { addEvent } from "../reducers/event";
-
+ 
+import { addEventPlanner } from "../reducers/event";
+ 
 // import pour faire un menu déroulant
 import { Picker } from '@react-native-picker/picker';
-
-
+ 
+ 
 const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS
-
-
+ 
+ 
 export default function NewEventScreen({ navigation }) {
-
+ 
   // https://reactnavigation.org/docs/navigation-object/#goback
   const goBack = () => navigation.goBack();
-
+ 
   const user = useSelector((state) => state.user.value);
-  const event = useSelector((state) => state.event.value)
-
+  const event = useSelector((state) => state.event.eventsPlanner)
+ 
   const dispatch = useDispatch();
-
+ 
   const [title, setTitle] = useState('');
-
+ 
   const [day, setDay] = useState(new Date()); // Date par défaut
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
-
+ 
   const [identityPlace, setIdentityPlace] = useState('');
   const [placeNumber, setPlaceNumber] = useState('');
   const [street, setStreet] = useState('');
   const [code, setCode] = useState('');
   const [city, setCity] = useState('');
-
+ 
   const [category, setCategory] = useState('');
   const [description, setDescription] = useState('');
   const [url, setUrl] = useState('');
   const [eventImage, setEventImage] = useState(null);
-
+ 
   // Gestion de la visibilité du DatePicker / StartTime / EndTime
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isStartTimePickerVisible, setIsStarTimePickerVisibility] = useState(false);
   const [isEndTimePickerVisible, setIsEndTimePickerVisibility] = useState(false);
-
+ 
   const [categorySelected, setCategorySelected] = useState('');
-
-  const [titleError, setTitleError] = useState('');
+ 
+  /* const [titleError, setTitleError] = useState('');
   const [dateError, setDateError] = useState('');
   const [startTimeError, setStartTimeError] = useState('');
   const [endTimeError, setEndTimeError] = useState('');
   const [categoryError, setCategoryError] = useState('');
   const [identityPlaceError, setIdentityPlaceError] = useState('');
   const [placeError, setPlaceError] = useState('');
-  const [descError, setDescError] = useState('');
-
+  const [descError, setDescError] = useState(''); */
+ 
   // Fonctions pour gérer le DatePicker / StartTime / EndTime
   const showDatePicker = () => setDatePickerVisibility(true);
   const hideDatePicker = () => setDatePickerVisibility(false);
@@ -87,7 +87,7 @@ export default function NewEventScreen({ navigation }) {
   const hideStartTimePicker = () => setIsStarTimePickerVisibility(false);
   const showEndTimePicker = () => setIsEndTimePickerVisibility(true);
   const hideEndTimePicker = () => setIsEndTimePickerVisibility(false);
-
+ 
   // Bouton pour sélectionner la date
   const handleConfirmDate = (selectedDate) => {
     // Convertir la date au format Date
@@ -95,7 +95,7 @@ export default function NewEventScreen({ navigation }) {
     setDay(formattedDate);  // Mettre à jour l'état avec l'objet Date
     hideDatePicker(); // Fermer le picker
   };
-
+ 
    // Bouton pour sélectionner l'heure de début
    const handleStartTimeConfirm = (selectedStart) => {
     // Convertir la date au format Date
@@ -103,7 +103,7 @@ export default function NewEventScreen({ navigation }) {
     setStartTime(formattedStart);  // Mettre à jour l'état avec l'objet Date
     hideStartTimePicker(); // Fermer le picker
   };
-
+ 
   // Bouton pour sélectionner l'heure de fin
   const handleEndTimeConfirm = (selectedEnd) => {
     // Convertir la date au format Date
@@ -111,25 +111,25 @@ export default function NewEventScreen({ navigation }) {
     setEndTime(formattedEnd);  // Mettre à jour l'état avec l'objet Date
     hideEndTimePicker(); // Fermer le picker
   };
-
-
+ 
+ 
   // Demande de permission pour accéder à la galerie photo du mobile
   const handleImagePick = async () => {
     try {
       const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  
+ 
       if (!permissionResult.granted) {
         Alert.alert('Permission refusée', 'Vous devez autoriser l\'accès à la galerie.');
         return;
       }
-  
+ 
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images, // Utilise MediaTypeOptions
         quality: 1,
       });
-  
+ 
       console.log("Résultat de la sélection d'image :", result);
-  
+ 
       if (!result.canceled && result.assets && result.assets.length > 0) {
         setEventImage(result.assets[0]);
       } else {
@@ -139,7 +139,7 @@ export default function NewEventScreen({ navigation }) {
       console.error("Erreur lors de la sélection de l'image", error);
     }
   };
-
+ 
   const handleSubmit = async () => {
   console.log("Planner :", user._id);
   console.log("Titre :", title);
@@ -151,7 +151,7 @@ export default function NewEventScreen({ navigation }) {
   console.log("Lieu :", identityPlace);
   console.log("Adresse :", `${placeNumber} ${street}, ${code} ${city}`);
   console.log("Image de couverture :", eventImage);
-
+ 
   if (!title) console.log("Erreur : Le titre est manquant");
   if (!identityPlace) console.log("Erreur : Le lieu est manquant");
   if (!placeNumber) console.log("Erreur : Le numéro de place est manquant");
@@ -163,12 +163,12 @@ export default function NewEventScreen({ navigation }) {
   if (!day) console.log("Erreur : La date est manquante");
   if (!startTime) console.log("Erreur : L'heure de début est manquante");
   if (!endTime) console.log("Erreur : L'heure de fin est manquante");
-
+ 
   console.log("Préparation des données...");
-
+ 
   /* // validation des champs :
   let hasError = false;
-
+ 
   // Validation du titre
   if (!title) {
     setTitleError('Le titre est obligatoire');
@@ -176,7 +176,7 @@ export default function NewEventScreen({ navigation }) {
   } else {
     setTitleError('');
   }
-
+ 
   // Validation de la catégorie
   if (!category) {
     setCategoryError('La catégorie est obligatoire');
@@ -184,7 +184,7 @@ export default function NewEventScreen({ navigation }) {
   } else {
     setCategoryError('');
   }
-
+ 
   // Validation de la description
   if (!description) {
     setDescError('La description est obligatoire');
@@ -192,7 +192,7 @@ export default function NewEventScreen({ navigation }) {
   } else {
     setDescError('');
   }
-
+ 
   // Validation de la date
   if (!day) {
     setDateError('La date est obligatoire');
@@ -200,7 +200,7 @@ export default function NewEventScreen({ navigation }) {
   } else {
     setDateError('');
   }
-
+ 
   // Validation de l'heure de début
   if (!startTime) {
     setStartTimeError('L\'heure de début est obligatoire');
@@ -208,7 +208,7 @@ export default function NewEventScreen({ navigation }) {
   } else {
     setStartTimeError('');
   }
-
+ 
   // Validation de l'heure de fin
   if (!endTime) {
     setEndTimeError('L\'heure de fin est obligatoire');
@@ -216,7 +216,7 @@ export default function NewEventScreen({ navigation }) {
   } else {
     setEndTimeError('');
   }
-
+ 
   // Validation du lieu
   if (!identityPlace) {
     setIdentityPlaceError('Le lieu est obligatoire');
@@ -224,7 +224,7 @@ export default function NewEventScreen({ navigation }) {
   } else {
     setIdentityPlaceError('');
   }
-
+ 
   // Validation de l'adresse
   if (!placeNumber || !street || !code || !city) {
     setPlaceError('L\'adresse complète est obligatoire');
@@ -232,12 +232,12 @@ export default function NewEventScreen({ navigation }) {
   } else {
     setPlaceError('');
   }
-
+ 
   if (hasError) {
     console.log("Validation échouée, soumission annulée.");
     return; // early return
   } */
-
+ 
   /*   if (!placeNumber || !street || !code || !city) {
       console.log("Erreur sur l'adresse :", { placeNumber, street, code, city });
       setPlaceError('L\'adresse complète est obligatoire');
@@ -245,17 +245,17 @@ export default function NewEventScreen({ navigation }) {
     } else {
       setPlaceError('');
     } */
-
+ 
     console.log("Planner (user._id) :", user._id);
     if (!user._id) {
       Alert.alert('Erreur', 'Utilisateur non authentifié.');
       return;
     };
-
+ 
     // Formatage des heures de début et de fin avant de créer l'objet eventData
     const start = startTime;
     const end = endTime;
-
+ 
     console.log("Variables pour eventData :");
 console.log("planner :", user?._id);
 console.log("title :", title);
@@ -270,12 +270,12 @@ console.log("city :", city);
 console.log("code :", code);
 console.log("description :", description);
 console.log("url :", url);
-
+ 
 console.log("Date validée (moment) :", moment(day).isValid());
 console.log("Heure de début validée (moment) :", moment(startTime).isValid());
 console.log("Heure de fin validée (moment) :", moment(endTime).isValid());
-
-
+ 
+ 
     // Création de l'objet conforme au backend
     const eventData = {
       planner: user._id,
@@ -297,9 +297,9 @@ console.log("Heure de fin validée (moment) :", moment(endTime).isValid());
       url: url || '', // Fournir une valeur par défaut si `url` est facultatif
       isLiked: false, // Ajout d'une valeur par défaut
     };
-
+ 
     console.log("Données envoyées :", eventData);
-
+ 
     // Ajout de l'image si elle existe
     const formData = new FormData();
     formData.append('eventData', JSON.stringify(eventData));
@@ -324,8 +324,8 @@ console.log("Heure de fin validée (moment) :", moment(endTime).isValid());
         if (data.result) {
           console.log('Évènement créé avec succès. Navigation vers MyEvents.');
           navigation.navigate('MyEvents');
-          dispatch(addEvent(data.event))
-
+          dispatch(addEventPlanner(data.event))
+ 
           setTitle('')
           setDay(new Date());
           setStartTime('')
@@ -344,7 +344,7 @@ console.log("Heure de fin validée (moment) :", moment(endTime).isValid());
         }
       });
   };
-
+ 
   return (
     <KeyboardAvoidingView style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}>
@@ -357,7 +357,7 @@ console.log("Heure de fin validée (moment) :", moment(endTime).isValid());
               <Icon style={globalStyles.returnContainer} name="chevron-circle-left" size={32} color='rgba(55, 27, 12, 0.3)' />
             </TouchableOpacity>
           </View>
-
+ 
           {/* formulaire pour créer un évènement */}
           <View style={styles.inputContainerSection}>
           <Text style={styles.label}>Titre de l'évènement *</Text>
@@ -369,7 +369,7 @@ console.log("Heure de fin validée (moment) :", moment(endTime).isValid());
               />
             </View>
             {/* {titleError ? <Text style={styles.errorText}>{titleError}</Text> : null} */}
-
+ 
           {/* Date Picker */}
           <View style={styles.datePickerContainer}>
             <Text style={styles.label}>Date *</Text>
@@ -389,7 +389,7 @@ console.log("Heure de fin validée (moment) :", moment(endTime).isValid());
             />
           </View>
           {/* {dateError ? <Text style={styles.errorText}>{dateError}</Text> : null} */}
-
+ 
           {/* Start Time Picker */}
           <View style={styles.timePickerContainer}>
             <Text style={styles.label}>Heure de début *</Text>
@@ -409,7 +409,7 @@ console.log("Heure de fin validée (moment) :", moment(endTime).isValid());
           />
         </View>
         {/* {startTimeError ? <Text style={styles.errorText}>{startTimeError}</Text> : null} */}
-
+ 
         {/* End Time Picker */}
         <View style={styles.timePickerContainer}>
         <Text style={styles.label}>Heure de fin *</Text>
@@ -430,7 +430,7 @@ console.log("Heure de fin validée (moment) :", moment(endTime).isValid());
       </View>
       {/* {endTimeError ? <Text style={styles.errorText}>{endTimeError}</Text> : null} */}
       </View>
-
+ 
       <Text style={styles.label}>Lieu *</Text>
             <View style={styles.inputContainer}>
             <TextInput
@@ -440,7 +440,7 @@ console.log("Heure de fin validée (moment) :", moment(endTime).isValid());
           />
           </View>
           {/* {identityPlaceError ? <Text style={styles.errorText}>{identityPlaceError}</Text> : null} */}
-
+ 
       <View style={styles.placeContainer}>
       <Text style={styles.label}>Adresse *</Text>
   <View style={styles.row}>
@@ -457,7 +457,7 @@ console.log("Heure de fin validée (moment) :", moment(endTime).isValid());
       onChangeText={setStreet}
     />
   </View>
-
+ 
   <View style={styles.row}>
     <TextInput
       style={[styles.inputSmall, styles.inputRow]}
@@ -474,7 +474,7 @@ console.log("Heure de fin validée (moment) :", moment(endTime).isValid());
   </View>
 </View>
 {/* {placeError ? <Text style={styles.errorText}>{placeError}</Text> : null} */}
-
+ 
             {/* Catégorie : liste de choix */}
             <Text style={styles.label}>Catégorie *</Text>
             <View style={styles.pickerContainer}>
@@ -504,8 +504,8 @@ console.log("Heure de fin validée (moment) :", moment(endTime).isValid());
             />
           </View>
           {/* {categoryError ? <Text style={styles.errorText}>{categoryError}</Text> : null} */}
-
-
+ 
+ 
           <Text style={styles.label}>Description *</Text>
           <TextInput
             style={styles.inputContainer}
@@ -515,7 +515,7 @@ console.log("Heure de fin validée (moment) :", moment(endTime).isValid());
             multiline
           />
           {/* {descError ? <Text style={styles.errorText}>{descError}</Text> : null} */}
-
+ 
           <Text style={styles.label}>URL</Text>
           <TextInput
             style={styles.inputContainer}
@@ -523,15 +523,15 @@ console.log("Heure de fin validée (moment) :", moment(endTime).isValid());
             value={url}
             onChangeText={setUrl}
           />
-
+ 
           <Text style={styles.label}>Image</Text>
           <TouchableOpacity onPress={handleImagePick} style={styles.inputContainer}>
             <Text>Sélectionner une image</Text>
           </TouchableOpacity>
           {eventImage && <Image source={{ uri: eventImage.uri }} style={styles.imagePreview} />}
-
+ 
         </View>
-
+ 
         {/* Bouton */}
         <View style={styles.buttonContainer}>
           <LinearGradient
@@ -551,7 +551,7 @@ console.log("Heure de fin validée (moment) :", moment(endTime).isValid());
     </KeyboardAvoidingView>
   );
 };
-
+ 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -559,14 +559,14 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
   },
-
+ 
   // CSS du container du formulaire
   inputContainerSection: {
     maxWidth: '100%',
     marginBottom: 20,
     paddingTop: 60,
   }, 
-
+ 
   // CSS de l'input title de l'évènement
   inputContainer: {
     backgroundColor: "rgba(238, 236, 232, 0.9)",
@@ -581,14 +581,14 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
   },
-
+ 
   label: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 8,
     color: '#333',
   },
-
+ 
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
@@ -596,20 +596,20 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 15,
   },
-
+ 
   datePickerContainer: {
     marginVertical: 20,
   },
-
+ 
   pickerContainer: {
     marginVertical: 20,
   },
-
+ 
   dateText: {
     fontSize: 12,
     color: '#555',
   },
-
+ 
   dateButton: {
     padding: 12,
     borderWidth: 1,
@@ -617,7 +617,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: '#f8f8f8',
   },
-
+ 
   placeContainer: {
     marginVertical: 20, // Pour la section lieu
   },
@@ -627,7 +627,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginVertical: 10,
   },
-  
+ 
   inputRow: {
     paddingHorizontal: 10,
     height: 50,
@@ -636,17 +636,17 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.7,
     borderBottomColor: "rgba(55, 27, 12, 0.50)",
   },
-  
+ 
   inputSmall: {
     flex: 1, // Le champ occupe une part proportionnelle
     marginRight: 10, // Espacement entre les champs
   },
-  
+ 
   inputLarge: {
     flex: 3, // Le champ occupe trois parts proportionnelles
   },
-  
-
+ 
+ 
   // CSS du bouton publier avec spinner-button pour le temps de chargement
   buttonContainer: {
     justifyContent: 'center', // Centrer le contenu horizontalement
@@ -655,7 +655,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
     paddingBottom: 60,
   },
-
+ 
   gradientButton: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -663,7 +663,7 @@ const styles = StyleSheet.create({
     padding: 25, // Ajustez la hauteur du bouton
     width: '50%', // Largeur du bouton
   },
-
+ 
   textButton: {
     textAlign: 'center',
     fontFamily: 'sans-serif',
@@ -671,7 +671,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'white',
   },
-
+ 
   imageButton: {
     backgroundColor: '#ddd',
     padding: 10,
@@ -685,23 +685,23 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     marginBottom: 15,
   },
-
+ 
   timePickerContainer: {
     marginVertical: 20,
   },
   picker: {
     backgroundColor: "rgba(238, 236, 232, 0.9)",
     borderRadius: 5,
-
+ 
     width: "85%",
     paddingLeft: 5,
   },
-
+ 
   pickerText: {
     fontFamily: 'sans-serif',
     fontSize: 16,
   },
-
+ 
   iconPicker: {
     position: 'absolute',
     color: 'rgba(211, 211, 211, 1)',
@@ -710,11 +710,11 @@ const styles = StyleSheet.create({
     top: 10,
     right: 5,
   },
-
+ 
   iconPickerChecked: {
     color: 'green',
   },
-
+ 
   errorText: {
     textAlign: 'left',
     fontFamily: 'sans-serif',

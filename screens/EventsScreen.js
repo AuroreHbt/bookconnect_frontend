@@ -15,51 +15,47 @@ import {
 import FontAwesome from "react-native-vector-icons/FontAwesome"
 import { bottomTabStyles } from "../styles/bottomTabStyles";
 import { LinearGradient } from 'expo-linear-gradient';
-
-
+ 
+ 
 export default function EventsScreen({ navigation }) {
   const [city, setCity] = useState("");
   const [events, setEvents] = useState([]);
-
-
+ 
+ 
   const addEvent = () => {
     navigation.navigate("NewEvent", { screen: "MyEventsScreen" });
   };
-
+ 
   const myEvent = () => {
     navigation.navigate("MyEvents", { screen: "MyEventsScreen" });
   };
-
-  const myEvent = () => {
-    navigation.navigate("MyEvents", { screen: "MyEventsScreen" });
-  };
-
+ 
   const handleSearchPlace = async () => {
     if (!city.trim()) {
       Alert.alert("Erreur", "Veuillez entrer une localisation");
       return;
     }
-
+ 
     try {
       console.log("Searching events for city:", city);
-
+ 
       // Appel à l'API de géocodage
       const apiKey = process.env.EXPO_PUBLIC_MAP_API_KEY;
       const url = `https://api.opencagedata.com/geocode/v1/json?q=${city}&key=${apiKey}`;
       const response = await fetch(url);
-
+ 
       if (!response.ok) {
         throw new Error(`Erreur ${response.status}: ${response.statusText}`);
       }
-
+ 
       const data = await response.json();
       console.log("Geocode API response:", data);
-
+ 
       if (!data.results || data.results.length === 0) {
         Alert.alert("Erreur", "Localisation introuvable");
         return;
       }
-
+ 
       // Recherche des événements associés
       const backend = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
       const eventResponse = await fetch(
@@ -67,12 +63,12 @@ export default function EventsScreen({ navigation }) {
       );
       const eventData = await eventResponse.json();
       console.log("Event API response:", eventData);
-
+ 
       const { lat, lng } = data.results[0].geometry;
-
+ 
       // Mise à jour de l'état local avec les événements récupérés
       setEvents(eventData); // Assuming eventData is the correct array of events
-
+ 
       // Navigation vers la carte avec les coordonnées et les événements
       navigation.navigate("Map", {
         latitude: parseFloat(lat),
@@ -84,7 +80,7 @@ export default function EventsScreen({ navigation }) {
       Alert.alert("Erreur", "Une erreur est survenue lors de la recherche.");
     }
   };
-
+ 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <KeyboardAvoidingView
@@ -100,7 +96,7 @@ export default function EventsScreen({ navigation }) {
               "Des événements pour échanger, des moments pour s'inspirer."
             </Text>
           </View>
-
+ 
           <View style={styles.input}>
             <FontAwesome name="map-marker" size={30} color="#D84815" />
             <TextInput
@@ -154,9 +150,9 @@ export default function EventsScreen({ navigation }) {
     </TouchableWithoutFeedback>
   );
 }
-
+ 
 const styles = StyleSheet.create({
-
+ 
   inputContainer: {
     justifyContent: "center",
     width: "80%",
@@ -173,13 +169,13 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
   },
-
+ 
   noEventsText: {
     marginTop: 20,
     fontSize: 16,
     color: "#777",
   },
-
+ 
   title: {
     fontFamily: 'Asul-bold', // ou GermaniaOne-Regular
     fontWeight: '700',
@@ -188,7 +184,7 @@ const styles = StyleSheet.create({
     color: 'rgba(55, 27, 12, 0.9)', // #371B0C
     textAlign: "center",
   },
-
+ 
   text: {
     fontFamily: "Poppins-Medium", // ou GermaniaOne-Regular
     fontWeight: "500",
