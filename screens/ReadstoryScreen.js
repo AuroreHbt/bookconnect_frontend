@@ -14,7 +14,7 @@ import {
 
 // pour afficher les fichiers PDF hébergés en ligne
 import { WebView } from "react-native-webview";
-
+ 
 
 export default function ReadStoryScreen({ route, navigation, stories }) {
   const { story } = route.params;
