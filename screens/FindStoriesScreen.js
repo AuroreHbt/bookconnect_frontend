@@ -12,7 +12,8 @@ import {
     View,
     Pressable,
     FlatList,
-    Image
+    Image,
+    ScrollView
 } from 'react-native';
 
 import { Picker } from '@react-native-picker/picker';
@@ -123,7 +124,7 @@ export default function FindStoriesScreen({ navigation }) {
 
 
     return (
-
+        <ScrollView>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={{ flex: 1, justifyContent: 'center', padding: 16 }}>
 
@@ -228,6 +229,7 @@ export default function FindStoriesScreen({ navigation }) {
                 </KeyboardAvoidingView>
             </View>
         </TouchableWithoutFeedback>
+        </ScrollView>
     );
 };
 
