@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    events: [], 
+    events: [],
+    eventsPlanner: [],    // Événements organisés par l'utilisateur
     likes: [],  // Ajout de l'état pour les likes des événements
 };
 
@@ -11,6 +12,10 @@ export const eventSlice = createSlice({
     reducers: {
         addEvent: (state, action) => {
             state.events.push(action.payload);
+        },
+
+        addEventPlanner: (state, action) => {
+            state.eventsPlanner.push(action.payload);
         },
        
         deleteEvent: (state, action) => {
@@ -30,6 +35,6 @@ export const eventSlice = createSlice({
     },
 });
 
-export const { addEvent, likeEvent,unlikeEvent, deleteEvent } = eventSlice.actions;
+export const { addEvent, addEventPlanner, likeEvent,unlikeEvent, deleteEvent } = eventSlice.actions;
 export default eventSlice.reducer;
 // reducer bien ajouté au App.js

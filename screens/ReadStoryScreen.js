@@ -67,7 +67,7 @@ export default function ReadStoryScreen({ route, navigation, stories }) {
           >
             {/* affichage du fichier image téléchargé */}
             <Image
-              source={{ uri: story.coverImage}}
+              source={{ uri: story.coverImage }}
             />
           </View>
         </View>

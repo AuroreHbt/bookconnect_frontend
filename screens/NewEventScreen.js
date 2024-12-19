@@ -28,7 +28,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import moment from 'moment';
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { addEvent } from "../reducers/event";
+import { addEventPlanner } from "../reducers/event";
 
 // import pour faire un menu déroulant
 import { Picker } from '@react-native-picker/picker';
@@ -43,7 +43,7 @@ export default function NewEventScreen({ navigation }) {
   const goBack = () => navigation.goBack();
 
   const user = useSelector((state) => state.user.value);
-  const event = useSelector((state) => state.event.value)
+  const event = useSelector((state) => state.event.eventsPlanner)
 
   const dispatch = useDispatch();
 
@@ -71,14 +71,14 @@ export default function NewEventScreen({ navigation }) {
 
   const [categorySelected, setCategorySelected] = useState('');
 
-  const [titleError, setTitleError] = useState('');
+  /* const [titleError, setTitleError] = useState('');
   const [dateError, setDateError] = useState('');
   const [startTimeError, setStartTimeError] = useState('');
   const [endTimeError, setEndTimeError] = useState('');
   const [categoryError, setCategoryError] = useState('');
   const [identityPlaceError, setIdentityPlaceError] = useState('');
   const [placeError, setPlaceError] = useState('');
-  const [descError, setDescError] = useState('');
+  const [descError, setDescError] = useState(''); */
 
   // Fonctions pour gérer le DatePicker / StartTime / EndTime
   const showDatePicker = () => setDatePickerVisibility(true);
@@ -324,7 +324,7 @@ console.log("Heure de fin validée (moment) :", moment(endTime).isValid());
         if (data.result) {
           console.log('Évènement créé avec succès. Navigation vers MyEvents.');
           navigation.navigate('MyEvents');
-          dispatch(addEvent(data.event))
+          dispatch(addEventPlanner(data.event))
 
           setTitle('')
           setDay(new Date());
