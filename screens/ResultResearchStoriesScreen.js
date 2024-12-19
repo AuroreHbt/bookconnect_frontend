@@ -13,6 +13,7 @@ import { globalStyles } from "../styles/globalStyles";
 import { useDispatch, useSelector } from "react-redux";
 import { addLike, removeLike } from "../reducers/story";
 import { useState } from "react";
+import { useEffect } from "react";
 
 import Icon from "react-native-vector-icons/FontAwesome";
 
@@ -24,7 +25,18 @@ export default function ResultResearchStoriesScreen({ route, navigation }) {
   const [stories, setStories] = useState(initialStories); // Définit l'état local avec les histoires initiales
   const [isVisible, setIsVisible] = useState(false);
 
+  const likedStories = useSelector((state) => state.story.value )
+
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    // Synchronise l'état local avec Redux
+    const updatedStories = stories.map((story) => ({
+      ...story,
+      isLiked: likedStories.some((likedStory) => likedStory._id === story._id),
+    }));
+    setStories(updatedStories);
+  }, [likedStories]);
 
   const handleLike = (story) => {
     // Met à jour isLiked pour l'histoire cliquée
@@ -159,11 +171,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(55, 27, 12, 0.1)",
     // elevation: 0,
+   
   },
 
   headContent: {
     flexDirection: "row",
     width: "100%",
+    justifyContent: 'space-between',
+    
   },
 
   storyTitle: {
@@ -175,6 +190,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     borderBottomWidth: 0.5,
     borderBottomColor: "rgba(55, 27, 12, 0.5)",
+    
   
   },
 
@@ -185,6 +201,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     padding: 10,
+   
 
     // borderWidth: 1,
   },
@@ -241,6 +258,7 @@ const styles = StyleSheet.create({
     padding: 5,
     alignItems: "center",
     justifyContent: "center",
+    
   },
 
   coverImage: {
@@ -271,7 +289,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
     marginTop: 10,
-
+   
     // borderWidth: 1,
     // borderColor: 'rgba(238, 236, 232, 1)',
   },
@@ -291,6 +309,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
     color: "white", // 'rgba(55, 27, 12, 0.8)', // #371B0C
+  
   },
 
   iconContainer: {
