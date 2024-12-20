@@ -214,62 +214,73 @@ export default function DashboardScreen({ navigation }) {
             </View>
             {/* ScrollView horizontal des évènements*/}
             <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.eventsContainer}
-            >
-              {addedEvents.length > 0 ? (
-                addedEvents.map((event, index) => (
-                  <View key={index} style={styles.eventCard}>
-                    {/* Affichage de l'événement avec un fond conditionnel */}
-                    <View
-                      style={[
-                        styles.event,
-                        {
-                          backgroundColor: event.eventImage
-                            ? "transparent" // Aucun fond coloré si l'image est présente
-                            : "#F9E4D4", // Couleur pastel si pas d'image
-                        },
-                      ]}
-                    >
-                      {/* Affichage de l'image de l'événement, si elle est présente */}
-                      {event.eventImage && (
-                        <Image
-                          source={{ uri: event.eventImage }}
-                          style={styles.eventImage}
-                          resizeMode="cover" // Pour ajuster l'image à son conteneur
-                        />
-                      )}
-                    </View>
-
-                    {/* Affichage des informations de l'événement */}
-                    <Text style={styles.eventTitle}>
-                      {event.title || "Nom de l'événement"}
-                    </Text>
-                    <Text style={styles.eventDate}>
-                      {event.date?.day ? new Date(event.date.day).toLocaleDateString() : "Date non renseignée"}
-                    </Text>
-                    <Text style={styles.eventTime}>
-                      {event.date?.start && event.date?.end
-                        ? `${new Date(event.date.start).toLocaleTimeString()} - ${new Date(event.date.end).toLocaleTimeString()}`
-                        : "Heure non renseignée"}
-                    </Text>
-
-        {/* Icône poubelle pour supprimer l'événement */}
+    horizontal
+    showsHorizontalScrollIndicator={false}
+    contentContainerStyle={styles.eventsContainer}
+  >
+    {addedEvents.length > 0 ? (
+      addedEvents.map((event, index) => (
         <TouchableOpacity
-          onPress={() => {
-            console.log('Supprimer l\'événement avec l\'id:', event._id);
-            dispatch(deleteEvent({ id: event._id }));
-          }}          
-          style={styles.deleteButton}
+          key={index}
+          style={styles.eventCard}
+          onPress={handleMyEvents}
         >
-          <Icon name="trash-o" size={24} color="rgba(55, 27, 12, 0.7)" paddingTop={10} />
+          {/* Affichage de l'événement avec un fond conditionnel */}
+          <View
+            style={[
+              styles.event,
+              {
+                backgroundColor: event.eventImage
+                  ? "transparent" // Aucun fond coloré si l'image est présente
+                  : "#F9E4D4", // Couleur pastel si pas d'image
+              },
+            ]}
+          >
+            {/* Affichage de l'image de l'événement, si elle est présente */}
+            {event.eventImage && (
+              <Image
+                source={{ uri: event.eventImage }}
+                style={styles.eventImage}
+                resizeMode="cover" // Pour ajuster l'image à son conteneur
+              />
+            )}
+          </View>
+
+          {/* Affichage des informations de l'événement */}
+          <Text style={styles.eventTitle}>
+            {event.title || "Nom de l'événement"}
+          </Text>
+          <Text style={styles.eventDate}>
+            {event.date?.day
+              ? new Date(event.date.day).toLocaleDateString()
+              : "Date non renseignée"}
+          </Text>
+          <Text style={styles.eventTime}>
+            {event.date?.start && event.date?.end
+              ? `${new Date(event.date.start).toLocaleTimeString()} - ${new Date(event.date.end).toLocaleTimeString()}`
+              : "Heure non renseignée"}
+          </Text>
+
+          {/* Icône poubelle pour supprimer l'événement */}
+          <TouchableOpacity
+            onPress={() => {
+              console.log("Supprimer l'événement avec l'id:", event._id);
+              dispatch(deleteEvent({ id: event._id }));
+            }}
+            style={styles.deleteButton}
+          >
+            <Icon
+              name="trash-o"
+              size={24}
+              color="rgba(55, 27, 12, 0.7)"
+              paddingTop={10}
+            />
+          </TouchableOpacity>
         </TouchableOpacity>
-      </View>
-    ))
-  ) : (
-    <Text style={styles.emptyMessage}>Aucun événement trouvé.</Text>
-  )}
+      ))
+    ) : (
+      <Text style={styles.emptyMessage}>Aucun événement trouvé.</Text>
+    )}
 </ScrollView>
 
           </View>
