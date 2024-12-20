@@ -118,7 +118,7 @@ export default function FindStoriesScreen({ navigation }) {
         />
         <Text style={styles.storyTitle}>{item.title}</Text>
         <Text style={styles.storyCategory}>{item.category}</Text>
-        <Text style={styles.storyAuthor}>{item.author.username}</Text>
+        <Text style={styles.storyAuthor}>{item.author ? item.author.username : "Auteur inconnu"}</Text>
     </TouchableOpacity>
     )
 
