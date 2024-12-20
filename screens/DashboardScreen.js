@@ -66,7 +66,8 @@ export default function DashboardScreen({ navigation }) {
   };
 
   const handleLastStories = (story) => {
-    navigation.navigate("Story", { story });
+    console.log("Navigating to Story with story:", story);
+    navigation.navigate("ReadStory", { story });
   };
  // navigation vers le screen MyEvents
   const handleMyEvents = () => {
