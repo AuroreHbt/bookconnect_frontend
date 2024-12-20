@@ -55,7 +55,7 @@ export default function NewStoryScreen({ navigation }) {
 
   // https://reactnavigation.org/docs/navigation-object/#goback
   const goBack = () => navigation.goBack();
-  
+
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
   const [isAdult, setIsAdult] = useState(false);
@@ -214,7 +214,7 @@ export default function NewStoryScreen({ navigation }) {
         if (data.result) {
           console.log("data.result: ", data.result)
           dispatch(addStory(data.story))
-          // console.log("data.story: ", data.story);
+          // console.log("data.story: ", data.story); // Ok Objet sur le model Story
 
           setTitle('')
           setCategory('')
@@ -343,7 +343,6 @@ export default function NewStoryScreen({ navigation }) {
               <View style={styles.inputMultiline} >
                 <TextInput
                   placeholder="Description (obligatoire)"
-                  maxLength={200}
                   onChangeText={(value) => {
                     setDescription(value);
                     setCharacterDescriptionCount(value.length);
@@ -351,6 +350,7 @@ export default function NewStoryScreen({ navigation }) {
                   value={description}
                   multiline
                   numberOfLines={5}
+                  maxLength={200}
                 />
               </View>
               <Text

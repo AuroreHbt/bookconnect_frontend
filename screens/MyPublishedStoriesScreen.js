@@ -6,25 +6,29 @@ import { globalStyles } from '../styles/globalStyles';
 import {
   KeyboardAvoidingView,
   Platform,
+  Keyboard,
   View,
   Text,
   FlatList,
   StyleSheet,
   Image,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   Alert,
   Modal,
+  TextInput,
 } from "react-native";
 
 import { useSelector, useDispatch } from "react-redux";
 
-import { deleteStory, updateStory } from "../reducers/story";
+import { deleteStory, updateStory, addStory } from "../reducers/story";
 
 // import de la bibliothèque d'icône Fontawsome via react-native-vector-icons
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 // import pour utiliser des dégradés linéaires (x,y)
 import { LinearGradient } from 'expo-linear-gradient';
+
 
 
 const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
@@ -36,16 +40,22 @@ export default function MyPublishedStoriesScreen({ navigation }) {
 
   const defaultImage = require('../assets/image-livre-defaut.jpg')
 
-  const [stories, setStories] = useState([]); //hook d'état pour stocker les histoires publiées
-  const [isVisible, setIsVisible] = useState(false) // hook d'état pour le spoiler sur les images sensibles
-  const [modaleIsVisible, setModaleIsVisible] = useState(false); // hook pour afficher la modale  handleShowModal
-
   const user = useSelector((state) => state.user.value); // Informations recupérées depuis le store
   const story = useSelector((state) => state.story.value); // story list = tableau d'objets
   // console.log('story:', story);
 
-
   const dispatch = useDispatch();
+
+  const [stories, setStories] = useState([]); //hook d'état pour stocker les histoires publiées
+  const [isVisible, setIsVisible] = useState(false) // hook d'état pour le spoiler sur les images sensibles
+  const [characterTitleCount, setCharacterTitleCount] = useState(0); // variable d'état pour gérer l'affichage du nombre de caractères pour la description
+  const [characterDescriptionCount, setCharacterDescriptionCount] = useState(0); // variable d'état pour gérer l'affichage du nombre de caractères pour la description
+
+
+  // variables d'état pour gérer la modif titre et description
+  const [modaleIsVisible, setModaleIsVisible] = useState(false);
+  const [newTitle, setNewTitle] = useState('');
+  const [newDescription, setNewDescription] = useState('');
 
   const handleShowContent = () => {
     console.log('isVisible initial: ', isVisible);
@@ -55,11 +65,12 @@ export default function MyPublishedStoriesScreen({ navigation }) {
     }
   };
 
+  console.log('état modaleIsVisible: ', modaleIsVisible);
   const handleShowModal = () => {
-    console.log('modaleIsVisible initial: ', modaleIsVisible);
     setModaleIsVisible(!modaleIsVisible); // Inverse l'état de modaleIsVisible
+    setNewTitle('');
+    setNewDescription('');
   };
-
 
   // Fonction pour récupérer les histoires publiées
   const getMyPublishedStories = () => {
@@ -105,51 +116,61 @@ export default function MyPublishedStoriesScreen({ navigation }) {
       });
   };
 
+  // Debug
+  // console.log("Valeur de newTitle avant mise à jour :", newTitle);
+  // console.log("Valeur de newDescription avant mise à jour :", newDescription);
+  // console.log("Contenu de story :", story);
+
+
   // Fonction pour modifier une histoire postée : à définir
   const handleUpdateStory = async () => {
 
-    const title = story[0].title;
-    const description = story[0].description; // Destructuration des données nécessaires
     const storyId = story[0]._id; // Récupération de l'ID de l'histoire
 
-    // Debug ok
-    console.log("ID de l'histoire à mettre à jour :", storyId);
-    console.log("Données à modifier :", { title, description });
-    console.log("Type de user.token :", user.token);
+    // Debug 
+    console.log("handleUpdateStory fonction appelée"); // ok
+    console.log("storyId:", storyId); // storyId de nouveau undefined...
+    console.log("user.token:", user.token); // ok
+    console.log("newTitle:", newTitle); // ok null
+    console.log("newDescription:", newDescription); // ok null
+
+    // Création d'un objet contenant uniquement les champs à mettre à jour
+    const updateData = {
+      token: user.token,
+      storyId: storyId
+    };
+
+    if (newTitle.trim()) updateData.newTitle = newTitle.trim();
+    if (newDescription.trim()) updateData.newDescription = newDescription.trim();
 
     try {
       const response = await
         fetch(`${BACKEND_ADDRESS}/stories/updatepublishedstory`, {
-          method: 'PUT',
+          method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ token: user.token, storyId, title, description }),
-          // Ajout de storyId ici => newTitle, newDescription (états de la modif)
+          body: JSON.stringify(updateData),
         });
 
       const data = await response.json();
-
       console.log('Données reçues par le serveur :', data);
 
       if (data.result) {
         console.log('data.result: ', data.result);
 
-        // Dispatch de l'action updateStory pour mettre à jour le state
+        // Dispatch de la fonction updateStory pour mettre à jour le state
         dispatch(updateStory({
           id: storyId,
           data: {
-            title: data.story.title,
-            description: data.story.description,
+            title: updateData.newTitle || story[0].title, // Utilise le titre actuel s'il n'est pas modifié
+            description: updateData.newDescription || story[0].description, // Utilise la description actuelle s'il n'est pas modifié
           }
         }));
 
         console.log('Histoire mise à jour avec succès :', data.story);
-        Alert.alert(
-          "Succès",
-          "L'histoire a été mise à jour avec succès.",
-          [{ text: "OK" }]
-        );
+
+        Alert.alert("Succès", "L'histoire a été mise à jour avec succès.");
 
         getMyPublishedStories(); // Re-fetch stories
         return data.story;
@@ -166,145 +187,229 @@ export default function MyPublishedStoriesScreen({ navigation }) {
 
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <View>
 
-        {/* Titre + Bouton retour (goBack) */}
-        <View style={globalStyles.titleContainer}>
-          <Text style={globalStyles.title}>Mes oeuvres</Text>
-          <TouchableOpacity
-            onPress={goBack}
-            activeOpacity={0.8}
-          >
-            <Icon
-              style={globalStyles.returnContainer}
-              name="chevron-circle-left"
-              size={32}
-              color='rgba(55, 27, 12, 0.3)'
-            />
-          </TouchableOpacity>
-        </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView
+        style={globalStyles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <View>
 
-        {/* Affichage des histoires publiées */}
-        <FlatList
-          initialScrollIndex={0}
-          keyExtractor={(item) => item._id}
-          data={stories}
-          // data={Array.isArray(stories) ? stories.reverse() : []} // Check if stories is an array pour inverser l'affichage des story postées sans gérer un tri par date
-          renderItem={({ item }) => (
+          {/* Titre + Bouton retour (goBack) */}
+          <View style={globalStyles.titleContainer}>
+            <Text style={globalStyles.title}>Mes oeuvres</Text>
             <TouchableOpacity
-              onPress={() => navigation.navigate("ReadStory", { story: item })} // Navigation avec paramètres
+              onPress={goBack}
+              activeOpacity={0.8}
             >
-              <View style={styles.storyContainer}>
-                {/* affichage des infos venant de addNewStory */}
-                <View>
-                  <Text style={styles.storyTitle}>{item.title}</Text>
-                </View>
-
-                <View style={styles.rowContainer}>
-
-                  <View style={styles.storyCard} >
-                    <Text style={styles.storyPublic}>{item.isAdult ? 'Contenu 18+' : "Tout public"}</Text>
-                    <Text style={styles.storyCategory}>{"Catégorie: " + item.category}</Text>
-                  </View>
-
-                  {/* affichage du fichier image téléchargé */}
-                  <View style={styles.imageContainer}>
-
-                    {/* Spoiler sur Image */}
-                    <Image
-                      source={item.coverImage ? { uri: item.coverImage } : defaultImage}
-                      style={
-                        item.isAdult // isAdult=true (18+)
-                          ? [styles.coverImageSpoiler, { width: 130, height: 130 }]
-                          : [styles.coverImage, { width: 130, height: 130 }]
-                      }
-                    />
-
-                    {item.coverImage && item.isAdult ? ( // si isAdult = true => 18+ => isVisible doit être false (donc true) pour retirer le spoiler et afficher l'image uploadée
-                      <Icon
-                        name={isVisible ? null : 'eye-slash'} // si isVisible est true (donc = false), pas d'icon, else icon eye-slash
-                        size={72}
-                        style={isVisible ? null : styles.contentVisible}
-                        onPress={handleShowContent}
-                      />
-                    ) : null}
-
-                    {/* Affiche l'image si isVisible est false donc true */}
-                    {isVisible && (
-                      <Image
-                        source={{ uri: item.coverImage }}
-                        style={[styles.coverImageVisible, { width: 130, height: 130 }]}
-                      />
-                    )}
-                  </View>
-                </View>
-
-                <Text style={styles.storyDescription}>
-                  {"Résumé: " + item.description}
-                </Text>
-
-                <View style={styles.buttonCard}>
-
-                  {/* bouton pour modifier (route PUT à définir) */}
-                  <LinearGradient
-                    colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 0, y: 0.7 }}
-                    style={styles.gradientButton}
-                    activeOpacity={0.8}
-                  >
-                    <TouchableOpacity
-                      onPress={() => {
-                        handleUpdateStory();
-                        handleShowModal();
-                      }}
-                      style={styles.button}
-                    >
-                      <Text style={styles.textButton}>Modifier</Text>
-                    </TouchableOpacity>
-                  </LinearGradient>
-
-                  {/* bouton pour delete */}
-                  <TouchableOpacity
-                    style={styles.iconContainer}
-                    onPress={() => handleDeleteStory(item._id)} // Passez l'ID de l'histoire ici
-                  >
-                    <Icon
-                      name='trash-o'
-                      size={28}
-                      color='rgba(55, 27, 12, 0.7)'
-                    />
-                  </TouchableOpacity>
-
-                </ View>
-              </View>
-
+              <Icon
+                style={globalStyles.returnContainer}
+                name="chevron-circle-left"
+                size={32}
+                color='rgba(55, 27, 12, 0.3)'
+              />
             </TouchableOpacity>
-          )}
-        />
-      </View>
-    </KeyboardAvoidingView >
+          </View>
+
+          {/* Affichage des histoires publiées */}
+          <FlatList
+            initialScrollIndex={0}
+            keyExtractor={(item) => item._id}
+            data={stories}
+            // data={Array.isArray(stories) ? stories.reverse() : []} // Check if stories is an array pour inverser l'affichage des story postées sans gérer un tri par date
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={() => navigation.navigate("ReadStory", { story: item })} // Navigation avec paramètres
+              >
+                <View style={styles.storyContainer}>
+                  {/* affichage des infos venant de addNewStory */}
+                  <View>
+                    <Text style={styles.storyTitle}>{item.title}</Text>
+                  </View>
+
+                  <View style={styles.rowContainer}>
+
+                    <View style={styles.storyCard} >
+                      <Text style={styles.storyPublic}>{item.isAdult ? 'Contenu 18+' : "Tout public"}</Text>
+                      <Text style={styles.storyCategory}>{"Catégorie: " + item.category}</Text>
+                    </View>
+
+                    {/* affichage du fichier image téléchargé */}
+                    <View style={styles.imageContainer}>
+
+                      {/* Spoiler sur Image */}
+                      <Image
+                        source={item.coverImage ? { uri: item.coverImage } : defaultImage}
+                        style={
+                          item.isAdult // isAdult=true (18+)
+                            ? [styles.coverImageSpoiler, { width: 130, height: 130 }]
+                            : [styles.coverImage, { width: 130, height: 130 }]
+                        }
+                      />
+
+                      {item.coverImage && item.isAdult ? ( // si isAdult = true => 18+ => isVisible doit être false (donc true) pour retirer le spoiler et afficher l'image uploadée
+                        <Icon
+                          name={isVisible ? null : 'eye-slash'} // si isVisible est true (donc = false), pas d'icon, else icon eye-slash
+                          size={72}
+                          style={isVisible ? null : styles.contentVisible}
+                          onPress={handleShowContent}
+                        />
+                      ) : null}
+
+                      {/* Affiche l'image si isVisible est false donc true */}
+                      {isVisible && (
+                        <Image
+                          source={{ uri: item.coverImage }}
+                          style={[styles.coverImageVisible, { width: 130, height: 130 }]}
+                        />
+                      )}
+                    </View>
+                  </View>
+
+                  <Text style={styles.storyDescription}>
+                    {"Résumé: " + item.description}
+                  </Text>
+
+                  <View style={styles.buttonCard}>
+
+                    {/* bouton pour modifier (route PUT à définir) */}
+                    <LinearGradient
+                      colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 0, y: 0.7 }}
+                      style={styles.gradientButton}
+                      activeOpacity={0.8}
+                    >
+                      {/* Bouton MODIFIER qui ouvre une modale pour modifier titre et description */}
+                      <View>
+                        <TouchableOpacity
+                          onPress={handleShowModal} // passe à true pour ouvrir la modale
+                          style={styles.button}
+                        >
+                          <Text style={styles.textButton}>Modifier</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </LinearGradient>
+
+                    {/* bouton pour delete */}
+                    <TouchableOpacity
+                      style={styles.iconContainer}
+                      onPress={() => handleDeleteStory(item._id)} // Passez l'ID de l'histoire ici
+                    >
+                      <Icon
+                        name='trash-o'
+                        size={28}
+                        color='rgba(55, 27, 12, 0.7)'
+                      />
+                    </TouchableOpacity>
+
+                  </View>
+                  <View>
+                    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                      <Modal
+                        transparent={true}
+                        animationType="fade"
+                        visible={modaleIsVisible}
+                      //onRequestClose={handleShowModal}  // bouton Fermer pour fermer la modale
+                      >
+                        <View style={styles.modalContainer}>
+                          <Text style={styles.textModal}>
+                            Modifier vos informations
+                          </Text>
+
+                          <TextInput
+                            placeholder="Titre"
+                            value={newTitle}
+                            onChangeText={(value) => {
+                              setNewTitle(value);
+                              setCharacterTitleCount(value.length);
+                            }}
+                            maxLength={55}
+                            style={styles.input}
+                          />
+                          <Text
+                            style={
+                              {
+                                color: 'grey',
+                                marginTop: -10,
+                                marginBottom: 10,
+                              }
+                            } >
+                            {characterTitleCount}/55
+                          </Text>
+
+                          <TextInput
+                            placeholder="Description"
+                            value={newDescription}
+                            onChangeText={(value) => {
+                              setNewDescription(value);
+                              setCharacterDescriptionCount(value.length);
+                            }}
+                            style={styles.input}
+                            multiline
+                            numberOfLines={5}
+                            maxLength={200}
+                          />
+                          <Text
+                            style={
+                              {
+                                color: 'grey',
+                                marginTop: -10,
+                                marginBottom: 10,
+                              }
+                            } >
+                            {characterDescriptionCount}/200
+                          </Text>
+
+                          <LinearGradient
+                            colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 0, y: 0.7 }}
+                            style={styles.modalButton}
+                            activeOpacity={0.8}
+                          >
+                            <TouchableOpacity
+                              onPress={() => {
+                                handleUpdateStory();
+                                handleShowModal(); // repasse à false
+                              }}
+                            >
+                              <Text style={styles.textButton}>Mettre à jour</Text>
+                            </TouchableOpacity>
+                          </LinearGradient>
+
+                          <LinearGradient
+                            colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 0, y: 0.7 }}
+                            style={styles.modalButton}
+                            activeOpacity={0.8}
+                          >
+                            <TouchableOpacity
+                              onPress={handleShowModal} // repasse à false
+                            >
+                              <Text style={styles.textButton}>Fermer</Text>
+                            </TouchableOpacity>
+                          </LinearGradient>
+
+                        </View>
+                      </Modal>
+                    </TouchableWithoutFeedback>
+
+                  </ View>
+                </View>
+
+              </TouchableOpacity>
+            )}
+          />
+        </View>
+      </KeyboardAvoidingView >
+    </TouchableWithoutFeedback>
   );
 }
 
 
 const styles = StyleSheet.create({
-
-  container: {
-    flex: 0.95, // l'écran prend 95% + 5% de barre de nav
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    paddingTop: 25,
-    paddingHorizontal: 15,
-
-    // borderWidth: 2,
-    // borderColor: 'red',
-  },
 
   storyContainer: {
     width: '100%',
@@ -323,6 +428,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     fontSize: 18,
     paddingHorizontal: 5,
+    paddingVertical: 5,
     marginBottom: 20,
     borderBottomWidth: 0.5,
     borderBottomColor: "rgba(55, 27, 12, 0.5)",
@@ -462,7 +568,7 @@ const styles = StyleSheet.create({
 
   button: {
     paddingVertical: 2,
-    paddingHorizontal: 5,
+    paddingHorizontal: 15,
     margin: 10,
   },
 
@@ -472,6 +578,47 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
     color: 'white', // 'rgba(55, 27, 12, 0.8)', // #371B0C
+  },
+
+  // style de la modale
+  modalContainer: {
+    flex: 0.9,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '85%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    paddingVertical: 25,
+    margin: 'auto',
+  },
+
+  textModal: {
+    fontSize: 24,
+    fontFamily: 'sans-serif',
+    textAlign: 'center',
+    margin: 5,
+    marginVertical: 25,
+    color: "rgba(55, 27, 12, 0.8)",
+  },
+
+  input: {
+    backgroundColor: "rgba(238, 236, 232, 0.7)",
+    paddingLeft: 10,
+    paddingVertical: 15,
+    marginVertical: 15,
+    borderRadius: 5,
+    borderBottomWidth: 0.7,
+    borderBottomColor: "rgba(55, 27, 12, 0.50)",
+    width: "75%",
+  },
+
+  modalButton: {
+    backgroundColor: "rgba(224, 210, 195, 1)",
+    borderRadius: 10,
+    width: "50%",
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+    margin: 15,
   },
 
   iconContainer: {
