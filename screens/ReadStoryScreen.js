@@ -25,7 +25,7 @@ export default function ReadStoryScreen({ route, navigation }) {
   const { story } = route.params;
   // console.log("Histoire reçue :", story);
 
-  const { stories: initialStories = [] } = route.params || {}; // Récupère les histoires depuis les paramètres ou initialise un tableau vide
+  
   
   const [isVisible, setIsVisible] = useState(false) // hook d'état pour le spoiler sur les images sensibles
   const likedStories = useSelector((state) => state.story.value)
