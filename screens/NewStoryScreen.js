@@ -266,7 +266,7 @@ export default function NewStoryScreen({ navigation }) {
 
               <View style={styles.titleInputContainer}>
                 <TextInput
-                  placeholder="Titre de votre histoire (obligatoire)"
+                  placeholder="Titre de votre histoire (obligatoire) - Format pdf"
                   maxLength={55}
                   onChangeText={(value) => {
                     setTitle(value);
