@@ -71,9 +71,9 @@ export default function DashboardScreen({ navigation }) {
     navigation.navigate("FindStories");
   };
 
-  // const handleMyEvents = () => {
-  //   navigation.navigate("MyEvents");
-  // };
+  const handleMyEvents = () => {
+     navigation.navigate("MyEvents");
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -209,7 +209,7 @@ export default function DashboardScreen({ navigation }) {
             <View style={styles.sectionHeader}>
               <Text style={styles.textSection}>Mes évènements</Text>
               <TouchableOpacity
-                // onPress={handleMyEvents}
+                onPress={handleMyEvents}
                 activeOpacity={0.8}
               >
                 <Icon
