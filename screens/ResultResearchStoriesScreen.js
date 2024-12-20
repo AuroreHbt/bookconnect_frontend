@@ -1,3 +1,5 @@
+import React, { useState, useEffect } from "react";
+
 import {
   TouchableOpacity,
   StyleSheet,
@@ -12,8 +14,6 @@ import {
 import { globalStyles } from "../styles/globalStyles";
 import { useDispatch, useSelector } from "react-redux";
 import { addLike, removeLike } from "../reducers/story";
-import { useState } from "react";
-import { useEffect } from "react";
 
 import Icon from "react-native-vector-icons/FontAwesome";
 
@@ -22,12 +22,19 @@ export default function ResultResearchStoriesScreen({ route, navigation }) {
   const defaultImage = require('../assets/image-livre-defaut.jpg')
 
   const { stories: initialStories = [] } = route.params || {}; // Récupère les histoires depuis les paramètres ou initialise un tableau vide
+
   const [stories, setStories] = useState(initialStories); // Définit l'état local avec les histoires initiales
   const [isVisible, setIsVisible] = useState(false);
 
-  const likedStories = useSelector((state) => state.story.value )
+  const likedStories = useSelector((state) => state.story.value)
 
   const dispatch = useDispatch();
+
+  const goBack = () => navigation.goBack();
+
+  const handleShowContent = () => {
+    setIsVisible(!isVisible);
+  };
 
   useEffect(() => {
     // Synchronise l'état local avec Redux
@@ -55,14 +62,6 @@ export default function ResultResearchStoriesScreen({ route, navigation }) {
     }
     console.log("état isLiked", updatedStory);
   };
-
-  const goBack = () => navigation.goBack();
-
-  const handleShowContent = () => {
-    setIsVisible(!isVisible);
-  };
-
-
 
   return (
     <KeyboardAvoidingView
@@ -125,20 +124,20 @@ export default function ResultResearchStoriesScreen({ route, navigation }) {
 
                   <View style={styles.imageContainer}>
                     {/* affichage du fichier image téléchargé */}
-                    
-                      <Image
+
+                    <Image
                       source={item.coverImage ? { uri: item.coverImage } : defaultImage}
-                        style={
-                          item.isAdult // isAdult=true (18+)
-                            ? [
-                                styles.coverImageAdult,
-                                { width: 130, height: 115 },
-                              ]
-                            : [styles.coverImage, { width: 130, height: 115 }]
-                        }
-                        blurRadius={item.isAdult ? 10 : 0}
-                      />
-                    
+                      style={
+                        item.isAdult // isAdult=true (18+)
+                          ? [
+                            styles.coverImageAdult,
+                            { width: 130, height: 115 },
+                          ]
+                          : [styles.coverImage, { width: 130, height: 115 }]
+                      }
+                      blurRadius={item.isAdult ? 10 : 0}
+                    />
+
                     <TouchableOpacity onPress={handleShowContent}>
                       {item.coverImage && (
                         <Text style={item.isAdult ? styles.showContent : null}>
@@ -171,14 +170,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(55, 27, 12, 0.1)",
     // elevation: 0,
-   
+
   },
 
   headContent: {
     flexDirection: "row",
     width: "100%",
     justifyContent: 'space-between',
-    
+
   },
 
   storyTitle: {
@@ -190,8 +189,8 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     borderBottomWidth: 0.5,
     borderBottomColor: "rgba(55, 27, 12, 0.5)",
-    
-  
+
+
   },
 
   // CSS infos story + cover
@@ -201,7 +200,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     padding: 10,
-   
+
 
     // borderWidth: 1,
   },
@@ -258,7 +257,7 @@ const styles = StyleSheet.create({
     padding: 5,
     alignItems: "center",
     justifyContent: "center",
-    
+
   },
 
   coverImage: {
@@ -289,7 +288,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
     marginTop: 10,
-   
+
     // borderWidth: 1,
     // borderColor: 'rgba(238, 236, 232, 1)',
   },
@@ -309,7 +308,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
     color: "white", // 'rgba(55, 27, 12, 0.8)', // #371B0C
-  
+
   },
 
   iconContainer: {
