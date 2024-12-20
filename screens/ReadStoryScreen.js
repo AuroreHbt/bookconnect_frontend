@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+
 import { globalStyles } from '../styles/globalStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -16,7 +17,7 @@ import {
 // pour afficher les fichiers PDF hébergés en ligne
 import { WebView } from "react-native-webview";
 
-import { addLike } from "../reducers/story";
+import { addLike, removeLike } from "../reducers/story";
 
 
 export default function ReadStoryScreen({ route, navigation }) {
@@ -26,6 +27,8 @@ export default function ReadStoryScreen({ route, navigation }) {
   const { stories: initialStories = [] } = route.params || {}; // Récupère les histoires depuis les paramètres ou initialise un tableau vide
   const [stories, setStories] = useState(initialStories); // Définit l'état local avec les histoires initiales
   const [isVisible, setIsVisible] = useState(false) // hook d'état pour le spoiler sur les images sensibles
+  const [isLiked, setIsLiked] = useState(story.isLiked || false);
+
 
   const dispatch = useDispatch();
 
@@ -37,26 +40,16 @@ export default function ReadStoryScreen({ route, navigation }) {
     }
   };
 
+
   const handleLike = () => {
-
-    // Met à jour isLiked pour l'histoire cliquée
-    const updatedStory = { ...story, isLiked: !story.isLiked };
-    console.log('updatedStory: ', updatedStory);
-
-    setStories((prevStories) =>
-      prevStories.map((currentStory) =>
-        currentStory._id === story._id ? updatedStory : currentStory
-      )
-    );
-    // Envoie l'action appropriée à Redux
-    if (updatedStory.isLiked) {
+    const updatedStory = { ...story, isLiked: !isLiked };
+    setIsLiked(!isLiked);
+  
+    if (!isLiked) {
       dispatch(addLike(updatedStory));
     } else {
       dispatch(removeLike(updatedStory._id));
     }
-    console.log("état updatedStory.isLiked: ", updatedStory.isLiked);
-    console.log("updatedStory._id: ", updatedStory._id);
-    // console.log("updatedStory: ", updatedStory);
   };
 
   const defaultImage = require('../assets/image-livre-defaut.jpg')
@@ -105,9 +98,9 @@ export default function ReadStoryScreen({ route, navigation }) {
           <View style={styles.likeButton}>
             <TouchableOpacity onPress={() => handleLike()}>
               <Icon
-                name={story.isLiked ? "heart" : "heart-o"}
+                name={isLiked ? "heart" : "heart-o"}
                 size={28}
-                color={story.isLiked ? "red" : "rgba(55, 27, 12, 0.3)"}
+                color={isLiked ? "red" : "rgba(55, 27, 12, 0.3)"}
               />
             </TouchableOpacity>
           </View>
