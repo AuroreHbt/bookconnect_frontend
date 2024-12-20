@@ -27,14 +27,14 @@ const defaultImage = require('../assets/image-livre-defaut.jpg')
 const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
 
 export default function DashboardScreen({ navigation }) {
+
   useEffect(() => {
     Keyboard.dismiss();
   }, []);
 
-
-
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
+  const story = useSelector((state) => state.story.value);
   const addedEvents = useSelector((state) => state.event.events);
   console.log("Événements dans le store:", addedEvents); // Vérifiez que les événements sont récupérés
 
@@ -60,19 +60,20 @@ export default function DashboardScreen({ navigation }) {
     dispatch(logout());
     navigation.navigate("Home");
   };
+
+  console.log('story: ', story);
   
-  const handleFindStories = () => {
-    navigation.navigate("Stories");
+  const handleReadStories = (story) => {
+    navigation.navigate("ReadStory", { story })
   };
 
-  const handleLastStories = (story) => {
-    console.log("Navigating to Story with story:", story);
-    navigation.navigate("ReadStory", { story });
+  const handleLastStories = () => {
+    navigation.navigate("FindStories");
   };
- // navigation vers le screen MyEvents
-  const handleMyEvents = () => {
-    navigation.navigate("MyEvents");
-  };
+
+  // const handleMyEvents = () => {
+  //   navigation.navigate("MyEvents");
+  // };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -153,11 +154,11 @@ export default function DashboardScreen({ navigation }) {
             <View style={styles.sectionHeader}>
               <Text style={styles.textSection}>Dernières histoires</Text>
               <TouchableOpacity
-                onPress={handleFindStories}
+                onPress={handleLastStories}
                 activeOpacity={0.8}
               >
                 <Icon
-                  name="chevron-circle-right"
+                  name="chevron-circle-down"
                   size={24}
                   color="#D8C7B5"
                 />
@@ -175,7 +176,7 @@ export default function DashboardScreen({ navigation }) {
                   <TouchableOpacity
                     key={index}
                     style={styles.bookCard}
-                    onPress={() => handleLastStories(story)}
+                    onPress={() => handleReadStories(story)}
                   >
                     <Image
                       source={
@@ -208,11 +209,11 @@ export default function DashboardScreen({ navigation }) {
             <View style={styles.sectionHeader}>
               <Text style={styles.textSection}>Mes évènements</Text>
               <TouchableOpacity
-                onPress={handleMyEvents}
+                // onPress={handleMyEvents}
                 activeOpacity={0.8}
               >
                 <Icon
-                  name="chevron-circle-right"
+                  name="chevron-circle-down"
                   size={24}
                   color="#D8C7B5"
                 />
@@ -248,20 +249,20 @@ export default function DashboardScreen({ navigation }) {
                       )}
                     </View>
 
-          {/* Affichage des informations de l'événement */}
-          <Text style={styles.eventTitle}>
-            {event.title || "Nom de l'événement"}
-          </Text>
-          <Text style={styles.eventDate}>
-            {event.date?.day
-              ? new Date(event.date.day).toLocaleDateString()
-              : "Date non renseignée"}
-          </Text>
-          <Text style={styles.eventTime}>
-            {event.date?.start && event.date?.end
-              ? `${new Date(event.date.start).toLocaleTimeString()} - ${new Date(event.date.end).toLocaleTimeString()}`
-              : "Heure non renseignée"}
-          </Text>
+                    {/* Affichage des informations de l'événement */}
+                    <Text style={styles.eventTitle}>
+                      {event.title || "Nom de l'événement"}
+                    </Text>
+                    <Text style={styles.eventDate}>
+                      {event.date?.day
+                        ? new Date(event.date.day).toLocaleDateString()
+                        : "Date non renseignée"}
+                    </Text>
+                    <Text style={styles.eventTime}>
+                      {event.date?.start && event.date?.end
+                        ? `${new Date(event.date.start).toLocaleTimeString()} - ${new Date(event.date.end).toLocaleTimeString()}`
+                        : "Heure non renseignée"}
+                    </Text>
 
                     {/* Icône poubelle pour supprimer l'événement */}
                     <TouchableOpacity
