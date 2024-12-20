@@ -15,7 +15,6 @@ export default function FavReadingScreen({navigation, route}) {
 
     const likedStories = useSelector((state) => state.story.value )
 
-    const user = useSelector((state) => state.user.value);
 
     const { stories: initialStories = [] } = route.params || {};
     const [stories, setStories] = useState(initialStories)
@@ -162,6 +161,8 @@ const styles = StyleSheet.create({
     headContent: {
       flexDirection: "row",
       width: "100%",
+      justifyContent: 'space-between',
+      
     },
   
     storyTitle: {

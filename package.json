@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@expo-google-fonts/asul": "^0.2.3",
     "@expo-google-fonts/germania-one": "^0.2.3",
     "@expo-google-fonts/poppins": "^0.2.3",
     "@react-native-community/datetimepicker": "^8.2.0",
@@ -22,10 +23,11 @@
     "expo": "~52.0.17",
     "expo-checkbox": "~4.0.0",
     "expo-document-picker": "^13.0.1",
-    "expo-font": "~13.0.1",
+    "expo-font": "^13.0.1",
     "expo-image-picker": "~16.0.3",
     "expo-linear-gradient": "~14.0.1",
     "expo-location": "~18.0.3",
+    "expo-splash-screen": "^0.29.18",
     "expo-status-bar": "~2.0.0",
     "express-fileupload": "^1.5.1",
     "install": "^0.13.0",

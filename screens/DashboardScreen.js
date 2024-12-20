@@ -41,15 +41,15 @@ export default function DashboardScreen({ navigation }) {
   const [isParameterVisible, setIsParameterVisible] = useState(false);
   const [allStories, setAllStories] = useState([]);
 
-    useEffect(() => {
-          fetch(`${BACKEND_ADDRESS}/stories/laststories`)
-              .then((response) => response.json())
-              .then((data) => {
-                  if (data.result) {
-                      setAllStories(data.stories)
-                  }
-              })
-      }, []);
+  useEffect(() => {
+    fetch(`${BACKEND_ADDRESS}/stories/laststories`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result) {
+          setAllStories(data.stories)
+        }
+      })
+  }, []);
 
   const toggleParameter = () => {
     setIsParameterVisible(!isParameterVisible);
@@ -61,10 +61,12 @@ export default function DashboardScreen({ navigation }) {
     navigation.navigate("Home");
   };
 
+  const handleFindStories = () => {
+    navigation.navigate("FindStories");
+  };
 
-  
   const handleLastStories = (story) => {
-    navigation.navigate("ReadStory", { story});
+    navigation.navigate("ReadStory", { story });
   };
 
   const handleMyEvents = () => {
@@ -72,176 +74,186 @@ export default function DashboardScreen({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Dégradé en haut */}
-        <View style={styles.gradientContainer}>
-          <LinearGradient
-            colors={["rgba(255, 123, 0, 0.9)", "rgba(216, 72, 21, 1)"]}
-            start={{ x: 0.7, y: 0 }} // Début du gradient (coin haut gauche)
-            end={{ x: 0.5, y: 0.9 }} // Fin du gradient (coin bas droit)
-            style={styles.gradient}
-          />
-        </View>
-        <View style={styles.header}>
-          {/* Logo et Nom de l'app */}
-          <View style={styles.identityApp}>{/* Icône Paramètre */}</View>
-          <TouchableOpacity
-            onPress={toggleParameter}
-            style={styles.ParameterButton}
-          >
-            <Icon name="gear" size={36} color="white" />
-          </TouchableOpacity>
-        </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView style={styles.container} >
+        <ScrollView contentContainerStyle={styles.scrollContent}>
 
-        {/* Modal */}
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={isParameterVisible}
-          onRequestClose={toggleParameter}
-        >
-          {/* TouchableWithoutFeedback pour fermer la modal quand on touche n'importe où sur l'écran */}
-          <TouchableWithoutFeedback onPress={toggleParameter}>
-            <View style={styles.overlay}>
-              <View style={styles.ParameterContent}>
-                {/* Options de paramètres */}
-                <TouchableOpacity style={styles.optionButton}>
-                  <Text
-                    style={styles.optionText}
-                    onPress={() => handleLogout()}
-                  >
-                    Déconnexion
-                  </Text>
-                  <Icon
-                    name="sign-out"
-                    size={20}
-                    color="rgba(216, 72, 21, 0.9)"
-                    style={styles.logoutIcon}
-                  />
-                </TouchableOpacity>
-              </View>
-            </View>
-          </TouchableWithoutFeedback>
-        </Modal>
-
-        {/* Photo de profil et Message de bienvenue */}
-        <View style={styles.identityUser}>
-          <Image
-            source={require("../assets/avatar1.jpeg")}
-            style={styles.avatar}
-          />
-          <Text style={styles.welcome}>
-            Hello {user?.username || "Utilisateur"}
-          </Text>
-        </View>
-
-        {/* Section carrousel mes lectures en cours */}
-        <View style={styles.sectionContainer}>
-          {/* Titre de la section */}
-          <View style={styles.sectionHeader}>
-            <Text style={styles.textSection}>Dernières histoires</Text>
-            <TouchableOpacity
-            
-              activeOpacity={0.8}
-            >
-              <Icon
-                name="chevron-circle-right"
-                size={20}
-                color="#D8C7B5"
-              />
-            </TouchableOpacity>
-          </View>
-
-          {/* ScrollView horizontal */}
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.booksContainer}
-          >
-         {allStories.length > 0 ? (
-              allStories.map((story, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.bookCard}
-                  onPress={() => handleLastStories(story)}
-                >
-                  <Image
-                    source={
-                      story.coverImage
-                        ? { uri: story.coverImage }
-                        : defaultImage
-                    }
-                    style={styles.book}
-                    resizeMode="cover"
-                  />
-                  <View style={styles.texContainer}>
-                  <Text style={styles.textCard}>
-                    {story.title}
-                  </Text>
-                  </View>
-                  <Text style={styles.subtextCard}>
-                    {story.author?.username}
-                  </Text>
-                </TouchableOpacity>
-              ))
-            ) : (
-              <Text style={styles.emptyMessage}>Aucune histoire trouvée.</Text>
-            )}
-          </ScrollView>
-        </View>
-
-        {/* Section carrousel mes évènements */}
-        <View style={styles.sectionContainer}>
-          {/* Titre de la section */}
-          <View style={styles.sectionHeader}>
-            <Text style={styles.textSection}>Mes évènements</Text>
-            <TouchableOpacity onPress={handleMyEvents} activeOpacity={0.8}>
-              <Icon name="chevron-circle-right" size={20} color="#D8C7B5" />
-            </TouchableOpacity>
-          </View>
-          {/* ScrollView horizontal des évènements*/}
-          <ScrollView
-  horizontal
-  showsHorizontalScrollIndicator={false}
-  contentContainerStyle={styles.eventsContainer}
->
-  {addedEvents.length > 0 ? (
-    addedEvents.map((event, index) => (
-      <View key={index} style={styles.eventCard}>
-        {/* Affichage de l'événement avec un fond conditionnel */}
-        <View
-          style={[
-            styles.event,
-            {
-              backgroundColor: event.eventImage
-                ? "transparent" // Aucun fond coloré si l'image est présente
-                : "#F9E4D4", // Couleur pastel si pas d'image
-            },
-          ]}
-        >
-          {/* Affichage de l'image de l'événement, si elle est présente */}
-          {event.eventImage && (
-            <Image
-              source={{ uri: event.eventImage }}
-              style={styles.eventImage}
-              resizeMode="cover" // Pour ajuster l'image à son conteneur
+          {/* Dégradé en haut */}
+          <View style={styles.gradientContainer}>
+            <LinearGradient
+              colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
+              start={{ x: 0.7, y: 0 }} // Début du gradient (coin haut gauche)
+              end={{ x: 0.5, y: 0.9 }}  // Fin du gradient (coin bas droit)
+              style={styles.gradient}
             />
-          )}
-        </View>
+          </View>
+          <View style={styles.header}>
 
-        {/* Affichage des informations de l'événement */}
-        <Text style={styles.eventTitle}>
-          {event.title || "Nom de l'événement"}
-        </Text>
-        <Text style={styles.eventDate}>
-          {event.date?.day ? new Date(event.date.day).toLocaleDateString() : "Date non renseignée"}
-        </Text>
-        <Text style={styles.eventTime}>
-          {event.date?.start && event.date?.end
-            ? `${new Date(event.date.start).toLocaleTimeString()} - ${new Date(event.date.end).toLocaleTimeString()}`
-            : "Heure non renseignée"}
-        </Text>
+            {/* Logo et Nom de l'app */}
+            <View style={styles.identityApp}>
+
+              {/* Icône Paramètre */}
+            </View>
+            <TouchableOpacity onPress={toggleParameter} style={styles.ParameterButton}>
+              <Icon name="gear" size={36} color="white" />
+            </TouchableOpacity>
+          </View>
+
+          {/* Modal */}
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={isParameterVisible}
+            onRequestClose={toggleParameter}
+          >
+            {/* TouchableWithoutFeedback pour fermer la modal quand on touche n'importe où sur l'écran */}
+            <TouchableWithoutFeedback onPress={toggleParameter}>
+              <View style={styles.overlay}>
+                <View style={styles.ParameterContent}>
+                  {/* Options de paramètres */}
+                  <TouchableOpacity style={styles.optionButton}>
+                    <Text
+                      style={styles.optionText}
+                      onPress={() => handleLogout()}
+                    >
+                      Déconnexion
+                    </Text>
+                    <Icon
+                      name="sign-out"
+                      size={20}
+                      color="rgba(216, 72, 21, 0.9)"
+                      style={styles.logoutIcon}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
+          </Modal>
+
+          {/* Photo de profil et Message de bienvenue */}
+          <View style={styles.identityUser}>
+            <Image
+              source={require("../assets/avatar1.jpeg")}
+              style={styles.avatar}
+            />
+            <Text style={styles.welcome}>
+              Hello {user?.username || "Utilisateur"}
+            </Text>
+          </View>
+
+          {/* Section carrousel mes lectures en cours */}
+          <View style={styles.sectionContainer}>
+            {/* Titre de la section */}
+            <View style={styles.sectionHeader}>
+              <Text style={styles.textSection}>Dernières histoires</Text>
+              <TouchableOpacity
+                onPress={handleFindStories}
+                activeOpacity={0.8}
+              >
+                <Icon
+                  name="chevron-circle-right"
+                  size={24}
+                  color="#D8C7B5"
+                />
+              </TouchableOpacity>
+            </View>
+
+            {/* ScrollView horizontal */}
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.booksContainer}
+            >
+              {allStories.length > 0 ? (
+                allStories.map((story, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.bookCard}
+                    onPress={() => handleLastStories(story)}
+                  >
+                    <Image
+                      source={
+                        story.coverImage
+                          ? { uri: story.coverImage }
+                          : defaultImage
+                      }
+                      style={styles.book}
+                      resizeMode="cover"
+                    />
+                    <View style={styles.texContainer}>
+                      <Text style={styles.textCard}>
+                        {story.title}
+                      </Text>
+                    </View>
+                    <Text style={styles.subtextCard}>
+                      {story.author?.username}
+                    </Text>
+                  </TouchableOpacity>
+                ))
+              ) : (
+                <Text style={styles.emptyMessage}>Aucune histoire trouvée.</Text>
+              )}
+            </ScrollView>
+          </View>
+
+          {/* Section carrousel mes évènements */}
+          <View style={styles.sectionContainer}>
+            {/* Titre de la section */}
+            <View style={styles.sectionHeader}>
+              <Text style={styles.textSection}>Mes évènements</Text>
+              <TouchableOpacity
+                onPress={handleMyEvents}
+                activeOpacity={0.8}
+              >
+                <Icon
+                  name="chevron-circle-right"
+                  size={24}
+                  color="#D8C7B5"
+                />
+              </TouchableOpacity>
+            </View>
+            {/* ScrollView horizontal des évènements*/}
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.eventsContainer}
+            >
+              {addedEvents.length > 0 ? (
+                addedEvents.map((event, index) => (
+                  <View key={index} style={styles.eventCard}>
+                    {/* Affichage de l'événement avec un fond conditionnel */}
+                    <View
+                      style={[
+                        styles.event,
+                        {
+                          backgroundColor: event.eventImage
+                            ? "transparent" // Aucun fond coloré si l'image est présente
+                            : "#F9E4D4", // Couleur pastel si pas d'image
+                        },
+                      ]}
+                    >
+                      {/* Affichage de l'image de l'événement, si elle est présente */}
+                      {event.eventImage && (
+                        <Image
+                          source={{ uri: event.eventImage }}
+                          style={styles.eventImage}
+                          resizeMode="cover" // Pour ajuster l'image à son conteneur
+                        />
+                      )}
+                    </View>
+
+                    {/* Affichage des informations de l'événement */}
+                    <Text style={styles.eventTitle}>
+                      {event.title || "Nom de l'événement"}
+                    </Text>
+                    <Text style={styles.eventDate}>
+                      {event.date?.day ? new Date(event.date.day).toLocaleDateString() : "Date non renseignée"}
+                    </Text>
+                    <Text style={styles.eventTime}>
+                      {event.date?.start && event.date?.end
+                        ? `${new Date(event.date.start).toLocaleTimeString()} - ${new Date(event.date.end).toLocaleTimeString()}`
+                        : "Heure non renseignée"}
+                    </Text>
 
         {/* Icône poubelle pour supprimer l'événement */}
         <TouchableOpacity
@@ -260,18 +272,21 @@ export default function DashboardScreen({ navigation }) {
   )}
 </ScrollView>
 
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
+  )
 }
+
 
 // attention : le StyleSheet doit bien être en dehors de la fonction!
 const styles = StyleSheet.create({
   container: {
     flex: 0.95,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 30,
   },
 
   gradientContainer: {
@@ -318,7 +333,7 @@ const styles = StyleSheet.create({
   identityUser: {
     marginTop: 60, // Décale le contenu pour éviter le header
     alignItems: "center",
-    marginVertical: 50,
+    marginBottom: 25,
   },
 
   avatar: {
@@ -340,15 +355,14 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "flex-start",
     paddingHorizontal: 20,
-    marginBottom: 40,
-    paddingBottom: 30,
+    marginBottom: 15,
   },
 
   sectionHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 20,
+    marginVertical: 20,
     paddingLeft: 10,
   },
 
@@ -499,11 +513,11 @@ const styles = StyleSheet.create({
   },
 
   bookCard: {
-    marginRight: 15, 
+    marginRight: 15,
     alignItems: "center",
-    backgroundColor: "#fff", 
-    borderRadius: 10, 
-    width: 200, 
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    width: 200,
     height: 300,
     alignItems: 'center'
   },
@@ -512,14 +526,17 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
+    flex: 1,
+    width: '100%',
+    height: '100%',
   },
 
   book: {
     flex: 1,
-    width: 200, 
-    height: 300, 
-    borderRadius: 8, 
-    marginBottom: 10, 
+    width: 200,
+    height: 300,
+    borderRadius: 8,
+    marginBottom: 10,
   },
 
 texContainer : {
@@ -533,7 +550,7 @@ texContainer : {
     fontSize: 16,
     fontWeight: "bold",
     textAlign: "center",
-    color: "rgba(55, 27, 12, 0.9)", 
+    color: "rgba(55, 27, 12, 0.9)",
   },
 
   subtextCard: {

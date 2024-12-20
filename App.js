@@ -2,11 +2,6 @@ import React from 'react';
 
 import { StyleSheet, View } from 'react-native';
 
-// https://docs.expo.dev/versions/latest/sdk/font/
-// https://docs.expo.dev/develop/user-interface/fonts/
-// import pour utliser le hook useFonts pour charger la police
-import { useFonts } from 'expo-font';
-
 // Imports pour la nested navigation (stack + tab)
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -46,11 +41,20 @@ import event from './reducers/event';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 
+// https://docs.expo.dev/versions/latest/sdk/font/
+// https://docs.expo.dev/develop/user-interface/fonts/
+// import pour utliser le hook useFonts pour charger la police
+import { useFonts } from 'expo-font';
+// import pour empecher le rendu de l'appli tant que la font n'est pas chargée et prête
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+
+
+SplashScreen.preventAutoHideAsync();
 
 const store = configureStore({
   reducer: { user, story, event },
 })
-
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -185,10 +189,11 @@ function TabNavigator() {
   );
 };
 
+
 export default function App() {
 
   // utilisation google fonts
-  const [fontsLoaded] = useFonts({
+  const [fontsLoaded, error] = useFonts({
     'Girassol-Regular': require('./assets/fonts/Girassol-Regular.ttf'), // fontWeight: '400',
     'Asul-Regular': require('./assets/fonts/Asul-Regular.ttf'), // fontWeight: '400',
     'Asul-Bold': require('./assets/fonts/Asul-Bold.ttf'), // fontWeight: '700',
@@ -197,11 +202,16 @@ export default function App() {
     'Poppins-Light': require('./assets/fonts/Poppins-Light.ttf'), // fontWeight: '300',
   });
 
-  // vérification du chargement de la font
-  if (!fontsLoaded) {
-    return null;
-  };
+  useEffect(() => {
+    if (fontsLoaded || error) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, error]); // useEffect se lancera à l’initialisation et à chaque changement de l’état fontsLoaded.
 
+  // vérification du chargement de la font
+  if (!fontsLoaded && !error) {
+    return null;
+  }
 
   return (
     <Provider store={store}>

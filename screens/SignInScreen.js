@@ -18,6 +18,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   View,
+  Alert,
 } from "react-native";
 
 import { useDispatch } from "react-redux";
@@ -100,8 +101,10 @@ export default function SignInScreen({ navigation }) {
       })
       .then((data) => {
         console.log("Données retournées par le backend:", data);
+        console.log('data.result: ', data.result);
 
-        if (data) {
+
+        if (data.result) {
           // Si connexion réussie, redirige vers le dashboard
           dispatch(
             data &&
@@ -118,6 +121,7 @@ export default function SignInScreen({ navigation }) {
           navigation.navigate("TabNavigator", { screen: "Dashboard" });
         } else {
           console.log("Erreur lors de la connexion:", data.error);
+          Alert.alert("Erreur", data.error);
         }
       });
   };
