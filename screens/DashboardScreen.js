@@ -41,15 +41,15 @@ export default function DashboardScreen({ navigation }) {
   const [isParameterVisible, setIsParameterVisible] = useState(false);
   const [allStories, setAllStories] = useState([]);
 
-    useEffect(() => {
-          fetch(`${BACKEND_ADDRESS}/stories/laststories`)
-              .then((response) => response.json())
-              .then((data) => {
-                  if (data.result) {
-                      setAllStories(data.stories)
-                  }
-              })
-      }, []);
+  useEffect(() => {
+    fetch(`${BACKEND_ADDRESS}/stories/laststories`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result) {
+          setAllStories(data.stories)
+        }
+      })
+  }, []);
 
   const toggleParameter = () => {
     setIsParameterVisible(!isParameterVisible);
@@ -61,10 +61,12 @@ export default function DashboardScreen({ navigation }) {
     navigation.navigate("Home");
   };
 
+  const handleFindStories = () => {
+    navigation.navigate("FindStories");
+  };
 
-  
   const handleLastStories = (story) => {
-    navigation.navigate("ReadStory", { story});
+    navigation.navigate("ReadStory", { story });
   };
 
   const handleMyEvents = () => {
@@ -72,7 +74,7 @@ export default function DashboardScreen({ navigation }) {
   };
 
   return (
-    <TouchableWithoutFeedback>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container} >
         <ScrollView contentContainerStyle={styles.scrollContent}>
 
@@ -139,68 +141,75 @@ export default function DashboardScreen({ navigation }) {
             </Text>
           </View>
 
-        {/* Section carrousel mes lectures en cours */}
-        <View style={styles.sectionContainer}>
-          {/* Titre de la section */}
-          <View style={styles.sectionHeader}>
-            <Text style={styles.textSection}>Dernières histoires</Text>
-            <TouchableOpacity
-            
-              activeOpacity={0.8}
-            >
-              <Icon
-                name="chevron-circle-right"
-                size={20}
-                color="#D8C7B5"
-              />
-            </TouchableOpacity>
-          </View>
+          {/* Section carrousel mes lectures en cours */}
+          <View style={styles.sectionContainer}>
+            {/* Titre de la section */}
+            <View style={styles.sectionHeader}>
+              <Text style={styles.textSection}>Dernières histoires</Text>
+              <TouchableOpacity
+                onPress={handleFindStories}
+                activeOpacity={0.8}
+              >
+                <Icon
+                  name="chevron-circle-right"
+                  size={24}
+                  color="#D8C7B5"
+                />
+              </TouchableOpacity>
+            </View>
 
-          {/* ScrollView horizontal */}
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.booksContainer}
-          >
-         {allStories.length > 0 ? (
-              allStories.map((story, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.bookCard}
-                  onPress={() => handleLastStories(story)}
-                >
-                  <Image
-                    source={
-                      story.coverImage
-                        ? { uri: story.coverImage }
-                        : defaultImage
-                    }
-                    style={styles.book}
-                    resizeMode="cover"
-                  />
-                  <View style={styles.texContainer}>
-                  <Text style={styles.textCard}>
-                    {story.title}
-                  </Text>
-                  </View>
-                  <Text style={styles.subtextCard}>
-                    {story.author?.username}
-                  </Text>
-                </TouchableOpacity>
-              ))
-            ) : (
-              <Text style={styles.emptyMessage}>Aucune histoire trouvée.</Text>
-            )}
-          </ScrollView>
-        </View>
+            {/* ScrollView horizontal */}
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.booksContainer}
+            >
+              {allStories.length > 0 ? (
+                allStories.map((story, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.bookCard}
+                    onPress={() => handleLastStories(story)}
+                  >
+                    <Image
+                      source={
+                        story.coverImage
+                          ? { uri: story.coverImage }
+                          : defaultImage
+                      }
+                      style={styles.book}
+                      resizeMode="cover"
+                    />
+                    <View style={styles.texContainer}>
+                      <Text style={styles.textCard}>
+                        {story.title}
+                      </Text>
+                    </View>
+                    <Text style={styles.subtextCard}>
+                      {story.author?.username}
+                    </Text>
+                  </TouchableOpacity>
+                ))
+              ) : (
+                <Text style={styles.emptyMessage}>Aucune histoire trouvée.</Text>
+              )}
+            </ScrollView>
+          </View>
 
           {/* Section carrousel mes évènements */}
           <View style={styles.sectionContainer}>
             {/* Titre de la section */}
             <View style={styles.sectionHeader}>
               <Text style={styles.textSection}>Mes évènements</Text>
-              <TouchableOpacity onPress={handleMyEvents} activeOpacity={0.8}>
-                <Icon name="chevron-circle-right" size={20} color="#D8C7B5" />
+              <TouchableOpacity
+                onPress={handleMyEvents}
+                activeOpacity={0.8}
+              >
+                <Icon
+                  name="chevron-circle-right"
+                  size={24}
+                  color="#D8C7B5"
+                />
               </TouchableOpacity>
             </View>
             {/* ScrollView horizontal des évènements*/}
@@ -324,7 +333,7 @@ const styles = StyleSheet.create({
   identityUser: {
     marginTop: 60, // Décale le contenu pour éviter le header
     alignItems: "center",
-    marginVertical: 50,
+    marginBottom: 25,
   },
 
   avatar: {
@@ -346,15 +355,14 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "flex-start",
     paddingHorizontal: 20,
-    marginBottom: 40,
-    paddingBottom: 30,
+    marginBottom: 15,
   },
 
   sectionHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 20,
+    marginVertical: 20,
     paddingLeft: 10,
   },
 
@@ -505,41 +513,41 @@ const styles = StyleSheet.create({
   },
 
   bookCard: {
-    marginRight: 15, 
+    marginRight: 15,
     alignItems: "center",
-    backgroundColor: "#fff", 
-    borderRadius: 10, 
-    width: 200, 
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    width: 200,
     height: 300,
     alignItems: 'center'
   },
 
   imageCard: {
-flex: 1,
-width: '100%',
-height: '100%',
+    flex: 1,
+    width: '100%',
+    height: '100%',
   },
 
   book: {
     flex: 1,
-    width: 200, 
-    height: 300, 
-    borderRadius: 8, 
-    marginBottom: 10, 
+    width: 200,
+    height: 300,
+    borderRadius: 8,
+    marginBottom: 10,
   },
 
-texContainer : {
-  flex: 0.7,
-  width: "100%",
-  justifyContent: 'center',
-  alignItems: 'center'
-},
+  texContainer: {
+    flex: 0.7,
+    width: "100%",
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
 
   textCard: {
     fontSize: 16,
     fontWeight: "bold",
     textAlign: "center",
-    color: "rgba(55, 27, 12, 0.9)", 
+    color: "rgba(55, 27, 12, 0.9)",
   },
 
   subtextCard: {
