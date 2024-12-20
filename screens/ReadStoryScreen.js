@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 
 
 import { globalStyles } from '../styles/globalStyles';
@@ -25,33 +26,21 @@ export default function ReadStoryScreen({ route, navigation }) {
   // console.log("Histoire reçue :", story);
 
   const { stories: initialStories = [] } = route.params || {}; // Récupère les histoires depuis les paramètres ou initialise un tableau vide
-  const [stories, setStories] = useState(initialStories); // Définit l'état local avec les histoires initiales
+  
   const [isVisible, setIsVisible] = useState(false) // hook d'état pour le spoiler sur les images sensibles
-  const [isLiked, setIsLiked] = useState(story.isLiked || false);
-
+  const likedStories = useSelector((state) => state.story.value)
+  const isLiked = likedStories.some((likedStory) => likedStory._id === story._id); // Vérifie si l'histoire actuelle est likée
 
   const dispatch = useDispatch();
 
-  const handleShowContent = () => {
-    console.log('isVisible initial: ', isVisible);
-    setIsVisible(!isVisible); // Inverse l'état de isVisible
-    if (isVisible === false) {
-      Alert.alert("Contenu sensible visible");
-    }
-  };
-
-
   const handleLike = () => {
-    const updatedStory = { ...story, isLiked: !isLiked };
-    setIsLiked(!isLiked);
-  
+    // Ajoute ou retire l'histoire des favoris
     if (!isLiked) {
-      dispatch(addLike(updatedStory));
+      dispatch(addLike(story));
     } else {
-      dispatch(removeLike(updatedStory._id));
+      dispatch(removeLike(story._id));
     }
   };
-
   const defaultImage = require('../assets/image-livre-defaut.jpg')
 
   const coverImage = story.coverImage
