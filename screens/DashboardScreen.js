@@ -60,7 +60,7 @@ export default function DashboardScreen({ navigation }) {
     dispatch(logout());
     navigation.navigate("Home");
   };
-
+  
   const handleFindStories = () => {
     navigation.navigate("FindStories");
   };
@@ -68,7 +68,7 @@ export default function DashboardScreen({ navigation }) {
   const handleLastStories = (story) => {
     navigation.navigate("ReadStory", { story });
   };
-
+ // navigation vers le screen MyEvents
   const handleMyEvents = () => {
     navigation.navigate("MyEvents");
   };
