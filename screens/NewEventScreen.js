@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // BottomTab visible sur les Screens => globalStyles
 import { globalStyles } from '../styles/globalStyles';
@@ -38,6 +38,9 @@ const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS
 
 
 export default function NewEventScreen({ navigation }) {
+  useEffect(() => {
+    Keyboard.dismiss();
+  }, []);
 
   // https://reactnavigation.org/docs/navigation-object/#goback
   const goBack = () => navigation.goBack();

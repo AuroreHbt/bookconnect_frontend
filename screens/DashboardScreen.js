@@ -60,7 +60,7 @@ export default function DashboardScreen({ navigation }) {
     dispatch(logout());
     navigation.navigate("Home");
   };
-
+  
   const handleFindStories = () => {
     navigation.navigate("Stories");
   };
@@ -68,7 +68,7 @@ export default function DashboardScreen({ navigation }) {
   const handleLastStories = (story) => {
     navigation.navigate("Story", { story });
   };
-
+ // navigation vers le screen MyEvents
   const handleMyEvents = () => {
     navigation.navigate("MyEvents");
   };
@@ -247,18 +247,20 @@ export default function DashboardScreen({ navigation }) {
                       )}
                     </View>
 
-                    {/* Affichage des informations de l'événement */}
-                    <Text style={styles.eventTitle}>
-                      {event.title || "Nom de l'événement"}
-                    </Text>
-                    <Text style={styles.eventDate}>
-                      {event.date?.day ? new Date(event.date.day).toLocaleDateString() : "Date non renseignée"}
-                    </Text>
-                    <Text style={styles.eventTime}>
-                      {event.date?.start && event.date?.end
-                        ? `${new Date(event.date.start).toLocaleTimeString()} - ${new Date(event.date.end).toLocaleTimeString()}`
-                        : "Heure non renseignée"}
-                    </Text>
+          {/* Affichage des informations de l'événement */}
+          <Text style={styles.eventTitle}>
+            {event.title || "Nom de l'événement"}
+          </Text>
+          <Text style={styles.eventDate}>
+            {event.date?.day
+              ? new Date(event.date.day).toLocaleDateString()
+              : "Date non renseignée"}
+          </Text>
+          <Text style={styles.eventTime}>
+            {event.date?.start && event.date?.end
+              ? `${new Date(event.date.start).toLocaleTimeString()} - ${new Date(event.date.end).toLocaleTimeString()}`
+              : "Heure non renseignée"}
+          </Text>
 
                     {/* Icône poubelle pour supprimer l'événement */}
                     <TouchableOpacity
