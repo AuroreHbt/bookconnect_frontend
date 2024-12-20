@@ -23,26 +23,13 @@ export default function ReadStoryScreen({ route, navigation }) {
   const { story } = route.params;
   // console.log("Histoire reçue :", story);
 
+
   const [isVisible, setIsVisible] = useState(false) // hook d'état pour le spoiler sur les images sensibles
   const likedStories = useSelector((state) => state.story.value)
   const user = useSelector((state) => state.user.value)
   const isLiked = likedStories.some((likedStory) => likedStory._id === story._id); // Vérifie si l'histoire actuelle est likée
 
   const dispatch = useDispatch();
-
-  // https://reactnavigation.org/docs/navigation-object/#goback
-  const goBack = () => navigation.goBack();
-
-  const googleDocsUrl = `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(story.storyFile)}`;
-  // console.log('uri: ', story.storyFile);
-
-  const handleShowContent = () => {
-    console.log('isVisible initial: ', isVisible);
-    setIsVisible(!isVisible); // Inverse l'état de isVisible
-    if (isVisible === false) {
-      Alert.alert("Contenu sensible visible");
-    }
-  };
 
   const handleLike = () => {
     // Ajoute ou retire l'histoire des favoris
@@ -56,6 +43,12 @@ export default function ReadStoryScreen({ route, navigation }) {
 
   const coverImage = story.coverImage
   // console.log("coverImage reçue :", coverImage);
+
+  // https://reactnavigation.org/docs/navigation-object/#goback
+  const goBack = () => navigation.goBack();
+
+  const googleDocsUrl = `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(story.storyFile)}`;
+  // console.log('uri: ', story.storyFile);
 
 
   return (

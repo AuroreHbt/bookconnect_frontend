@@ -61,13 +61,13 @@ export default function DashboardScreen({ navigation }) {
     navigation.navigate("Home");
   };
 
-  const handleReadStories = () => {
-    navigation.navigate("ReadStory", { story })
-  };
-
-  // const handleLastStories = () => {
-  //   navigation.navigate("ReadStory");
+  // const handleReadStories = () => {
+  //   navigation.navigate("ReadStory", { story })
   // };
+
+  const handleLastStories = () => {
+    navigation.navigate("FindStories");
+  };
 
   // const handleMyEvents = () => {
   //   navigation.navigate("MyEvents");
@@ -152,7 +152,7 @@ export default function DashboardScreen({ navigation }) {
             <View style={styles.sectionHeader}>
               <Text style={styles.textSection}>Dernières histoires</Text>
               <TouchableOpacity
-                // onPress={handleLastStories}
+                onPress={handleLastStories}
                 activeOpacity={0.8}
               >
                 <Icon
@@ -174,7 +174,7 @@ export default function DashboardScreen({ navigation }) {
                   <TouchableOpacity
                     key={index}
                     style={styles.bookCard}
-                    onPress={() => handleReadStories(story)}
+                    // onPress={() => handleReadStories(story)}
                   >
                     <Image
                       source={
@@ -252,7 +252,9 @@ export default function DashboardScreen({ navigation }) {
                       {event.title || "Nom de l'événement"}
                     </Text>
                     <Text style={styles.eventDate}>
-                      {event.date?.day ? new Date(event.date.day).toLocaleDateString() : "Date non renseignée"}
+                      {event.date?.day
+                        ? new Date(event.date.day).toLocaleDateString()
+                        : "Date non renseignée"}
                     </Text>
                     <Text style={styles.eventTime}>
                       {event.date?.start && event.date?.end

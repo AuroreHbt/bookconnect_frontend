@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState, useCallback } from "react";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import {
   StyleSheet,
   Text,
@@ -8,7 +8,7 @@ import {
   TouchableWithoutFeedback,
   FlatList,
   TouchableOpacity,
-  Image, 
+  Image,
   Linking,
 } from "react-native";
 import MapView, { PROVIDER_DEFAULT, Marker } from "react-native-maps";
@@ -16,6 +16,33 @@ import * as Location from "expo-location";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useIsFocused } from "@react-navigation/native";
 import { likeEvent, unlikeEvent, addEvent } from "../reducers/event";
+import { LinearGradient } from "expo-linear-gradient";
+
+// Fonction pour définir les couleurs des catégories
+const getCategoryColor = (category) => {
+  switch (category) {
+    case "Festival":
+      return "rgb(216, 170, 21)"; // Bleu pour les festivals
+    case "Salons":
+      return "green"; // Vert pour les salons
+    case "Ateliers":
+      return "rgb(21, 83, 216)"; // Violet pour les ateliers
+    case "Rencontres":
+      return "rgb(214, 80, 31)"; // Orange pour les rencontres
+    case "Concours":
+      return "red"; // Rouge pour les concours
+    case "Conférences":
+      return "rgb(216, 21, 21)"; // Cyan pour les conférences
+    case "Lectures publiques":
+      return "pink"; // Rose pour les lectures publiques
+    case "Expositions":
+      return "rgb(129, 66, 6)"; // Jaune pour les expositions
+    case "Autre":
+      return "rgb(21, 161, 216)"; // Gris pour "Autre"
+    default:
+      return "rgb(113, 37, 136)"; // Couleur par défaut
+  }
+};
 
 export default function MapScreen({ route }) {
   const dispatch = useDispatch();
@@ -48,7 +75,7 @@ export default function MapScreen({ route }) {
 
   const handleParticipate = (event) => {
     dispatch(addEvent(event));
-    alert('Votre événement a été ajouté au dashboard');
+    alert("Votre événement a été ajouté au dashboard");
   };
 
   const toggleFavorite = (event) => {
@@ -121,14 +148,12 @@ export default function MapScreen({ route }) {
     return (
       <View style={styles.modalItem}>
         {item.eventImage && (
-          <Image 
-            source={{ uri: item.eventImage }} 
-            style={styles.eventImage} 
-          />
+          <Image source={{ uri: item.eventImage }} style={styles.eventImage} />
         )}
         <View style={styles.itemHeader}>
           <Text style={styles.modalTitle}>
-            {item.category || "Catégorie non renseignée"} - {item.title || "Titre non renseigné"}
+            {item.category || "Catégorie non renseignée"} -{" "}
+            {item.title || "Titre non renseigné"}
           </Text>
           <TouchableOpacity
             onPress={() => toggleFavorite(item)}
@@ -141,22 +166,34 @@ export default function MapScreen({ route }) {
             />
           </TouchableOpacity>
         </View>
-        <Text style={styles.modalDescription}>{item.description || "Aucune description disponible"}</Text>
-        <Text style={styles.modalDetails}>Lieu : {item.place?.street || "Rue non renseignée"} {item.place?.city || "Ville non renseignée"}</Text>
-        <Text style={styles.eventDate}>
-          Date : {item.date?.day ? new Date(item.date.day).toLocaleDateString() : "Date non renseignée"}
+        <Text style={styles.modalDescription}>
+          {item.description || "Aucune description disponible"}
         </Text>
-        <TouchableOpacity
-          onPress={() => handleParticipate(item)}
-          style={styles.participateButton}
-        >
-          <Text style={styles.participateButtonText}>Participer</Text>
-        </TouchableOpacity>
+        <Text style={styles.modalDetails}>
+          Lieu : {item.place?.street || "Rue non renseignée"}{" "}
+          {item.place?.city || "Ville non renseignée"}
+        </Text>
+        <Text style={styles.eventDate}>
+          Date :{" "}
+          {item.date?.day
+            ? new Date(item.date.day).toLocaleDateString()
+            : "Date non renseignée"}
+        </Text>
         {item.url && (
           <TouchableOpacity onPress={() => Linking.openURL(item.url)}>
             <Text style={styles.urlLink}>{item.url}</Text>
           </TouchableOpacity>
         )}
+        <LinearGradient
+          colors={["rgba(255, 123, 0, 0.9)", "rgba(216, 72, 21, 1)"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 0.7 }}
+          style={styles.participateButton}
+        >
+          <TouchableOpacity onPress={() => handleParticipate(item)}>
+            <Text style={styles.participateButtonText}>Participer</Text>
+          </TouchableOpacity>
+        </LinearGradient>
       </View>
     );
   };
@@ -183,7 +220,10 @@ export default function MapScreen({ route }) {
           const longitude = coordinates[0];
 
           if (latitude && longitude) {
-            const isLiked = likes.some((likedEvent) => likedEvent._id === event._id);
+            const isLiked = likes.some(
+              (likedEvent) => likedEvent._id === event._id
+            );
+            const pinColor = getCategoryColor(event.category); // Définir la couleur du marqueur en fonction de la catégorie
             return (
               <Marker
                 key={index}
@@ -192,7 +232,7 @@ export default function MapScreen({ route }) {
                   longitude: parseFloat(longitude),
                 }}
                 title={event.title}
-                pinColor={isLiked ? "red" : "#FF4525"}
+                pinColor={isLiked ? "red" : pinColor} // Utilisation de la couleur en fonction de la catégorie
                 onPress={() => {
                   setSelectedEvent(event);
                   setModalVisible(true);
@@ -203,15 +243,18 @@ export default function MapScreen({ route }) {
           return null;
         })}
       </MapView>
-
-      <TouchableOpacity
+      <LinearGradient
+        colors={["rgba(255, 123, 0, 0.9)", "rgba(216, 72, 21, 1)"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 0.7 }}
         style={styles.eventListButton}
-        onPress={toggleEventModal}
       >
-        <Text style={styles.eventListButtonText}>
-          Voir les événements ({eventsData.length})
-        </Text>
-      </TouchableOpacity>
+        <TouchableOpacity onPress={toggleEventModal}>
+          <Text style={styles.eventListButtonText}>
+            Voir les événements ({eventsData.length})
+          </Text>
+        </TouchableOpacity>
+      </LinearGradient>
 
       <Modal
         animationType="slide"
@@ -219,33 +262,31 @@ export default function MapScreen({ route }) {
         visible={eventModalVisible}
         onRequestClose={toggleEventModal}
       >
-        {/* Utiliser TouchableWithoutFeedback uniquement à l'extérieur */}
         <TouchableWithoutFeedback onPress={toggleEventModal}>
           <View style={styles.modalBackground}>
-            <View style={styles.modalContainer}>
-              <FlatList
-                data={eventsData}
-                renderItem={renderEventModalItem}
-                keyExtractor={(item) => item._id}
-                style={styles.modalFlatList}
-                // Ne pas fermer la modal lors du scroll
-                onTouchStart={() => {}}
-              />
-            </View>
+            <TouchableWithoutFeedback>
+              <View style={styles.modalContainer}>
+                <FlatList
+                  data={eventsData}
+                  renderItem={renderEventModalItem}
+                  keyExtractor={(item) => item._id}
+                  style={styles.modalFlatList}
+                  scrollEnabled={true} // Active le scroll
+                />
+              </View>
+            </TouchableWithoutFeedback>
           </View>
         </TouchableWithoutFeedback>
       </Modal>
-
       <Modal
         animationType="slide"
         transparent={true}
         visible={modalVisible}
         onRequestClose={toggleModal}
       >
-        {/* Utiliser TouchableWithoutFeedback uniquement à l'extérieur */}
         <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
           <View style={styles.modalBackgroundEvent}>
-            <View>
+            <View style={styles.modalEventContainer}>
               {selectedEvent && renderEventModalItem({ item: selectedEvent })}
             </View>
           </View>
@@ -272,15 +313,29 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+
   modalContainer: {
     backgroundColor: "white",
     width: "95%",
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     padding: 10,
-    height: "50%",  // Taille réduite de la modal pour la liste des événements
+    height: "50%", // Taille réduite de la modal pour la liste des événements
     overflow: "hidden",
   },
+
+  modalEventContainer: {
+    backgroundColor: "white",
+    width: "70%", // Ajustez la largeur
+    borderRadius: 10,
+    padding: 0,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+
   modalFlatList: {
     width: "100%",
     height: "100%", // Modal avec FlatList occupe toute la hauteur
@@ -290,12 +345,12 @@ const styles = StyleSheet.create({
     padding: 15,
     backgroundColor: "#f9f9f9",
     borderRadius: 10,
-    marginBottom: 15,
+    margin: 15,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 5, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
-    elevation: 5,
+    elevation: 10,
   },
   eventImage: {
     width: "100%",
@@ -361,7 +416,6 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   participateButton: {
-    backgroundColor: "rgba(216, 72, 21, 1)",
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 20,
