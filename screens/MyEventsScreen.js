@@ -49,7 +49,7 @@ export default function MyEventsScreen({ navigation }) {
     const getMyEvents = () => {
       fetch(`${BACKEND_ADDRESS}/events/searcheventByUser/${user.username}`)
         .then((response) => response.json())
-        .then((data) => setEvents(data.events));
+        .then((data) => setEventPlanner(data.events));
     };
   
     useEffect(() => {
@@ -119,133 +119,185 @@ export default function MyEventsScreen({ navigation }) {
   
           {/* Affichage des événements que j'organise */}
 <View style={{ flex: 1 }}>
-  <Text style={styles.texttest}>Evènements que j'organise</Text>
-  <ScrollView style={styles.horizontalScrollView} horizontal={true} showsHorizontalScrollIndicator={false}>
-    {eventPlanner.map((item) => (
-      <View key={item._id || item.id || item.title} style={styles.eventCard}>
-        <View style={styles.cardContent}>
-          {/* Informations sur l'événement */}
-          <View style={styles.sectionTop}>
-            {/* Affichage de l'image */}
-            {item.eventImage ? (
-              <Image source={{ uri: item.eventImage }} style={styles.eventImage} />
-            ) : (
-              <View style={styles.noImageContainer}>
-                <Icon name="camera-retro" size={80} color="gray" />
+  <View style={styles.sectionHeader}>
+    <Text style={styles.texttest}>Mes événements organisés</Text>
+    <TouchableOpacity activeOpacity={0.8}>
+      <Icon name="chevron-circle-down" size={20} color="#D8C7B5" />
+    </TouchableOpacity>
+  </View>
+
+  {eventPlanner.length > 0 ? (
+    <ScrollView
+      style={styles.horizontalScrollView}
+      horizontal={true}
+      showsHorizontalScrollIndicator={false}
+    >
+      {eventPlanner.map((item) => (
+        <View key={item._id || item.id || item.title} style={styles.eventCard}>
+          <View style={styles.cardContent}>
+            <View style={styles.sectionTop}>
+              {/* Affichage de l'image */}
+              {item.eventImage ? (
+                <Image source={{ uri: item.eventImage }} style={styles.eventImage} />
+              ) : (
+                <View style={styles.noImageContainer}>
+                  <Icon name="camera-retro" size={80} color="gray" />
+                </View>
+              )}
+              {/* Informations sur l'événement */}
+              <View style={styles.eventInfoTitle}>
+                <Text style={styles.eventTitle}>{item.title}</Text>
+                <Text style={styles.eventDescription}>{item.description}</Text>
               </View>
-            )}
-            <View style={styles.eventInfoTitle}>
-              <Text style={styles.eventTitle}>{item.title}</Text>
-              <Text style={styles.eventDescription}>{item.description}</Text>
+            </View>
+            <View style={styles.sectionBottom}>
+              <Text style={styles.eventDate}>
+                <Text style={styles.label}>Date : </Text>
+                {new Date(item.date.day).toLocaleDateString()}
+              </Text>
+              <Text style={styles.eventTime}>
+                <Text style={styles.label}>Heure : </Text>
+                {new Date(item.date.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -{" "}
+                {new Date(item.date.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </Text>
+              <Text style={styles.eventAddress}>
+                <Text style={styles.label}>Lieu : </Text>
+                {item.identityPlace}
+              </Text>
+              <Text style={styles.eventAddress}>
+                <Text style={styles.label}>Adresse : </Text>
+                {item.place.number} {item.place.street}, {item.place.code} {item.place.city}
+              </Text>
+              <Text style={styles.eventUrl}>
+                <Text style={styles.label}>Lien : </Text>
+                {item.url ? (
+                  <Text style={styles.link} onPress={() => handleOpenUrl(item.url)}>
+                    {item.url}
+                  </Text>
+                ) : (
+                  <Text style={styles.noLink}>Aucun lien disponible</Text>
+                )}
+              </Text>
             </View>
           </View>
-          <View style={styles.sectionBottom}>
-            <Text style={styles.eventDate}>
-              <Text style={styles.label}>Date : </Text>
-              {new Date(item.date.day).toLocaleDateString()}
-            </Text>
-            <Text style={styles.eventTime}>
-              <Text style={styles.label}>Heure : </Text>
-              {new Date(item.date.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -{" "}
-              {new Date(item.date.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-            </Text>
-            <Text style={styles.eventAddress}>
-              <Text style={styles.label}>Lieu : </Text>
-              {item.identityPlace}
-            </Text>
-            <Text style={styles.eventAddress}>
-              <Text style={styles.label}>Adresse : </Text>
-              {item.place.number} {item.place.street}, {item.place.code} {item.place.city}
-            </Text>
-            <Text style={styles.eventUrl}>
-              <Text style={styles.label}>Lien : </Text>
-              {item.url ? (
-                <Text style={styles.link} onPress={() => handleOpenUrl(item.url)}>
-                  {item.url}
-                </Text>
-              ) : (
-                <Text style={styles.noLink}>Aucun lien disponible</Text>
-              )}
-            </Text>
+          <View style={styles.buttonCard}>
+            <LinearGradient
+              colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 0.7 }}
+              style={styles.gradientButton}
+            >
+              <TouchableOpacity style={styles.button}>
+                <Text style={styles.textButton}>Modifier</Text>
+              </TouchableOpacity>
+            </LinearGradient>
+            <TouchableOpacity
+              style={styles.iconContainer}
+              onPress={() => handleDeleteEvent(item._id)}
+            >
+              <Icon name="trash-o" size={28} color="rgba(55, 27, 12, 0.7)" />
+            </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.buttonCard}>
-          <LinearGradient colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']} start={{ x: 0, y: 0 }} end={{ x: 0, y: 0.7 }} style={styles.gradientButton}>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.textButton}>Modifier</Text>
-            </TouchableOpacity>
-          </LinearGradient>
-          <TouchableOpacity style={styles.iconContainer} onPress={() => handleDeleteEvent(item._id)}>
-            <Icon name="trash-o" size={28} color="rgba(55, 27, 12, 0.7)" />
-          </TouchableOpacity>
-        </View>
-      </View>
-    ))}
-  </ScrollView>
+      ))}
+    </ScrollView>
+  ) : (
+    // Message affiché si aucun événement n'est organisé
+    <View style={styles.emptyContainer}>
+      <Text style={styles.emptyMessage}>
+        Aucun événement
+      </Text>
+    </View>
+  )}
 </View>
+
 
 {/* Affichage des événements auxquels je participe */}
 <View style={{ flex: 1 }}>
-  <Text style={styles.texttest}>Evènements auxquels je participe</Text>
-  <ScrollView style={styles.horizontalScrollView} horizontal={true} showsHorizontalScrollIndicator={false}>
-    {eventUser.map((item) => (
-      <View key={item._id || item.id || item.title} style={styles.eventCard}>
-        <View style={styles.cardContent}>
-          {/* Informations sur l'événement */}
-          <View style={styles.sectionTop}>
-            {/* Affichage de l'image */}
-            {item.eventImage ? (
-              <Image source={{ uri: item.eventImage }} style={styles.eventImage} />
-            ) : (
-              <View style={styles.noImageContainer}>
-                <Icon name="camera-retro" size={80} color="gray" />
+  <View style={styles.sectionHeader}>
+    <Text style={styles.texttest}>Mon calendrier d'événements</Text>
+    <TouchableOpacity activeOpacity={0.8}>
+      <Icon name="chevron-circle-down" size={20} color="#D8C7B5" />
+    </TouchableOpacity>
+  </View>
+
+  {eventUser.length > 0 ? (
+    <ScrollView
+      style={styles.horizontalScrollView}
+      horizontal={true}
+      showsHorizontalScrollIndicator={false}
+    >
+      {eventUser.map((item) => (
+        <View key={item._id || item.id || item.title} style={styles.eventCard}>
+          <View style={styles.cardContent}>
+            <View style={styles.sectionTop}>
+              {/* Affichage de l'image */}
+              {item.eventImage ? (
+                <Image source={{ uri: item.eventImage }} style={styles.eventImage} />
+              ) : (
+                <View style={styles.noImageContainer}>
+                  <Icon name="camera-retro" size={80} color="gray" />
+                </View>
+              )}
+              {/* Informations sur l'événement */}
+              <View style={styles.eventInfoTitle}>
+                <Text style={styles.eventTitle}>{item.title}</Text>
+                <Text style={styles.eventDescription}>{item.description}</Text>
               </View>
-            )}
-            <View style={styles.eventInfoTitle}>
-              <Text style={styles.eventTitle}>{item.title}</Text>
-              <Text style={styles.eventDescription}>{item.description}</Text>
+            </View>
+            <View style={styles.sectionBottom}>
+              <Text style={styles.eventDate}>
+                <Text style={styles.label}>Date : </Text>
+                {new Date(item.date.day).toLocaleDateString()}
+              </Text>
+              <Text style={styles.eventTime}>
+                <Text style={styles.label}>Heure : </Text>
+                {new Date(item.date.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -{" "}
+                {new Date(item.date.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </Text>
+              <Text style={styles.eventAddress}>
+                <Text style={styles.label}>Lieu : </Text>
+                {item.identityPlace}
+              </Text>
+              <Text style={styles.eventAddress}>
+                <Text style={styles.label}>Adresse : </Text>
+                {item.place.number} {item.place.street}, {item.place.code} {item.place.city}
+              </Text>
+              <Text style={styles.eventUrl}>
+                <Text style={styles.label}>Lien : </Text>
+                {item.url ? (
+                  <Text style={styles.link} onPress={() => handleOpenUrl(item.url)}>
+                    {item.url}
+                  </Text>
+                ) : (
+                  <Text style={styles.noLink}>Aucun lien disponible</Text>
+                )}
+              </Text>
             </View>
           </View>
-          <View style={styles.sectionBottom}>
-            <Text style={styles.eventDate}>
-              <Text style={styles.label}>Date : </Text>
-              {new Date(item.date.day).toLocaleDateString()}
-            </Text>
-            <Text style={styles.eventTime}>
-              <Text style={styles.label}>Heure : </Text>
-              {new Date(item.date.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -{" "}
-              {new Date(item.date.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-            </Text>
-            <Text style={styles.eventAddress}>
-              <Text style={styles.label}>Lieu : </Text>
-              {item.identityPlace}
-            </Text>
-            <Text style={styles.eventAddress}>
-              <Text style={styles.label}>Adresse : </Text>
-              {item.place.number} {item.place.street}, {item.place.code} {item.place.city}
-            </Text>
-            <Text style={styles.eventUrl}>
-              <Text style={styles.label}>Lien : </Text>
-              {item.url ? (
-                <Text style={styles.link} onPress={() => handleOpenUrl(item.url)}>
-                  {item.url}
-                </Text>
-              ) : (
-                <Text style={styles.noLink}>Aucun lien disponible</Text>
-              )}
-            </Text>
+          <View style={styles.buttonCard}>
+            <LinearGradient
+              colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 0.7 }}
+              style={styles.gradientButton}
+            >
+              <TouchableOpacity style={styles.button}>
+                <Text style={styles.textButton}>Ne plus participer</Text>
+              </TouchableOpacity>
+            </LinearGradient>
           </View>
         </View>
-        <View style={styles.buttonCard}>
-          <LinearGradient colors={['rgba(255, 123, 0, 0.9)', 'rgba(216, 72, 21, 1)']} start={{ x: 0, y: 0 }} end={{ x: 0, y: 0.7 }} style={styles.gradientButton}>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.textButton}>Ne plus particper</Text>
-            </TouchableOpacity>
-          </LinearGradient>
-        </View>
-      </View>
-    ))}
-  </ScrollView>
+      ))}
+    </ScrollView>
+  ) : (
+    // Message affiché si aucun événement n'est trouvé
+    <View style={styles.emptyContainer}>
+      <Text style={styles.emptyMessage}>
+        Aucun événement
+      </Text>
+    </View>
+  )}
 </View>
 
         </View>
@@ -266,7 +318,7 @@ const styles = StyleSheet.create({
 
       // Conteneur spécifique pour chaque ScrollView horizontale
     horizontalScrollView: {
-      marginBottom: 20, // Espacement entre les sections
+      marginBottom: 30, // Espacement entre les sections
       height: 500, // Ajustez la hauteur pour inclure toutes les cartes
   },
 
@@ -276,13 +328,15 @@ const styles = StyleSheet.create({
       marginHorizontal: 10,
       marginVertical: 10, // Ajout de marges verticales
       padding: 10,
+      paddingBottom: 30,
       borderRadius: 10,
-      shadowColor: '#000',
-      shadowOpacity: 0.1,
-      shadowRadius: 5,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 4,
       elevation: 3,
       width: 350, // Ajuster la largeur pour les cartes dans la ScrollView horizontale
-      height: 470,
+      height: 500,
       flexDirection: 'column',
     },
     cardContent: {
@@ -357,7 +411,7 @@ const styles = StyleSheet.create({
     gradientButton: {
       flex: 1,
       borderRadius: 5,
-      marginRight: 10,
+      marginRight: 5,
     },
     button: {
       alignItems: 'center',
@@ -383,14 +437,31 @@ const styles = StyleSheet.create({
       fontSize: 16,
       color: 'gray',
     },
-    texttest: {
-      fontFamily: "Poppins-Medium", // ou GermaniaOne-Regular
-      fontWeight: "500",
-      fontSize: 20,
+    sectionHeader: {
+      flexDirection: "row",
+      alignItems: "center",
       marginBottom: 20,
-      color: "#371B0C",
-      textAlign: "left",
-      padding: 10,
+      paddingLeft: 15,
+    },
+    texttest: {
+      fontSize: 18,
+      color: "#443108",
+      fontWeight: "900",
+      marginRight: 10,
+      fontFamily: "Poppins",
+    },
+    emptyContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'left',
+      marginTop: 20,
+      paddingBottom: 40,
+      paddingLeft: 10,
+    },
+    emptyMessage: {
+      fontSize: 16,
+      color: 'gray',
+      textAlign: 'left',
     },
   
   });

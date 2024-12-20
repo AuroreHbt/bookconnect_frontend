@@ -36,7 +36,7 @@ export const globalStyles = StyleSheet.create({
         justifyContent: 'space-between',
         padding: 15,
         marginTop: 20,
-        marginBottom: 5,
+        marginBottom: 20,
         width: '100%',
 
         // borderWidth: 1,

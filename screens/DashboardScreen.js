@@ -251,7 +251,7 @@ export default function DashboardScreen({ navigation }) {
           }}          
           style={styles.deleteButton}
         >
-          <Icon name="trash" size={24} color="red" />
+          <Icon name="trash-o" size={24} color="rgba(55, 27, 12, 0.7)" paddingTop={10} />
         </TouchableOpacity>
       </View>
     ))
@@ -509,9 +509,9 @@ const styles = StyleSheet.create({
   },
 
   imageCard: {
-flex: 1,
-width: '100%',
-height: '100%',
+    flex: 1,
+    width: '100%',
+    height: '100%',
   },
 
   book: {
@@ -523,10 +523,10 @@ height: '100%',
   },
 
 texContainer : {
-  flex: 0.7,
-  width: "100%",
-  justifyContent: 'center',
-  alignItems: 'center'
+    flex: 0.7,
+    width: "100%",
+    justifyContent: 'center',
+    alignItems: 'center'
 },
 
   textCard: {
