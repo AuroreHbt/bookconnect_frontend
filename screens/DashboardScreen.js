@@ -255,22 +255,22 @@ export default function DashboardScreen({ navigation }) {
                         : "Heure non renseignée"}
                     </Text>
 
-                    {/* Icône poubelle pour supprimer l'événement */}
-                    <TouchableOpacity
-                      onPress={() => {
-                        console.log('Supprimer l\'événement avec l\'id:', event._id);
-                        dispatch(deleteEvent({ id: event._id }));
-                      }}
-                      style={styles.deleteButton}
-                    >
-                      <Icon name="trash" size={24} color="red" />
-                    </TouchableOpacity>
-                  </View>
-                ))
-              ) : (
-                <Text style={styles.emptyMessage}>Aucun événement trouvé.</Text>
-              )}
-            </ScrollView>
+        {/* Icône poubelle pour supprimer l'événement */}
+        <TouchableOpacity
+          onPress={() => {
+            console.log('Supprimer l\'événement avec l\'id:', event._id);
+            dispatch(deleteEvent({ id: event._id }));
+          }}          
+          style={styles.deleteButton}
+        >
+          <Icon name="trash-o" size={24} color="rgba(55, 27, 12, 0.7)" paddingTop={10} />
+        </TouchableOpacity>
+      </View>
+    ))
+  ) : (
+    <Text style={styles.emptyMessage}>Aucun événement trouvé.</Text>
+  )}
+</ScrollView>
 
           </View>
         </ScrollView>
@@ -526,6 +526,9 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
+    flex: 1,
+    width: '100%',
+    height: '100%',
   },
 
   book: {
@@ -536,12 +539,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 
-  texContainer: {
+texContainer : {
     flex: 0.7,
     width: "100%",
     justifyContent: 'center',
     alignItems: 'center'
-  },
+},
 
   textCard: {
     fontSize: 16,
