@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { globalStyles } from '../styles/globalStyles';
@@ -16,7 +16,7 @@ import {
 // pour afficher les fichiers PDF hébergés en ligne
 import { WebView } from "react-native-webview";
 
-import { addLike } from "../reducers/story";
+import { addLike, removeLike } from "../reducers/story";
 
 
 export default function ReadStoryScreen({ route, navigation }) {
@@ -24,10 +24,20 @@ export default function ReadStoryScreen({ route, navigation }) {
   // console.log("Histoire reçue :", story);
 
   const { stories: initialStories = [] } = route.params || {}; // Récupère les histoires depuis les paramètres ou initialise un tableau vide
+
   const [stories, setStories] = useState(initialStories); // Définit l'état local avec les histoires initiales
   const [isVisible, setIsVisible] = useState(false) // hook d'état pour le spoiler sur les images sensibles
 
+  const likedStories = useSelector((state) => state.story.value)
+  const user = useSelector((state) => state.user.value); // Informations recupérées depuis le store
+
   const dispatch = useDispatch();
+
+  // https://reactnavigation.org/docs/navigation-object/#goback
+  const goBack = () => navigation.goBack();
+
+  const googleDocsUrl = `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(story.storyFile)}`;
+  // console.log('uri: ', story.storyFile);
 
   const handleShowContent = () => {
     console.log('isVisible initial: ', isVisible);
@@ -37,11 +47,21 @@ export default function ReadStoryScreen({ route, navigation }) {
     }
   };
 
-  const handleLike = () => {
+  console.log("story.isLiked: ", story.isLiked);
+  
 
+  useEffect(() => {
+    // Synchronise l'état local avec Redux
+    const updatedStories = stories.map((story) => ({
+      ...story,
+      isLiked: likedStories.some((likedStory) => likedStory._id === story._id),
+    }));
+    setStories(updatedStories);
+  }, [likedStories]);
+
+  const handleLike = (story) => {
     // Met à jour isLiked pour l'histoire cliquée
     const updatedStory = { ...story, isLiked: !story.isLiked };
-    console.log('updatedStory: ', updatedStory);
 
     setStories((prevStories) =>
       prevStories.map((currentStory) =>
@@ -54,23 +74,13 @@ export default function ReadStoryScreen({ route, navigation }) {
     } else {
       dispatch(removeLike(updatedStory._id));
     }
-    console.log("état updatedStory.isLiked: ", updatedStory.isLiked);
-    console.log("updatedStory._id: ", updatedStory._id);
-    // console.log("updatedStory: ", updatedStory);
+    console.log("état isLiked", updatedStory);
   };
 
   const defaultImage = require('../assets/image-livre-defaut.jpg')
 
   const coverImage = story.coverImage
   // console.log("coverImage reçue :", coverImage);
-
-  const user = useSelector((state) => state.user.value); // Informations recupérées depuis le store
-
-  // https://reactnavigation.org/docs/navigation-object/#goback
-  const goBack = () => navigation.goBack();
-
-  const googleDocsUrl = `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(story.storyFile)}`;
-  // console.log('uri: ', story.storyFile);
 
 
   return (
@@ -220,7 +230,7 @@ const styles = StyleSheet.create({
 
   likeButton: {
     position: 'absolute',
-    top: 5,
+    top: 15,
     right: 5,
 
     // borderWidth: 1,
