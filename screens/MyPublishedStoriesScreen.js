@@ -123,13 +123,13 @@ export default function MyPublishedStoriesScreen({ navigation }) {
 
 
   // Fonction pour modifier une histoire postée : à définir
-  const handleUpdateStory = async () => {
+  const handleUpdateStory = async (id) => {
 
-    const storyId = story[0]._id; // Récupération de l'ID de l'histoire
+    // parametre id pour cibler la story qu'on veut
 
     // Debug 
     console.log("handleUpdateStory fonction appelée"); // ok
-    console.log("storyId:", storyId); // storyId de nouveau undefined...
+    console.log("storyId:", id);
     console.log("user.token:", user.token); // ok
     console.log("newTitle:", newTitle); // ok null
     console.log("newDescription:", newDescription); // ok null
@@ -137,7 +137,9 @@ export default function MyPublishedStoriesScreen({ navigation }) {
     // Création d'un objet contenant uniquement les champs à mettre à jour
     const updateData = {
       token: user.token,
-      storyId: storyId
+      storyId: id,
+      title: newTitle,
+      description: newDescription,
     };
 
     if (newTitle.trim()) updateData.newTitle = newTitle.trim();
@@ -146,7 +148,7 @@ export default function MyPublishedStoriesScreen({ navigation }) {
     try {
       const response = await
         fetch(`${BACKEND_ADDRESS}/stories/updatepublishedstory`, {
-          method: 'PATCH',
+          method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -370,7 +372,7 @@ export default function MyPublishedStoriesScreen({ navigation }) {
                           >
                             <TouchableOpacity
                               onPress={() => {
-                                handleUpdateStory();
+                                handleUpdateStory(item._id);
                                 handleShowModal(); // repasse à false
                               }}
                             >
