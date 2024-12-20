@@ -77,7 +77,7 @@ export default function FavEventScreen() {
                 onPress={() => dispatch(unlikeEvent({ id: event._id }))}
                 style={styles.deleteButton}
               >
-                <Icon name="heart-dislike" size={24} color="red" />
+                <Icon name="heart" size={24} color="red" />
               </TouchableOpacity>
             </View>
           ))
