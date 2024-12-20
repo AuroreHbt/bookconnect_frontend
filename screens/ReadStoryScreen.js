@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-
 
 import { globalStyles } from '../styles/globalStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -25,9 +23,9 @@ export default function ReadStoryScreen({ route, navigation }) {
   const { story } = route.params;
   // console.log("Histoire reçue :", story);
 
-
   const [isVisible, setIsVisible] = useState(false) // hook d'état pour le spoiler sur les images sensibles
   const likedStories = useSelector((state) => state.story.value)
+  const user = useSelector((state) => state.user.value)
   const isLiked = likedStories.some((likedStory) => likedStory._id === story._id); // Vérifie si l'histoire actuelle est likée
 
   const dispatch = useDispatch();
@@ -207,7 +205,7 @@ const styles = StyleSheet.create({
 
   likeButton: {
     position: 'absolute',
-    top: 15,
+    top: 5,
     right: 5,
 
     // borderWidth: 1,

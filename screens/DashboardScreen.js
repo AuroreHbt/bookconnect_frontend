@@ -27,14 +27,14 @@ const defaultImage = require('../assets/image-livre-defaut.jpg')
 const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
 
 export default function DashboardScreen({ navigation }) {
+
   useEffect(() => {
     Keyboard.dismiss();
   }, []);
 
-
-
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
+  const story = useSelector((state) => state.story.value);
   const addedEvents = useSelector((state) => state.event.events);
   console.log("Événements dans le store:", addedEvents); // Vérifiez que les événements sont récupérés
 
@@ -61,17 +61,17 @@ export default function DashboardScreen({ navigation }) {
     navigation.navigate("Home");
   };
 
-  const handleFindStories = () => {
-    navigation.navigate("Stories");
+  const handleReadStories = () => {
+    navigation.navigate("ReadStory", { story })
   };
 
-  const handleLastStories = (story) => {
-    navigation.navigate("Story", { story });
-  };
+  // const handleLastStories = () => {
+  //   navigation.navigate("ReadStory");
+  // };
 
-  const handleMyEvents = () => {
-    navigation.navigate("MyEvents");
-  };
+  // const handleMyEvents = () => {
+  //   navigation.navigate("MyEvents");
+  // };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -152,11 +152,11 @@ export default function DashboardScreen({ navigation }) {
             <View style={styles.sectionHeader}>
               <Text style={styles.textSection}>Dernières histoires</Text>
               <TouchableOpacity
-                onPress={handleFindStories}
+                // onPress={handleLastStories}
                 activeOpacity={0.8}
               >
                 <Icon
-                  name="chevron-circle-right"
+                  name="chevron-circle-down"
                   size={24}
                   color="#D8C7B5"
                 />
@@ -174,7 +174,7 @@ export default function DashboardScreen({ navigation }) {
                   <TouchableOpacity
                     key={index}
                     style={styles.bookCard}
-                    onPress={() => handleLastStories(story)}
+                    onPress={() => handleReadStories(story)}
                   >
                     <Image
                       source={
@@ -207,11 +207,11 @@ export default function DashboardScreen({ navigation }) {
             <View style={styles.sectionHeader}>
               <Text style={styles.textSection}>Mes évènements</Text>
               <TouchableOpacity
-                onPress={handleMyEvents}
+                // onPress={handleMyEvents}
                 activeOpacity={0.8}
               >
                 <Icon
-                  name="chevron-circle-right"
+                  name="chevron-circle-down"
                   size={24}
                   color="#D8C7B5"
                 />
