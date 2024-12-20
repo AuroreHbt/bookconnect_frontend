@@ -61,9 +61,11 @@ export default function DashboardScreen({ navigation }) {
     navigation.navigate("Home");
   };
 
-  // const handleReadStories = () => {
-  //   navigation.navigate("ReadStory", { story })
-  // };
+  console.log('story: ', story);
+  
+  const handleReadStories = (story) => {
+    navigation.navigate("ReadStory", { story })
+  };
 
   const handleLastStories = () => {
     navigation.navigate("FindStories");
@@ -174,7 +176,7 @@ export default function DashboardScreen({ navigation }) {
                   <TouchableOpacity
                     key={index}
                     style={styles.bookCard}
-                    // onPress={() => handleReadStories(story)}
+                    onPress={() => handleReadStories(story)}
                   >
                     <Image
                       source={
