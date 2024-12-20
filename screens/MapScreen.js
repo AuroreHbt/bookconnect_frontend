@@ -255,13 +255,14 @@ export default function MapScreen({ route }) {
           </Text>
         </TouchableOpacity>
       </LinearGradient>
-
+      
       <Modal
         animationType="slide"
         transparent={true}
         visible={eventModalVisible}
         onRequestClose={toggleEventModal}
       >
+
         <TouchableWithoutFeedback onPress={toggleEventModal}>
           <View style={styles.modalBackground}>
             <TouchableWithoutFeedback>
@@ -278,6 +279,7 @@ export default function MapScreen({ route }) {
           </View>
         </TouchableWithoutFeedback>
       </Modal>
+      
       <Modal
         animationType="slide"
         transparent={true}
