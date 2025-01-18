@@ -64,13 +64,13 @@ export default function MyEventsScreen({ navigation }) {
       setEventUser(addedEvents); // Mettre à jour l'état local avec les événements particpés du store
     }, [addedEvents]); // Synchronisation avec le store Redux
 
-    const EventComponent = ({ item }) => {
-      const handleOpenUrl = (url) => {
-        if (url) {
-          Linking.openURL(url).catch((err) => console.error('Erreur lors de l\'ouverture du lien :', err));
-        }
-      };
-    };
+    // const EventComponent = ({ item }) => {
+    //   const handleOpenUrl = (url) => {
+    //     if (url) {
+    //       Linking.openURL(url).catch((err) => console.error('Erreur lors de l\'ouverture du lien :', err));
+    //     }
+    //   };
+    // };
 
   
     const handleDeleteEvent = (eventId) => {
