@@ -34,7 +34,7 @@ import { addEventPlanner } from "../reducers/event";
 import { Picker } from '@react-native-picker/picker';
 
 
-const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS
+const EXPO_PUBLIC_BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS
 
 
 export default function NewEventScreen({ navigation }) {
@@ -314,7 +314,7 @@ export default function NewEventScreen({ navigation }) {
       });
     }
     console.log("Envoi des données...");
-    fetch(`${BACKEND_ADDRESS}/events/addevent`, {
+    fetch(`${EXPO_PUBLIC_BACKEND_ADDRESS}/events/addevent`, {
       method: "POST",
       headers: {
         'Accept': 'application/json', // Optionnel pour indiquer que vous attendez du JSON en réponse

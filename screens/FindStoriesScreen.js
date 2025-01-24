@@ -26,7 +26,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 const defaultImage = require('../assets/image-livre-defaut.jpg')
 
 
-const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
+const EXPO_PUBLIC_BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
 
 export default function FindStoriesScreen({ navigation }) {
     const [title, setTitle] = useState('');
@@ -52,7 +52,7 @@ export default function FindStoriesScreen({ navigation }) {
 
         const query = `?${title ? `title=${title}` : ''}${author ? `&author=${author}` : ''}${category ? `&category=${category}` : ''}`;
 
-        fetch(`${BACKEND_ADDRESS}/stories/search${query}`)
+        fetch(`${EXPO_PUBLIC_BACKEND_ADDRESS}/stories/search${query}`)
             .then((response) => response.json())
             .then((data) => {
                 console.log('api', data);
@@ -75,7 +75,7 @@ export default function FindStoriesScreen({ navigation }) {
     };
 
     useEffect(() => {
-        fetch(`${BACKEND_ADDRESS}/stories/allstories`)
+        fetch(`${EXPO_PUBLIC_BACKEND_ADDRESS}/stories/allstories`)
             .then((response) => response.json())
             .then((data) => {
                 if (data.result) {
@@ -100,7 +100,7 @@ export default function FindStoriesScreen({ navigation }) {
     }
 
     useEffect(() => {
-        fetch(`${BACKEND_ADDRESS}/stories/laststories`)
+        fetch(`${EXPO_PUBLIC_BACKEND_ADDRESS}/stories/laststories`)
             .then((response) => response.json())
             .then((data) => {
                 if (data.result) {

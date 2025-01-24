@@ -24,7 +24,7 @@ import { logout } from "../reducers/user";
 
 const defaultImage = require('../assets/image-livre-defaut.jpg')
 
-const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
+const EXPO_PUBLIC_BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
 
 export default function DashboardScreen({ navigation }) {
 
@@ -42,7 +42,7 @@ export default function DashboardScreen({ navigation }) {
   const [allStories, setAllStories] = useState([]);
 
   useEffect(() => {
-    fetch(`${BACKEND_ADDRESS}/stories/laststories`)
+    fetch(`${EXPO_PUBLIC_BACKEND_ADDRESS}/stories/laststories`)
       .then((response) => response.json())
       .then((data) => {
         if (data.result) {

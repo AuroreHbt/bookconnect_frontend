@@ -31,7 +31,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 
 
-const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
+const EXPO_PUBLIC_BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
 
 export default function MyPublishedStoriesScreen({ navigation }) {
 
@@ -74,7 +74,7 @@ export default function MyPublishedStoriesScreen({ navigation }) {
 
   // Fonction pour récupérer les histoires publiées
   const getMyPublishedStories = () => {
-    fetch(`${BACKEND_ADDRESS}/stories/mypublishedstory/${user.username}`)
+    fetch(`${EXPO_PUBLIC_BACKEND_ADDRESS}/stories/mypublishedstory/${user.username}`)
       .then((response) => response.json())
       .then((data) => setStories(data.stories)); // Mettre à jour l'etat avec les données des histoires
   };
@@ -91,7 +91,7 @@ export default function MyPublishedStoriesScreen({ navigation }) {
     console.log("Type de storyId :", typeof storyId); // Vérifiez le type
     console.log("Type de user.token :", typeof user.token); // Vérifiez le type
 
-    fetch(`${BACKEND_ADDRESS}/stories/deletepublishedstory`, {
+    fetch(`${EXPO_PUBLIC_BACKEND_ADDRESS}/stories/deletepublishedstory`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -147,7 +147,7 @@ export default function MyPublishedStoriesScreen({ navigation }) {
 
     try {
       const response = await
-        fetch(`${BACKEND_ADDRESS}/stories/updatepublishedstory`, {
+        fetch(`${EXPO_PUBLIC_BACKEND_ADDRESS}/stories/updatepublishedstory`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

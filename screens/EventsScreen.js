@@ -56,9 +56,9 @@ export default function EventsScreen({ navigation }) {
       }
 
       // Recherche des événements associés
-      const backend = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
+      const EXPO_PUBLIC_BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
       const eventResponse = await fetch(
-        `${backend}/events/searchevent/${city}`
+        `${EXPO_PUBLIC_BACKEND_ADDRESS}/events/searchevent/${city}`
       );
       const eventData = await eventResponse.json();
       console.log("Event API response:", eventData);

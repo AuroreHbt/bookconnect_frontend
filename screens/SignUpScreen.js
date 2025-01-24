@@ -34,7 +34,7 @@ const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8
 // Rentrer au moins une lettre, un chiffre et un caractère spécial et 8 caractères mini.
 
 // Adresse du backend via la variable d'environnement
-const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
+const EXPO_PUBLIC_BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
 
 export default function SignUpScreen({ navigation }) {
 
@@ -103,7 +103,7 @@ export default function SignUpScreen({ navigation }) {
     }
 
     // Fetch de la route post du backend pour l'inscription
-    fetch(`${BACKEND_ADDRESS}/users/signup`, {
+    fetch(`${EXPO_PUBLIC_BACKEND_ADDRESS}/users/signup`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, username, password }),

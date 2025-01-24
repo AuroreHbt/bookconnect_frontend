@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "bookconnect_frontend",
-    "slug": "bookconnect_frontend",
+    "slug": "bookconnectv1frontend",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -29,7 +29,16 @@
       "expo-font"
     ],
     "extra": {
-      "eas": {}
-    }
+      "eas": {
+        "projectId": "c2d91cb4-c284-4fa9-a564-92eb4c9819da"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/c2d91cb4-c284-4fa9-a564-92eb4c9819da"
+    },
+    "owner": "laeria"
   }
 }

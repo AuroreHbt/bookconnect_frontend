@@ -48,7 +48,7 @@ const SafeSpinnerButton = React.forwardRef((props, ref) => {
   return <SpinnerButton ref={ref} {...otherProps} />;
 });
 
-const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS
+const EXPO_PUBLIC_BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS
 
 
 export default function NewStoryScreen({ navigation }) {
@@ -204,7 +204,7 @@ export default function NewStoryScreen({ navigation }) {
       })
     }
 
-    fetch(`${BACKEND_ADDRESS}/stories/addstory`, {
+    fetch(`${EXPO_PUBLIC_BACKEND_ADDRESS}/stories/addstory`, {
       method: "POST",
       body: formData,
     })

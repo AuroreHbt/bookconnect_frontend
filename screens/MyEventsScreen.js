@@ -27,7 +27,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { LinearGradient } from 'expo-linear-gradient';
 
 
-const BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
+const EXPO_PUBLIC_BACKEND_ADDRESS = process.env.EXPO_PUBLIC_BACKEND_ADDRESS;
 
 
 export default function MyEventsScreen({ navigation }) {
@@ -47,7 +47,7 @@ export default function MyEventsScreen({ navigation }) {
   
     // Fonction pour récupérer les événements
     const getMyEvents = () => {
-      fetch(`${BACKEND_ADDRESS}/events/searcheventByUser/${user.username}`)
+      fetch(`${EXPO_PUBLIC_BACKEND_ADDRESS}/events/searcheventByUser/${user.username}`)
         .then((response) => response.json())
         .then((data) => setEventPlanner(data.events));
     };
@@ -74,7 +74,7 @@ export default function MyEventsScreen({ navigation }) {
 
   
     const handleDeleteEvent = (eventId) => {
-      fetch(`${BACKEND_ADDRESS}/events/deleteevent`, {
+      fetch(`${EXPO_PUBLIC_BACKEND_ADDRESS}/events/deleteevent`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
